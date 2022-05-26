@@ -1,7 +1,7 @@
-#define IMPLEMENT_REY_H
+#define IMPLEMENT_GREY_H
 #include "grey.h"
 
-void initGrey(unsigned int sampleRate=4) {
+void initGrey(unsigned int sampleRate = 4) {
     C_initGrey(sampleRate);
 }
 
@@ -10,7 +10,7 @@ void closeGrey() {
 }
 
 class Window {
-    public:
+public:
     C_Window window;
     Window(int width, int height, const char* title) {
         window = C_createWindow(width, height, title);
