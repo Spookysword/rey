@@ -171,17 +171,28 @@ float vertices[] = {
 	0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 	0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
 };
-
+#ifndef IMPLEMENT_REY_H
 struct Window {
+#else
+struct C_Window {
+#endif
 	GLFWwindow* windowHandle;
 	boolean keys[349];
 	const char* title;
 	unsigned int colorShader, VBO, VAO;
 };
+#ifndef IMPLEMENT_REY_H
 typedef struct Window Window;
+#else
+typedef struct C_Window C_Window;
+#endif
 
 // Init/deinit funcs
+#ifndef IMPLEMENT_REY_H
 void initGrey(unsigned int sampleRate) {
+#else
+void C_initGrey(unsigned int sampleRate) {
+#endif
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -199,7 +210,11 @@ void initGrey(unsigned int sampleRate) {
 	glfwSwapInterval(1);
 #endif
 }
+#ifndef IMPLEMENT_REY_H
 void closeGrey() {
+#else
+void C_closeGrey() {
+#endif
 	glfwTerminate();
 }
 
@@ -207,9 +222,17 @@ void closeGrey() {
 void framebufferCallback(GLFWwindow* win, int width, int height) {
 	glViewport(0, 0, width, height);
 }
+#ifndef IMPLEMENT_REY_H
 Window createWindow(int width, int height, const char* title) {
+#else
+C_Window C_createWindow(int width, int height, const char* title) {
+#endif
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+#ifndef IMPLEMENT_REY_H
 	Window win;
+#else
+	C_Window win;
+#endif
 	win.windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
 	glfwSetWindowPos(win.windowHandle, (mode->width / 2) - (width / 2), (mode->height / 2) - (height / 2));
 	glfwMakeContextCurrent(win.windowHandle);
@@ -246,17 +269,29 @@ Window createWindow(int width, int height, const char* title) {
 
 	return win;
 }
+#ifndef IMPLEMENT_REY_H
 boolean shouldWindowClose(Window win) {
+#else
+boolean C_shouldWindowClose(C_Window win) {
+#endif
 	return glfwWindowShouldClose(win.windowHandle);
 }
+#ifndef IMPLEMENT_REY_H
 void updateWindow(Window* win) {
+#else
+void C_updateWindow(C_Window* win) {
+#endif
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	glfwPollEvents();
 	for (int i = 0; i < sizeof(win->keys)/sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
 	}
 }
+#ifndef IMPLEMENT_REY_H
 void renderWindow(Window win) {
+#else
+void C_renderWindow(C_Window win) {
+#endif
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -266,15 +301,27 @@ void renderWindow(Window win) {
 
 	glfwSwapBuffers(win.windowHandle);
 }
+#ifndef IMPLEMENT_REY_H
 void closeWindow(Window win) {
+#else
+void C_closeWindow(C_Window win) {
+#endif
 	glfwSetWindowShouldClose(win.windowHandle, GLFW_TRUE);
 }
+#ifndef IMPLEMENT_REY_H
 void setWindowFlag(Window win, uint32_t flag, boolean state) {
+#else
+void C_setWindowFlag(C_Window win, uint32_t flag, boolean state) {
+#endif
 	glfwSetWindowAttrib(win.windowHandle, flag, state);
 }
 
 // Key input
+#ifndef IMPLEMENT_REY_H
 boolean isKeyDown(Window win, int key) {
+#else
+boolean C_isKeyDown(C_Window win, int key) {
+#endif
 	if (key<sizeof(win.keys)/sizeof(win.keys[0])) {
 		return win.keys[key];
 	}
@@ -282,7 +329,11 @@ boolean isKeyDown(Window win, int key) {
 }
 
 // Draw funcs
+#ifndef IMPLEMENT_REY_H
 void clearWindowBackground(Window win, float R, float G, float B, float A) {
+#else
+void C_clearWindowBackground(C_Window win, float R, float G, float B, float A) {
+#endif
 	glfwMakeContextCurrent(win.windowHandle);
 	glClearColor(R/255, G/255, B/255, A/255);
 	glClear(GL_COLOR_BUFFER_BIT);
