@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="include\glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="rey\cpp\grey.cpp" />
     <ClCompile Include="rey\grey.c" />
   </ItemGroup>
   <ItemGroup>
