@@ -1,10 +1,9 @@
+// https://www.youtube.com/watch?v=1WLYOV7oM_g
 #ifndef GREY_H
 #define GREY_H
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-	// https://www.youtube.com/watch?v=1WLYOV7oM_g
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #ifdef _WIN32
@@ -157,13 +156,12 @@ COLOR STRUCT!!!!!!!!!!!
 #define WINDOW_FOCUS_ON_SHOW GLFW_FOCUS_ON_SHOW
 #define WINDOW_SCALE_TO_MONITOR GLFW_SCALE_TO_MONITOR
 
-// Shaders
-
 	struct C_Window {
 		GLFWwindow* windowHandle;
 		boolean keys[349];
 		const char* title;
 		unsigned int colorShader, VBO, VAO;
+
 	};
 	typedef struct C_Window C_Window;
 
