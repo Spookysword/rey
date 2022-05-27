@@ -21,6 +21,9 @@
     <ClCompile Include="include\glad.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="rey\grey.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rey\grey.h">
