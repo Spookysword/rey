@@ -33,8 +33,8 @@ public:
     bool isKeyDown(int key) {
         return C_isKeyDown(window, key);
     }
-    void clearBackground(float R, float G, float B, float A = 255) {
-        C_clearWindowBackground(window, R, G, B, A);
+    void clearBackground(Color color) {
+        C_clearWindowBackground(window, color);
     }
 
 };

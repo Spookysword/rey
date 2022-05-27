@@ -156,12 +156,55 @@ COLOR STRUCT!!!!!!!!!!!
 #define WINDOW_FOCUS_ON_SHOW GLFW_FOCUS_ON_SHOW
 #define WINDOW_SCALE_TO_MONITOR GLFW_SCALE_TO_MONITOR
 
+typedef unsigned int Color[4];
+
+// Chromakey
+#define COLOR_BLACK Color{ 0, 0, 0, 255 }
+#define COLOR_WHITE Color{ 255, 255, 255, 255 }
+#define COLOR_LIGHT_GREY Color{ 128, 128, 128, 255 }
+#define COLOR_DARK_GREY Color{ 63, 63, 63, 255 }
+#define grey Color{ 14, 14, 14, 255 }
+// Primary
+#define COLOR_RED Color{ 255, 0, 0, 255 }
+#define COLOR_GREEN Color{ 0, 255, 0, 255 }
+#define COLOR_BLUE Color{ 0, 0, 255, 255 }
+// Secondary
+#define COLOR_YELLOW Color{ 255, 255, 0, 255 }
+#define COLOR_CYAN Color{ 0, 255, 255, 255 }
+#define COLOR_MAGENTA Color{ 255, 0, 255, 255 }
+// Tertiary
+#define COLOR_ORANGE Color{ 255, 128, 0, 255 }
+#define COLOR_CHARTREUSE Color{ 128, 255, 0, 255 }
+#define COLOR_SPRING_GREEN Color{ 0, 255, 128, 255 }
+#define COLOR_AZURE Color{ 0, 128, 255, 255 }
+#define COLOR_VIOLET Color{ 128, 0, 255, 255 }
+#define COLOR_ROSE Color{ 255, 0, 128, 255 }
+
+// Soft Primary
+#define COLOR_SOFT_RED Color{ 255, 50, 50, 255 }
+#define COLOR_SOFT_GREEN Color{ 50, 255, 50, 255 }
+#define COLOR_SOFT_BLUE Color{ 50, 50, 255, 255 }
+// Soft Secondary
+#define COLOR_SOFT_YELLOW Color{ 255, 255, 50, 255 }
+#define COLOR_SOFT_CYAN Color{ 50, 255, 255, 255 }
+#define COLOR_SOFT_MAGENTA Color{ 255, 50, 255, 255 }
+// Soft Tertiary
+#define COLOR_SOFT_ORANGE Color{ 255, 128, 50, 255 }
+#define COLOR_SOFT_CHARTREUSE Color{ 128, 255, 50, 255 }
+#define COLOR_SOFT_SPRING_GREEN Color{ 50, 255, 128, 255 }
+#define COLOR_SOFT_AZURE Color{ 50, 128, 255, 255 }
+#define COLOR_SOFT_VIOLET Color{ 128, 50, 255, 255 }
+#define COLOR_SOFT_ROSE Color{ 255, 50, 128, 255 }
+
+// Miscellaneous
+#define COLOR_DISCORD Color{ 54, 57, 63, 255 }
+#define COLOR_SIMPLE Color{ 0, 159, 141, 255 }
+
 	struct C_Window {
 		GLFWwindow* windowHandle;
 		boolean keys[349];
 		const char* title;
 		unsigned int colorShader, VBO, VAO;
-
 	};
 	typedef struct C_Window C_Window;
 
@@ -186,7 +229,7 @@ COLOR STRUCT!!!!!!!!!!!
 
 	boolean C_isKeyDown(C_Window win, int key);
 
-	void C_clearWindowBackground(C_Window win, float R, float G, float B, float A);
+	void C_clearWindowBackground(C_Window win, Color color);
 
 #ifndef IMPLEMENT_GREY_H
 #define clearWindowBackground C_clearWindowBackground

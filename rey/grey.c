@@ -1,4 +1,3 @@
-
 #include "grey.h"
 
 const char* colorVertexShader = "#version 330 core\n"
@@ -124,8 +123,8 @@ boolean C_isKeyDown(C_Window win, int key) {
 }
 
 // Draw funcs
-void C_clearWindowBackground(C_Window win, float R, float G, float B, float A) {
+void C_clearWindowBackground(C_Window win, Color color) {
 	glfwMakeContextCurrent(win.windowHandle);
-	glClearColor(R / 255, G / 255, B / 255, A / 255);
+	glClearColor((float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
