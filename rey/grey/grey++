@@ -1,5 +1,6 @@
 #define IMPLEMENT_GREY_H
-#include "grey.h"
+#include "grey"
+#include <iostream>
 
 void initGrey(unsigned int sampleRate = 4);
 
@@ -7,8 +8,9 @@ void closeGrey();
 
 class Window {
 public:
-    C_Window window;
+    C_Window win;
     Window(int width, int height, const char* title);
+    Window(int width, int height, std::string title);
     bool shouldClose();
     void update();
     void render();

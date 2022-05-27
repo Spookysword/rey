@@ -1,4 +1,4 @@
-#include "cpp/grey.hpp"
+#include "grey++"
 
 int main() {
 	initGrey(4);
@@ -22,7 +22,7 @@ int main() {
 }
 
 
-/*#include "grey.h"
+/*#include <grey>
 
 int main() {
 	initGrey(4);
