@@ -29,5 +29,8 @@
     <ClInclude Include="rey\grey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rey\cpp\grey.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

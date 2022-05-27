@@ -156,6 +156,7 @@
     <ClCompile Include="rey\grey.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="rey\cpp\grey.hpp" />
     <ClInclude Include="rey\grey.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
