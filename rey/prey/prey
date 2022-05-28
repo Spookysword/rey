@@ -1,0 +1,68 @@
+#ifndef GREY_H
+#define GREY_H
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <stddef.h>
+#include <xkeycheck.h>
+
+// An easier way to define structs.
+#define STRUCT(a) ; typedef struct a a
+
+// A refrence to a Physics Rectangle (WORLD.rects[ID] returns the actual physics rectangle).
+typedef unsigned int PhysicsRectID;
+
+// A rectangle struct to hold x, y, w, h.
+struct Rectangle {
+	int w;
+	int h;
+	float x;
+	float y;
+} STRUCT(Rectangle);
+
+// Holds all of the physical data about a rectangle.
+struct PhysicsRect {
+	const char* type;
+	Rectangle rect;
+	float density, rotation;
+	float velocityX, velocityY;
+} STRUCT(PhysicsRect);
+
+// Holds all of the physics retangles, and applies physics to them.
+struct PhysicsWorld {
+	float gravityX, gravityY;
+	PhysicsRect *rects;
+	int i;
+} STRUCT(PhysicsWorld);
+
+// A function to calculate AABB collision on 2 Rectangles.
+_Bool AABB(Rectangle a, Rectangle b);
+
+// A function to create a physics rectangle.
+PhysicsRect createPhysicsRect(const char* type, float x, float y, float w, float h, float density, float rotation);
+
+// To check if 2 physics rects are colliding.
+_Bool isRectCollidingWithRect(PhysicsRect a, PhysicsRect b);
+
+// Applies force to a physics rectangle.
+void applyForce(PhysicsRect *a, float forceX, float forceY);
+
+// Creates a physics world.
+PhysicsWorld createPhysicsWorld();
+
+// Adds a new rectangle to the world.
+PhysicsRectID newRect(PhysicsWorld* world, const char* type, float x, float y, float w, float h, float density, float rotation);
+
+// Will perform physical calcualtions of all of the rectangles in the physics world.
+void updatePhysicsWorld(PhysicsWorld* world, float deltaTime);
+
+// Initializes the prey module
+void initPhysics(int _rectLimit);
+
+// De-initializes the prey module
+void closePhysics();
+
+#ifdef __cplusplus
+}
+#endif
+#endif
