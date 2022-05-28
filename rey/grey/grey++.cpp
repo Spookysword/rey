@@ -39,3 +39,6 @@ void Window::clearBackground(Color color) {
 void Window::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
     C_drawTriangle(&win, x1, y1, x2, y2, x3, y3, color);
 }
+void Window::drawRectangle(float x, float y, float width, float height, Color color) {
+    C_drawRectangle(&win, x, y, width, height, color);
+}
