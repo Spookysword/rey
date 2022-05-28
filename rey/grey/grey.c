@@ -95,16 +95,14 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	glfwSetFramebufferSizeCallback(win.windowHandle, framebufferCallback);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	win.title = title;
-	win.triangles = (float*)calloc(0, sizeof(float));
-	win.triangleSize = 0;
-	win.verticeCount = 0;
+	win.triangles = C_new_grey_float_vector();
 	win.deltaTime = 0.0f;
 
 	glGenBuffers(1, &win.VBO);
 	glGenVertexArrays(1, &win.VAO);
 	glBindVertexArray(win.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles), win.triangles, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.vec), win.triangles.vec, GL_DYNAMIC_DRAW);
 	// Position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -130,7 +128,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	return win;
 }
 void C_deleteWindow(C_Window* win) {
-	free(win->triangles);
+	C_float_vec_delete(&win->triangles);
 }
 boolean C_shouldWindowClose(C_Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
@@ -141,10 +139,7 @@ void C_updateWindow(C_Window* win) {
 	win->lastFrame = win->currentFrame;
 	if (win->deltaTime > 0.05f) { win->deltaTime = 0.05f; }
 	glfwSetWindowTitle(win->windowHandle, win->title);
-	free(win->triangles);
-	win->triangles = (float*)calloc(0, sizeof(float));
-	win->triangleSize = 0;
-	win->verticeCount = 0;
+	C_float_vec_clear(&win->triangles);
 	glfwPollEvents();
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
@@ -152,7 +147,7 @@ void C_updateWindow(C_Window* win) {
 }
 void C_renderWindow(C_Window win) {
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles) * 7 * win.verticeCount, win.triangles, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.vec) * 7 * ((win.triangles.vecSize / 7) * 3), win.triangles.vec, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(win.VAO);
 	glUseProgram(win.colorShader);
@@ -160,7 +155,7 @@ void C_renderWindow(C_Window win) {
 	glfwGetWindowSize(win.windowHandle, &width, &height);
 	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), width/2, height/2);
 	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0, 0, 0);
-	glDrawArrays(GL_TRIANGLES, 0, win.verticeCount);
+	glDrawArrays(GL_TRIANGLES, 0, ((win.triangles.vecSize / 7) * 3));
 
 	glfwSwapBuffers(win.windowHandle);
 }
@@ -186,29 +181,18 @@ void C_clearWindowBackground(C_Window win, Color color) {
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
-	float xs[3] = { x1, x2, x3 };
+	float xs[3] = {x1, x2, x3};
 	float ys[3] = { -y1, -y2, -y3 };
-	int a = win->triangleSize;
-	float* before = win->triangles;
-	win->triangleSize += 21;
-	win->verticeCount += 3;
-	free(win->triangles);
-	win->triangles = (float*)calloc(win->triangleSize, sizeof(float));
-	if (!win->triangles) { return; }
-	
-	for (int i = 0; i < a; i++) {
-		// I have no clue why this error is here, please god strike me down
-		win->triangles[i] = before[i];
-	}
 
+	// This could be optimized. Too bad!
 	for (int i = 1; i < 4; i++) {
-		win->triangles[a+(7 * i) - 7] = xs[i-1];
-		win->triangles[a+(7 * i) - 6] = ys[i-1];
-		win->triangles[a+(7 * i) - 5] = 0.0f;
-		win->triangles[a+(7 * i) - 4] = (float)color[0] / 255;
-		win->triangles[a+(7 * i) - 3] = (float)color[1] / 255;
-		win->triangles[a+(7 * i) - 2] = (float)color[2] / 255;
-		win->triangles[a+(7 * i) - 1] = (float)color[3] / 255;
+		C_float_vec_push_back(&win->triangles, xs[i-1]);
+		C_float_vec_push_back(&win->triangles, ys[i-1]);
+		C_float_vec_push_back(&win->triangles, 0.0f);
+		C_float_vec_push_back(&win->triangles, (float)color[0] / 255);
+		C_float_vec_push_back(&win->triangles, (float)color[1] / 255);
+		C_float_vec_push_back(&win->triangles, (float)color[2] / 255);
+		C_float_vec_push_back(&win->triangles, (float)color[3] / 255);
 	}
 }
 void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color) {
