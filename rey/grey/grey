@@ -9,7 +9,6 @@ extern "C" {
 #ifdef _WIN32
 #include <Windows.h>
 #endif
-#include <memory.h>
 #include <stdlib.h>
 #include <stdio.h>
 

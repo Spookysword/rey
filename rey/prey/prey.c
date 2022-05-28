@@ -1,4 +1,5 @@
 #include "prey"
+#include <stdlib.h>
 
 _Bool preyInit = 0;
 int rectLimit = 1000;
@@ -25,8 +26,8 @@ PhysicsRect createPhysicsRect(const char* type, float x, float y, float w, float
 	a.type = type;
 	a.rect.x = x;
 	a.rect.y = y;
-	a.rect.w = w;
-	a.rect.h = h;
+	a.rect.w = (int)w;
+	a.rect.h = (int)h;
 	a.density = density;
 	a.rotation = rotation;
 	a.velocityX = 0.0f;
@@ -74,6 +75,6 @@ void updatePhysicsWorld(PhysicsWorld* world, float deltaTime) {
 void initPrey(int _rectLimit) { 
 	preyInit = 1;
 	rectLimit = _rectLimit;
-	if (_rectLimit == NULL) rectLimit = 1000;
+	if (_rectLimit == 0) rectLimit = 1000;
 }
 void closePrey() { preyInit = 0; }

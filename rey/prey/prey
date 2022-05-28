@@ -5,6 +5,7 @@ extern "C" {
 #endif
 #include <stddef.h>
 #include <xkeycheck.h>
+#include <memory.h>
 
 // An easier way to define structs.
 #define STRUCT(a) ; typedef struct a a
