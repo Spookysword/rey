@@ -18,6 +18,8 @@ public:
     Window(int width, int height, const char* title);
     // Creates a Window class.
     Window(int width, int height, std::string title);
+    // Destructor
+    ~Window();
     // Checks if a Window should be closed.
     bool shouldClose();
     // Handles updating the window, including polling events & general variables.

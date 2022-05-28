@@ -15,6 +15,9 @@ Window::Window(int width, int height, const char* title) {
 Window::Window(int width, int height, std::string title) {
     win = C_createWindow(width, height, title.c_str());
 }
+Window::~Window() {
+    C_deleteWindow(&win);
+}
 bool Window::shouldClose() {
     return C_shouldWindowClose(win);
 }

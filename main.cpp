@@ -21,7 +21,7 @@ int main() {
 		std::cout << win.deltaTime << std::endl;
 		win.render();
 	}
-
+	
 	closeGrey();
 	return 0;
 }*/
@@ -51,6 +51,7 @@ int main() {
 		renderWindow(win);
 	}
 	
+	deleteWindow(&win);
 	closeGrey();
 	return 0;
 }
