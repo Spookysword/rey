@@ -2,22 +2,35 @@
 #include "grey"
 #include <iostream>
 
+// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 void initGrey(unsigned int sampleRate = 4);
 
+// Frees up any possibly used memory.
 void closeGrey();
 
 class Window {
 public:
     C_Window win;
+    // Creates a Window class.
     Window(int width, int height, const char* title);
+    // Creates a Window class.
     Window(int width, int height, std::string title);
+    // Checks if a Window should be closed.
     bool shouldClose();
+    // Handles updating the window, including polling events & general variables.
     void update();
+    // Collects every draw call you've made and sends it in a few collective batches.
     void render();
+    // Closes the Window.
     void close();
+
+    // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
     void setFlag(uint32_t flag, bool state);
+    // Checks if a certain key is down. All keys can be found in the grey file near line 26.
     bool isKeyDown(int key);
+    // Clears the background with a color. Generally should be called each frame before drawing anything else.
     void clearBackground(Color color);
+    // Draws a triangle with three given points and a color.
     void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, Color color);
 
 };
