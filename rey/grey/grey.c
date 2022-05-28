@@ -43,7 +43,7 @@ void C_float_vec_push_back(grey_float_vector* vec, float num) {
 	vec->vec = (float*)calloc(vec->vecSize, sizeof(float)); // vec = { 0 };
 	if (!vec->vec) { return; }
 	for (int i = 0; i < a; i++) { // for (int i = 0; i < 0; i++)
-		// Fuck you C
+		// Nvm I love you C
 		vec->vec[i] = before[i]; // (never exec)
 	}
 	vec->vec[vec->vecSize - 1] = num; // vec[0] = num;
