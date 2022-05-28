@@ -27,12 +27,24 @@
     <ClCompile Include="rey\grey\grey++.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rey\prey\prey.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="rey\prey\prey++.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rey\grey\grey">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="rey\grey\grey++">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rey\prey\prey">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rey\prey\prey++">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
