@@ -4,8 +4,10 @@ const char* colorVertexShader = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "layout (location = 1) in vec4 aColor;\n"
 "out vec4 color;\n"
+"uniform vec2 viewport;\n"
+"uniform vec3 offset;\n"
 "void main() {\n"
-"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   gl_Position = vec4((aPos.x - viewport.x) / viewport.x - (offset.x / viewport.x), (aPos.y + viewport.y) / viewport.y + (offset.y / viewport.y), aPos.z, 1.0);\n"
 "	color = aColor;\n"
 "}\0";
 
@@ -116,6 +118,10 @@ void C_renderWindow(C_Window win) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(win.VAO);
 	glUseProgram(win.colorShader);
+	int width = 0, height = 0;
+	glfwGetWindowSize(win.windowHandle, &width, &height);
+	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), width/2, height/2);
+	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0, 0, 0);
 	glDrawArrays(GL_TRIANGLES, 0, win.verticeCount);
 
 	glfwSwapBuffers(win.windowHandle);
@@ -143,7 +149,7 @@ void C_clearWindowBackground(C_Window win, Color color) {
 }
 void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 	float xs[3] = { x1, x2, x3 };
-	float ys[3] = { y1, y2, y3 };
+	float ys[3] = { -y1, -y2, -y3 };
 	int a = win->triangleSize;
 	float* before = win->triangles;
 	win->triangleSize += 21;
@@ -158,8 +164,8 @@ void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float
 	}
 
 	for (int i = 1; i < 4; i++) {
-		win->triangles[a+(7 * i) - 7] = xs[i - 1];
-		win->triangles[a+(7 * i) - 6] = ys[i - 1];
+		win->triangles[a+(7 * i) - 7] = xs[i-1];
+		win->triangles[a+(7 * i) - 6] = ys[i-1];
 		win->triangles[a+(7 * i) - 5] = 0.0f;
 		win->triangles[a+(7 * i) - 4] = (float)color[0] / 255;
 		win->triangles[a+(7 * i) - 3] = (float)color[1] / 255;
