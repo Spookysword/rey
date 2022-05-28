@@ -211,6 +211,9 @@ typedef unsigned int Color[4];
 		float* triangles;
 		int triangleSize;
 		int verticeCount;
+		float deltaTime;
+		float lastFrame;
+		float currentFrame;
 	};
 	typedef struct C_Window C_Window;
 

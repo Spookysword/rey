@@ -18,6 +18,7 @@ int main() {
 			win.drawRectangle(0, 0, 250, 250, COLOR_SOFT_ORANGE);
 		}
 
+		std::cout << win.deltaTime << std::endl;
 		win.render();
 	}
 
@@ -45,6 +46,8 @@ int main() {
 			drawRectangle(&win, 0, 0, 250, 250, COLOR_SOFT_ORANGE);
 		}
 
+		printf("%f", win.deltaTime);
+		printf("\n");
 		renderWindow(win);
 	}
 

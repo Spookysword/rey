@@ -65,6 +65,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.triangles = (float*)calloc(0, sizeof(float));
 	win.triangleSize = 0;
 	win.verticeCount = 0;
+	win.deltaTime = 0.0f;
 
 	glGenBuffers(1, &win.VBO);
 	glGenVertexArrays(1, &win.VAO);
@@ -101,7 +102,11 @@ void C_deleteWindow(C_Window* win) {
 boolean C_shouldWindowClose(C_Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
 }
-void C_updateWindow(C_Window * win) {
+void C_updateWindow(C_Window* win) {
+	win->currentFrame = glfwGetTime();
+	win->deltaTime = win->currentFrame - win->lastFrame;
+	win->lastFrame = win->currentFrame;
+	if (win->deltaTime > 0.05f) { win->deltaTime = 0.05f; }
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	free(win->triangles);
 	win->triangles = (float*)calloc(0, sizeof(float));

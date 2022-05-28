@@ -10,6 +10,9 @@ void closeGrey();
 
 class Window {
 public:
+    std::string title = "";
+    float deltaTime = 0.0f;
+
     C_Window win;
     // Creates a Window class.
     Window(int width, int height, const char* title);

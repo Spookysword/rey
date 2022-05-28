@@ -20,6 +20,8 @@ bool Window::shouldClose() {
 }
 void Window::update() {
     C_updateWindow(&win);
+    deltaTime = win.deltaTime;
+    title = win.title;
 }
 void Window::render() {
     C_renderWindow(win);
