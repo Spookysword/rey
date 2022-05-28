@@ -1,18 +1,7 @@
 #include "prey"
-#include <stddef.h>
-#include <xkeycheck.h>
-
-#define STRUCT(a) ; typedef struct a a
 
 _Bool preyInit = 0;
-int rectLimit;
-
-struct Rectangle {
-	int w;
-	int h;
-	float x;
-	float y;
-} STRUCT(Rectangle);
+int rectLimit = 1000;
 
 _Bool AABB(Rectangle a, Rectangle b) {
 	float x1 = a.x, x2 = b.x;
@@ -28,14 +17,6 @@ _Bool AABB(Rectangle a, Rectangle b) {
 //// Physics Rectangles ////
 ////////////////////////////
 
-typedef unsigned int PhysicsRectID;
-
-struct PhysicsRect {
-	const char* type;
-	Rectangle rect;
-	float density, rotation;
-	float velocityX, velocityY;
-} STRUCT(PhysicsRect);
 PhysicsRect createPhysicsRect(const char* type, float x, float y, float w, float h, float density, float rotation) {
 	if (type == NULL) {
 		type = "static";
@@ -64,12 +45,6 @@ void applyForce(PhysicsRect *a, float forceX, float forceY) {
 //// Physics World ////
 ///////////////////////
 
-
-struct PhysicsWorld {
-	float gravityX, gravityY;
-	PhysicsRect *rects;
-	int i;
-} STRUCT(PhysicsWorld);
 PhysicsWorld createPhysicsWorld() {
 	PhysicsWorld world;
 	world.gravityX = 0.0f;
