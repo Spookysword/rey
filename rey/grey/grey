@@ -202,6 +202,17 @@ typedef unsigned int Color[4];
 #define COLOR_DISCORD Color{ 54, 57, 63, 255 }
 #define COLOR_SIMPLE Color{ 0, 159, 141, 255 }
 
+struct grey_float_vector {
+	float* vec;
+	int vecSize;
+};
+typedef struct grey_float_vector grey_float_vector;
+
+grey_float_vector C_new_grey_float_vector();
+void C_float_vec_push_back(grey_float_vector* vec, float num);
+void C_float_vec_clear(grey_float_vector* vec);
+void C_float_vec_delete(grey_float_vector* vec);
+
 	struct C_Window {
 		GLFWwindow* windowHandle;
 		boolean keys[349];
@@ -306,6 +317,11 @@ typedef unsigned int Color[4];
 
 // Draws a rectangle.
 #define drawRectangle C_drawRectangle
+
+#define new_grey_float_vector C_new_grey_float_vector
+#define float_vec_push_back C_float_vec_push_back
+#define float_vec_clear C_float_vec_clear
+#define float_vec_delete C_float_vec_delete
 
 #endif
 

@@ -25,6 +25,39 @@ float* resizeFloatList(float* list, int indexSize) {
 	memcpy(tempTri, list, indexSize);
 	return tempTri;
 }
+grey_float_vector C_new_grey_float_vector() {
+	grey_float_vector vec;
+	vec.vec = (float*)calloc(0, sizeof(float));
+	vec.vecSize = 0;
+	return vec;
+}
+void C_float_vec_push_back(grey_float_vector* vec, float num) {
+	int a = vec->vecSize; // a = 0;
+	float* before = (float*)calloc(vec->vecSize, sizeof(float));
+	if (!before) { return; }
+	for (int i = 0; i < vec->vecSize; i++) {
+		before[i] = vec->vec[i];
+	}
+	vec->vecSize += 1; // vecSize = 1;
+	free(vec->vec); // vec = {  };
+	vec->vec = (float*)calloc(vec->vecSize, sizeof(float)); // vec = { 0 };
+	if (!vec->vec) { return; }
+	for (int i = 0; i < a; i++) { // for (int i = 0; i < 0; i++)
+		// Fuck you C
+		vec->vec[i] = before[i]; // (never exec)
+	}
+	vec->vec[vec->vecSize - 1] = num; // vec[0] = num;
+	free(before);
+}
+void C_float_vec_clear(grey_float_vector* vec) {
+	free(vec->vec);
+	vec->vec = (float*)calloc(0, sizeof(float));
+	vec->vecSize = 0;
+}
+void C_float_vec_delete(grey_float_vector* vec) {
+	free(vec->vec);
+	vec->vecSize = 0;
+}
 
 // Init/deinit funcs
 void C_initGrey(unsigned int sampleRate) {
