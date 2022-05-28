@@ -1,5 +1,5 @@
-#ifndef GREY_H
-#define GREY_H
+#ifndef PREY_H
+#define PREY_H
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -13,17 +13,17 @@ extern "C" {
 typedef unsigned int PhysicsRectID;
 
 // A rectangle struct to hold x, y, w, h.
-struct Rectangle {
+struct Rectangles {
 	int w;
 	int h;
 	float x;
 	float y;
-} STRUCT(Rectangle);
+} STRUCT(Rectangles);
 
 // Holds all of the physical data about a rectangle.
 struct PhysicsRect {
 	const char* type;
-	Rectangle rect;
+	Rectangles rect;
 	float density, rotation;
 	float velocityX, velocityY;
 } STRUCT(PhysicsRect);
@@ -36,7 +36,7 @@ struct PhysicsWorld {
 } STRUCT(PhysicsWorld);
 
 // A function to calculate AABB collision on 2 Rectangles.
-int AABB(Rectangle a, Rectangle b);
+int AABB(Rectangles a, Rectangles b);
 
 // A function to create a physics rectangle.
 PhysicsRect createPhysicsRect(const char* type, float x, float y, float w, float h, float density, float rotation);
@@ -57,10 +57,10 @@ PhysicsRectID newRect(PhysicsWorld* world, const char* type, float x, float y, f
 void updatePhysicsWorld(PhysicsWorld* world, float deltaTime);
 
 // Initializes the prey module
-void initPhysics(int _rectLimit);
+void initPrey(int _rectLimit);
 
 // De-initializes the prey module
-void closePhysics();
+void closePrey();
 
 #ifdef __cplusplus
 }

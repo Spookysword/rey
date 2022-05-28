@@ -3,7 +3,7 @@
 _Bool preyInit = 0;
 int rectLimit = 1000;
 
-int AABB(Rectangle a, Rectangle b) {
+int AABB(Rectangles a, Rectangles b) {
 	float x1 = a.x, x2 = b.x;
 	float y1 = a.y, y2 = b.y;
 	int w1 = a.w, w2 = b.w;
@@ -71,9 +71,9 @@ void updatePhysicsWorld(PhysicsWorld* world, float deltaTime) {
 }
 
 
-void initPhysics(int _rectLimit) { 
+void initPrey(int _rectLimit) { 
 	preyInit = 1;
 	rectLimit = _rectLimit;
 	if (_rectLimit == NULL) rectLimit = 1000;
 }
-void closePhysics() { preyInit = 0; }
+void closePrey() { preyInit = 0; }
