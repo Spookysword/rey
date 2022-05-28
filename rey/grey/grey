@@ -216,8 +216,12 @@ typedef unsigned int Color[4];
 
 	float* resizeFloatList(float* list, int indexSize);
 	
+
+
 	// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 	void C_initGrey(unsigned int sampleRate);
+
+
 
 	// Frees up any possibly used memory.
 	void C_closeGrey();
@@ -255,18 +259,44 @@ typedef unsigned int Color[4];
 	void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
 
 #ifndef IMPLEMENT_GREY_H
+
+// Clears the background with a color. Generally should be called each frame before drawing anything else.
 #define clearWindowBackground C_clearWindowBackground
+
+// Checks if a certain key is down. All keys can be found in the grey file near line 26.
 #define isKeyDown C_isKeyDown
+
+// Sets a window flag's state. All the window flags can be found in the grey file near line 149.
 #define setWindowFlag C_setWindowFlag
+
+// Closes the Window. Different from deleteWindow, which deletes the Window from memory.
 #define closeWindow C_closeWindow
+
+// Deletes the Window from memory. Different from closeWindow, which closes the window.
 #define deleteWindow C_deleteWindow
+
+// Collects every draw call you've made and sends it in a few collective batches.
 #define renderWindow C_renderWindow
+
+// Handles updating the window, including polling events & general variables within the struct.
 #define updateWindow C_updateWindow
+
+// Checks if a Window should be closed.
 #define shouldWindowClose C_shouldWindowClose
+
+// Returns a valid Window struct.
 #define createWindow C_createWindow
+
+// Frees up any possibly used memory.
 #define closeGrey C_closeGrey
+
+// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 #define initGrey C_initGrey
+
+// A Window struct
 #define Window C_Window
+
+// Draws a triangle with three given points and a color.
 #define drawTriangle C_drawTriangle
 #endif
 
