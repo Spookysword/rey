@@ -18,5 +18,6 @@ public:
     void setFlag(uint32_t flag, bool state);
     bool isKeyDown(int key);
     void clearBackground(Color color);
+    void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, Color color);
 
 };

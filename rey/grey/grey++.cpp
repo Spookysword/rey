@@ -36,3 +36,6 @@ bool Window::isKeyDown(int key) {
 void Window::clearBackground(Color color) {
     C_clearWindowBackground(win, color);
 }
+void Window::drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
+    C_drawTriangle(&win, x1, y1, x2, y2, x3, y3, color);
+}

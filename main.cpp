@@ -1,4 +1,4 @@
-#include "grey++"
+/*#include "grey++"
 
 int main() {
 	initGrey(4);
@@ -14,15 +14,19 @@ int main() {
 			win.close();
 		}
 
+		if (!win.isKeyDown(KEY_I)) {
+			win.drawTriangle(-0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, COLOR_SOFT_ORANGE);
+			win.drawTriangle(-0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, COLOR_SOFT_ORANGE);
+		}
+
 		win.render();
 	}
 
 	closeGrey();
 	return 0;
-}
+}*/
 
-
-/*#include <grey>
+#include <grey>
 
 int main() {
 	initGrey(4);
@@ -38,9 +42,15 @@ int main() {
 			closeWindow(win);
 		}
 
+		if (!isKeyDown(win, KEY_I)) {
+			drawTriangle(&win, -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, COLOR_SOFT_ORANGE);
+			drawTriangle(&win, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, COLOR_SOFT_ORANGE);
+		}
+
 		renderWindow(win);
 	}
 
+	deleteWindow(&win);
 	closeGrey();
 	return 0;
-}*/
+}
