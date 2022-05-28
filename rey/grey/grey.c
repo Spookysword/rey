@@ -173,3 +173,7 @@ void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float
 		win->triangles[a+(7 * i) - 1] = (float)color[3] / 255;
 	}
 }
+void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color) {
+	C_drawTriangle(win, x, y, x, y + height, x + width, y + height, color);
+	C_drawTriangle(win, x, y, x + width, y, x + width, y + height, color);
+}

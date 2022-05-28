@@ -258,6 +258,9 @@ typedef unsigned int Color[4];
 	// Draws a triangle with three given points and a color.
 	void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
 
+	// Draws a rectangle.
+	void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color);
+
 #ifndef IMPLEMENT_GREY_H
 
 // Clears the background with a color. Generally should be called each frame before drawing anything else.
@@ -298,6 +301,10 @@ typedef unsigned int Color[4];
 
 // Draws a triangle with three given points and a color.
 #define drawTriangle C_drawTriangle
+
+// Draws a rectangle.
+#define drawRectangle C_drawRectangle
+
 #endif
 
 #ifdef __cplusplus

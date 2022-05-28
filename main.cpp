@@ -15,8 +15,7 @@ int main() {
 		}
 
 		if (!win.isKeyDown(KEY_I)) {
-			win.drawTriangle(0, 0, 0, 250, 250, 250, COLOR_SOFT_ORANGE);
-			win.drawTriangle(0, 0, 250, 0, 250, 250, COLOR_SOFT_ORANGE);
+			win.drawRectangle(0, 0, 250, 250, COLOR_SOFT_ORANGE);
 		}
 
 		win.render();
@@ -43,8 +42,7 @@ int main() {
 		}
 
 		if (!isKeyDown(win, KEY_I)) {
-			drawTriangle(&win, 0, 0, 0, 250, 250, 250, COLOR_SOFT_ORANGE);
-			drawTriangle(&win, 0, 0, 250, 0, 250, 250, COLOR_SOFT_ORANGE);
+			drawRectangle(&win, 0, 0, 250, 250, COLOR_SOFT_ORANGE);
 		}
 
 		renderWindow(win);
