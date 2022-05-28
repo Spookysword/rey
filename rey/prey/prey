@@ -36,13 +36,13 @@ struct PhysicsWorld {
 } STRUCT(PhysicsWorld);
 
 // A function to calculate AABB collision on 2 Rectangles.
-_Bool AABB(Rectangle a, Rectangle b);
+int AABB(Rectangle a, Rectangle b);
 
 // A function to create a physics rectangle.
 PhysicsRect createPhysicsRect(const char* type, float x, float y, float w, float h, float density, float rotation);
 
 // To check if 2 physics rects are colliding.
-_Bool isRectCollidingWithRect(PhysicsRect a, PhysicsRect b);
+int isRectCollidingWithRect(PhysicsRect a, PhysicsRect b);
 
 // Applies force to a physics rectangle.
 void applyForce(PhysicsRect *a, float forceX, float forceY);

@@ -3,7 +3,7 @@
 _Bool preyInit = 0;
 int rectLimit = 1000;
 
-_Bool AABB(Rectangle a, Rectangle b) {
+int AABB(Rectangle a, Rectangle b) {
 	float x1 = a.x, x2 = b.x;
 	float y1 = a.y, y2 = b.y;
 	int w1 = a.w, w2 = b.w;
@@ -33,7 +33,7 @@ PhysicsRect createPhysicsRect(const char* type, float x, float y, float w, float
 	a.velocityY = 0.0f;
 	return a;
 }
-_Bool isRectCollidingWithRect(PhysicsRect a, PhysicsRect b) {
+int isRectCollidingWithRect(PhysicsRect a, PhysicsRect b) {
 	return AABB(a.rect, b.rect);
 }
 void applyForce(PhysicsRect *a, float forceX, float forceY) {
