@@ -146,13 +146,13 @@ void C_updateWindow(C_Window* win) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
 		if (win->keys[i] == GLFW_PRESS && win->tempKeys[i] == GLFW_PRESS) {
 			win->tempKeys[i] = GLFW_RELEASE;
-			win->tempKeysCheck[i] = TRUE;
+			win->tempKeysCheck[i] = 1;
 		}
 		else if (win->keys[i] == GLFW_RELEASE) {
 			win->tempKeys[i] = GLFW_RELEASE;
-			win->tempKeysCheck[i] = FALSE;
+			win->tempKeysCheck[i] = 0;
 		}
-		else if (win->tempKeysCheck[i] == FALSE) {
+		else if (win->tempKeysCheck[i] == 0) {
 			win->tempKeys[i] = win->keys[i];
 		}
 	}

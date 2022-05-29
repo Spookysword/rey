@@ -1,4 +1,5 @@
 /*#include "grey++"
+#include <iostream>
 
 int main() {
 	initGrey(4);
@@ -18,7 +19,11 @@ int main() {
 			win.drawRectangle(0, 0, 250, 250, COLOR_SOFT_ORANGE);
 		}
 
-		std::cout << win.deltaTime << std::endl;
+		if (win.isKeyPressed(KEY_G)) {
+			std::cout << "powered by grey\n";
+		}
+		
+		std::cout << win.win.triangles.vec[5] << std::endl;
 		win.render();
 	}
 	
@@ -27,6 +32,7 @@ int main() {
 }*/
 
 #include <grey>
+#include <stdio.h>
 
 int main() {
 	initGrey(4);
@@ -46,8 +52,10 @@ int main() {
 			drawRectangle(&win, 0, 0, 250, 250, COLOR_SOFT_ORANGE);
 		}
 
-		printf("%f", win.deltaTime);
-		printf("\n");
+		if (isKeyPressed(win, KEY_G)) {
+			printf("powered by grey\n");
+		}
+		
 		renderWindow(win);
 	}
 	

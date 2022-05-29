@@ -12,9 +12,6 @@ void closeGrey() {
 Window::Window(int width, int height, const char* title) {
     win = C_createWindow(width, height, title);
 }
-Window::Window(int width, int height, std::string title) {
-    win = C_createWindow(width, height, title.c_str());
-}
 Window::~Window() {
     C_deleteWindow(&win);
 }
@@ -37,6 +34,9 @@ void Window::setFlag(uint32_t flag, bool state) {
 }
 bool Window::isKeyDown(int key) {
     return C_isKeyDown(win, key);
+}
+bool Window::isKeyPressed(int key) {
+    return C_isKeyPressed(win, key);
 }
 void Window::clearBackground(Color color) {
     C_clearWindowBackground(win, color);

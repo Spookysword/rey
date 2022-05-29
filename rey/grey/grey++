@@ -1,6 +1,5 @@
 #define IMPLEMENT_GREY_H
 #include "grey"
-#include <iostream>
 
 // Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 void initGrey(unsigned int sampleRate = 4);
@@ -10,14 +9,12 @@ void closeGrey();
 
 class Window {
 public:
-    std::string title = "";
+    const char* title = "";
     float deltaTime = 0.0f;
 
     C_Window win;
     // Creates a Window class.
     Window(int width, int height, const char* title);
-    // Creates a Window class.
-    Window(int width, int height, std::string title);
     // Destructor
     ~Window();
     // Checks if a Window should be closed.
@@ -31,8 +28,16 @@ public:
 
     // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
     void setFlag(uint32_t flag, bool state);
-    // Checks if a certain key is down. All keys can be found in the grey file near line 26.
+    /*
+    Checks if a certain key is down. All keys can be found in the grey file near line 26.
+    Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
+    */
     bool isKeyDown(int key);
+    /*
+    Checks if a certain key has been pressed. All keys can be found in the grey file near line 26.
+    Note that this shouldn't be confused with isKeyDown, which is valid each frame that the user has the key down.
+    */
+    bool isKeyPressed(int key);
     // Clears the background with a color. Generally should be called each frame before drawing anything else.
     void clearBackground(Color color);
     // Draws a triangle with three given points and a color.
