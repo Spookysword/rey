@@ -48,8 +48,10 @@ int main() {
 			closeWindow(win);
 		}
 		
-		if (!isKeyDown(win, KEY_I)) {
+		if (isKeyDown(win, KEY_I)) {
 			drawRectangle(&win, 0, 0, 250, 250, COLOR_SOFT_ORANGE);
+		} else {
+			drawRectangle(&win, 0, 0, 250, 250, (Color){ 255, 128, 50, 50 });
 		}
 
 		if (isKeyPressed(win, KEY_G)) {

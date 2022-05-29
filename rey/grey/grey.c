@@ -126,6 +126,10 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	glDeleteShader(w_colorVertexShader);
 	glDeleteShader(w_colorFragmentShader);
 
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	return win;
 }
 void C_deleteWindow(C_Window* win) {
