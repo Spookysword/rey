@@ -84,6 +84,7 @@ void C_closeGrey() {
 
 // Window funcs
 void framebufferCallback(GLFWwindow * win, int width, int height) {
+	glfwMakeContextCurrent(win);
 	glViewport(0, 0, width, height);
 }
 C_Window C_createWindow(int width, int height, const char* title) {
@@ -146,6 +147,7 @@ void C_updateWindow(C_Window* win) {
 	}
 }
 void C_renderWindow(C_Window win) {
+	glfwMakeContextCurrent(win.windowHandle);
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.vec) * 7 * ((win.triangles.vecSize / 7) * 3), win.triangles.vec, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
