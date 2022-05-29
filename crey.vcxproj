@@ -74,11 +74,13 @@
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>C:\Users\fires\source\repos\crey\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>C:\Users\fires\source\repos\crey\rey;C:\Users\fires\source\repos\crey\include;$(IncludePath)</IncludePath>
+    <CopyCppRuntimeToOutputDir>false</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <LibraryPath>C:\Users\fires\source\repos\crey\lib;$(LibraryPath)</LibraryPath>
     <IncludePath>C:\Users\fires\source\repos\crey\rey;C:\Users\fires\source\repos\crey\include;$(IncludePath)</IncludePath>
+    <CopyCppRuntimeToOutputDir>true</CopyCppRuntimeToOutputDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
