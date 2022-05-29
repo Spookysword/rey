@@ -144,6 +144,17 @@ void C_updateWindow(C_Window* win) {
 	glfwPollEvents();
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
+		if (win->keys[i] == GLFW_PRESS && win->tempKeys[i] == GLFW_PRESS) {
+			win->tempKeys[i] = GLFW_RELEASE;
+			win->tempKeysCheck[i] = TRUE;
+		}
+		else if (win->keys[i] == GLFW_RELEASE) {
+			win->tempKeys[i] = GLFW_RELEASE;
+			win->tempKeysCheck[i] = FALSE;
+		}
+		else if (win->tempKeysCheck[i] == FALSE) {
+			win->tempKeys[i] = win->keys[i];
+		}
 	}
 }
 void C_renderWindow(C_Window win) {
@@ -172,6 +183,12 @@ void C_setWindowFlag(C_Window win, uint32_t flag, boolean state) {
 boolean C_isKeyDown(C_Window win, int key) {
 	if (key < sizeof(win.keys) / sizeof(win.keys[0])) {
 		return win.keys[key];
+	}
+	return 0;
+}
+boolean C_isKeyPressed(C_Window win, int key) {
+	if (key < sizeof(win.tempKeys) / sizeof(win.tempKeys[0])) {
+		return win.tempKeys[key];
 	}
 	return 0;
 }

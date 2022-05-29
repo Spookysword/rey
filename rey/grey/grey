@@ -216,6 +216,8 @@ void C_float_vec_delete(grey_float_vector* vec);
 	struct C_Window {
 		GLFWwindow* windowHandle;
 		boolean keys[349];
+		boolean tempKeys[349];
+		boolean tempKeysCheck[349];
 		const char* title;
 		unsigned int colorShader, VBO, VAO;
 		grey_float_vector triangles;
@@ -263,6 +265,8 @@ void C_float_vec_delete(grey_float_vector* vec);
 	// Checks if a certain key is down. All keys can be found in the grey file near line 26.
 	boolean C_isKeyDown(C_Window win, int key);
 
+	boolean C_isKeyPressed(C_Window win, int key);
+
 	// Clears the background with a color. Generally should be called each frame before drawing anything else.
 	void C_clearWindowBackground(C_Window win, Color color);
 
@@ -279,6 +283,8 @@ void C_float_vec_delete(grey_float_vector* vec);
 
 // Checks if a certain key is down. All keys can be found in the grey file near line 26.
 #define isKeyDown C_isKeyDown
+
+#define isKeyPressed C_isKeyPressed
 
 // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
 #define setWindowFlag C_setWindowFlag
