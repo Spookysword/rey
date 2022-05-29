@@ -47,6 +47,13 @@ int main() {
 		if (isKeyDown(win, KEY_ESCAPE)) {
 			closeWindow(win);
 		}
+
+		if (isKeyDown(win, KEY_SPACE)) {
+			setWireframeMode(win, TRUE);
+		}
+		else {
+			setWireframeMode(win, FALSE);
+		}
 		
 		if (isKeyDown(win, KEY_I)) {
 			drawRectangle(&win, 0, 0, 250, 250, COLOR_SOFT_ORANGE);

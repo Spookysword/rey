@@ -233,6 +233,9 @@ void C_float_vec_delete(grey_float_vector* vec);
 	// Clears the background with a color. Generally should be called each frame before drawing anything else.
 	void C_clearWindowBackground(C_Window win, Color color);
 
+	// Enables or disables wireframe mode, which draws everything as lines.
+	void C_setWireframeMode(C_Window win, boolean state);
+
 	// Draws a triangle with three given points and a color.
 	void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
 
@@ -243,6 +246,9 @@ void C_float_vec_delete(grey_float_vector* vec);
 
 // Clears the background with a color. Generally should be called each frame before drawing anything else.
 #define clearWindowBackground C_clearWindowBackground
+
+// Enables or disables wireframe mode, which draws everything as lines.
+#define setWireframeMode C_setWireframeMode
 
 /*
 Checks if a certain key is down. All keys can be found in the grey file near line 26.

@@ -203,6 +203,15 @@ void C_clearWindowBackground(C_Window win, Color color) {
 	glClearColor((float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
+void C_setWireframeMode(C_Window win, boolean state) {
+	glfwMakeContextCurrent(win.windowHandle);
+	if (state) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	else {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+}
 void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 	float xs[3] = {x1, x2, x3};
 	float ys[3] = { -y1, -y2, -y3 };
