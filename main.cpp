@@ -1,4 +1,4 @@
-/*#include "grey++"
+#include "grey++"
 #include <iostream>
 
 int main() {
@@ -15,23 +15,34 @@ int main() {
 			win.close();
 		}
 
-		if (!win.isKeyDown(KEY_I)) {
+		if (win.isKeyPressed(KEY_F11)) {
+			win.fullscreen = !win.fullscreen;
+		}
+
+		if (win.isKeyDown(KEY_SPACE)) {
+			win.setWireframeMode(true);
+		} else {
+			win.setWireframeMode(false);
+		}
+
+		if (win.isKeyDown(KEY_I)) {
 			win.drawRectangle(0, 0, 250, 250, COLOR_SOFT_ORANGE);
+		} else {
+			win.drawRectangle(0, 0, 250, 250, Color{ 255, 128, 50, 100 });
 		}
 
 		if (win.isKeyPressed(KEY_G)) {
 			std::cout << "powered by grey\n";
 		}
 		
-		std::cout << win.win.triangles.vec[5] << std::endl;
 		win.render();
 	}
 	
 	closeGrey();
 	return 0;
-}*/
+}
 
-#include <grey>
+/*#include <grey>
 #include <stdio.h>
 
 int main() {
@@ -68,11 +79,11 @@ int main() {
 		if (isKeyPressed(win, KEY_G)) {
 			printf("powered by grey\n");
 		}
-
+		
 		renderWindow(win);
 	}
 	
 	deleteWindow(&win);
 	closeGrey();
 	return 0;
-}
+}*/

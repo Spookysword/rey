@@ -19,6 +19,7 @@ bool Window::shouldClose() {
     return C_shouldWindowClose(win);
 }
 void Window::update() {
+    win.fullscreen = fullscreen;
     C_updateWindow(&win);
     deltaTime = win.deltaTime;
     title = win.title;
@@ -46,4 +47,7 @@ void Window::drawTriangle(float x1, float y1, float x2, float y2, float x3, floa
 }
 void Window::drawRectangle(float x, float y, float width, float height, Color color) {
     C_drawRectangle(&win, x, y, width, height, color);
+}
+void Window::setWireframeMode(bool state) {
+    C_setWireframeMode(win, state);
 }

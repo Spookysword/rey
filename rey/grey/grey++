@@ -11,6 +11,7 @@ class Window {
 public:
     const char* title = "";
     float deltaTime = 0.0f;
+    bool fullscreen = false;
 
     C_Window win;
     // Creates a Window class.
@@ -44,5 +45,7 @@ public:
     void drawTriangle(float x1, float y1, float x2, float y2, float x3, float y3, Color color);
     // Draws a rectangle.
 	void drawRectangle(float x, float y, float width, float height, Color color);
+    // Enables or disables wireframe mode, which draws everything as lines.
+	void setWireframeMode(bool state);
 
 };
