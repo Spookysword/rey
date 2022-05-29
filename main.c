@@ -35,7 +35,7 @@ int main() {
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
-
+		
 		clearWindowBackground(win, COLOR_DISCORD);
 
 		if (isKeyDown(win, KEY_ESCAPE)) {
