@@ -98,6 +98,8 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.title = title;
 	win.triangles = C_new_grey_float_vector();
 	win.deltaTime = 0.0f;
+	win.width = width;
+	win.height = height;
 
 	glGenBuffers(1, &win.VBO);
 	glGenVertexArrays(1, &win.VAO);
@@ -146,6 +148,7 @@ void C_updateWindow(C_Window* win) {
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	C_float_vec_clear(&win->triangles);
 	glfwPollEvents();
+	glfwGetWindowSize(win->windowHandle, &win->width, &win->height);
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
 		if (win->keys[i] == GLFW_PRESS && win->tempKeys[i] == GLFW_PRESS) {
@@ -163,14 +166,14 @@ void C_updateWindow(C_Window* win) {
 }
 void C_renderWindow(C_Window win) {
 	glfwMakeContextCurrent(win.windowHandle);
+	glfwSetWindowSize(win.windowHandle, win.width, win.height);
+
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.vec) * 7 * ((win.triangles.vecSize / 7) * 3), win.triangles.vec, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(win.VAO);
 	glUseProgram(win.colorShader);
-	int width = 0, height = 0;
-	glfwGetWindowSize(win.windowHandle, &width, &height);
-	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), width/2, height/2);
+	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), win.width/2, win.height/2);
 	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0, 0, 0);
 	glDrawArrays(GL_TRIANGLES, 0, ((win.triangles.vecSize / 7) * 3));
 
