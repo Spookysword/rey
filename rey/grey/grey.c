@@ -59,6 +59,26 @@ void C_float_vec_delete(grey_float_vector* vec) {
 	vec->vecSize = 0;
 }
 
+GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
+	int count;
+	GLFWmonitor** monitors = glfwGetMonitors(&count);
+	grey_float_vector widths = C_new_grey_float_vector();
+	for (int i = 0; i < count; i++) {
+		if (i == 0) { C_float_vec_push_back(&widths, 0.0f); }
+		else {
+			const GLFWvidmode* modee = glfwGetVideoMode(monitors[i]);
+			C_float_vec_push_back(&widths, modee->width + widths.vec[widths.vecSize - 1]);
+		}
+	}
+	int x = 0, y = 0;
+	glfwGetWindowPos(win, &x, &y);
+	for (int i = 0; i < widths.vecSize; i++) {
+		if (i + 2 > widths.vecSize || x > widths.vec[i] && x < widths.vec[i+1]) {
+			return monitors[i];
+		}
+	}
+}
+
 // Init/deinit funcs
 void C_initGrey(unsigned int sampleRate) {
 	glfwInit();
@@ -100,6 +120,8 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.deltaTime = 0.0f;
 	win.width = width;
 	win.height = height;
+	win.fullscreen = FALSE;
+	win.priorFullscreen = FALSE;
 
 	glGenBuffers(1, &win.VBO);
 	glGenVertexArrays(1, &win.VAO);
@@ -148,6 +170,22 @@ void C_updateWindow(C_Window* win) {
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	C_float_vec_clear(&win->triangles);
 	glfwPollEvents();
+
+	if (win->fullscreen != win->priorFullscreen) {
+		win->priorFullscreen = win->fullscreen;
+		if (win->fullscreen == TRUE) {
+			glfwGetWindowPos(win->windowHandle, &win->prevX, &win->prevY);
+			glfwGetWindowSize(win->windowHandle, &win->prevWidth, &win->prevHeight);
+			GLFWmonitor* currentMonitor = getWindowMonitor(win->windowHandle);
+			const GLFWvidmode* mode = glfwGetVideoMode(currentMonitor);
+			glfwSetWindowMonitor(win->windowHandle, currentMonitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		}
+		else {
+			const GLFWvidmode* mode = glfwGetVideoMode(getWindowMonitor(win->windowHandle));
+			glfwSetWindowMonitor(win->windowHandle, NULL, win->prevX, win->prevY, win->prevWidth, win->prevHeight, mode->refreshRate);
+		}
+	}
+
 	glfwGetWindowSize(win->windowHandle, &win->width, &win->height);
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);

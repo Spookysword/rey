@@ -180,6 +180,8 @@ void C_float_vec_delete(grey_float_vector* vec);
 		float deltaTime;
 		float lastFrame;
 		float currentFrame;
+		int prevX, prevY, prevWidth, prevHeight;
+		boolean fullscreen, priorFullscreen;
 	};
 	typedef struct C_Window C_Window;
 

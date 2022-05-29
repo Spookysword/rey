@@ -48,6 +48,10 @@ int main() {
 			closeWindow(win);
 		}
 
+		if (isKeyPressed(win, KEY_F11)) {
+			win.fullscreen = !win.fullscreen;
+		}
+
 		if (isKeyDown(win, KEY_SPACE)) {
 			setWireframeMode(win, TRUE);
 		}
@@ -64,7 +68,7 @@ int main() {
 		if (isKeyPressed(win, KEY_G)) {
 			printf("powered by grey\n");
 		}
-		
+
 		renderWindow(win);
 	}
 	
