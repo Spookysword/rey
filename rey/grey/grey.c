@@ -1,4 +1,6 @@
 #include "grey"
+#include <stdlib.h>
+#include <stdio.h>
 
 const char* colorVertexShader = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -173,10 +175,6 @@ void C_updateWindow(C_Window* win) {
 	C_float_vec_clear(&win->triangles);
 	glfwPollEvents();
 
-	//if (win->fullscreen == TRUE) {
-	//	glfwSetWindowSize(win->windowHandle, win->prevWidth, win->prevHeight);
-	//}
-
 	if (win->fullscreen != win->priorFullscreen) {
 		win->priorFullscreen = win->fullscreen;
 		if (win->fullscreen == TRUE) {
@@ -213,7 +211,7 @@ void C_renderWindow(C_Window win) {
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
 
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.vec) * 7 * 3, win.triangles.vec, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, win.triangles.vecSize * sizeof(float), win.triangles.vec, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(win.VAO);
 	glUseProgram(win.colorShader);

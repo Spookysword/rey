@@ -31,6 +31,10 @@ int main() {
 			win.drawRectangle(0, 0, 250, 250, Color{ 255, 128, 50, 100 });
 		}
 
+		win.drawRectangle(500, 250, 250, 250, COLOR_SOFT_BLUE);
+		win.drawRectangle(500, 500, 250, 250, COLOR_SOFT_GREEN);
+		win.drawRectangle(750, 250, 250, 250, COLOR_SOFT_CHARTREUSE);
+
 		if (win.isKeyPressed(KEY_G)) {
 			std::cout << "powered by grey\n";
 		}
