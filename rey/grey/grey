@@ -192,7 +192,7 @@ void C_float_vec_delete(grey_float_vector* vec);
 	// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 	void C_initGrey(unsigned int sampleRate);
 
-
+	
 
 	// Frees up any possibly used memory.
 	void C_closeGrey();

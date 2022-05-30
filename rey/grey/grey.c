@@ -165,13 +165,17 @@ boolean C_shouldWindowClose(C_Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
 }
 void C_updateWindow(C_Window* win) {
-	win->currentFrame = glfwGetTime();
+	win->currentFrame = (float)glfwGetTime();
 	win->deltaTime = win->currentFrame - win->lastFrame;
 	win->lastFrame = win->currentFrame;
 	if (win->deltaTime > 0.05f) { win->deltaTime = 0.05f; }
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	C_float_vec_clear(&win->triangles);
 	glfwPollEvents();
+
+	//if (win->fullscreen == TRUE) {
+	//	glfwSetWindowSize(win->windowHandle, win->prevWidth, win->prevHeight);
+	//}
 
 	if (win->fullscreen != win->priorFullscreen) {
 		win->priorFullscreen = win->fullscreen;
@@ -209,12 +213,12 @@ void C_renderWindow(C_Window win) {
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
 
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.vec) * 7 * ((win.triangles.vecSize / 7) * 3), win.triangles.vec, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.vec) * 7 * 3, win.triangles.vec, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(win.VAO);
 	glUseProgram(win.colorShader);
-	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), win.width/2, win.height/2);
-	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0, 0, 0);
+	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
+	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0.0f, 0.0f, 0.0f);
 	glDrawArrays(GL_TRIANGLES, 0, ((win.triangles.vecSize / 7) * 3));
 
 	glfwSwapBuffers(win.windowHandle);
