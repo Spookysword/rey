@@ -6,6 +6,7 @@ extern "C" {
 #endif
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "mrey.h"
 #ifdef _WIN32
 #include <Windows.h>
 #endif
@@ -158,34 +159,21 @@ COLOR STRUCT!!!!!!!!!!!
 
 typedef unsigned int Color[4];
 
-struct grey_float_vector {
-	float* vec;
-	int vecSize;
+struct C_Window {
+	GLFWwindow* windowHandle;
+	boolean keys[349];
+	boolean tempKeys[349];
+	boolean tempKeysCheck[349];
+	const char* title;
+	unsigned int colorShader, VBO, VAO, width, height;
+	C_floatVec triangles;
+	float deltaTime;
+	float lastFrame;
+	float currentFrame;
+	int prevX, prevY, prevWidth, prevHeight;
+	boolean fullscreen, priorFullscreen;
 };
-typedef struct grey_float_vector grey_float_vector;
-
-grey_float_vector C_new_grey_float_vector();
-void C_float_vec_push_back(grey_float_vector* vec, float num);
-void C_float_vec_clear(grey_float_vector* vec);
-void C_float_vec_delete(grey_float_vector* vec);
-
-	struct C_Window {
-		GLFWwindow* windowHandle;
-		boolean keys[349];
-		boolean tempKeys[349];
-		boolean tempKeysCheck[349];
-		const char* title;
-		unsigned int colorShader, VBO, VAO, width, height;
-		grey_float_vector triangles;
-		float deltaTime;
-		float lastFrame;
-		float currentFrame;
-		int prevX, prevY, prevWidth, prevHeight;
-		boolean fullscreen, priorFullscreen;
-	};
-	typedef struct C_Window C_Window;
-
-	float* resizeFloatList(float* list, int indexSize);
+typedef struct C_Window C_Window;
 	
 
 

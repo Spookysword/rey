@@ -27,12 +27,18 @@
     <ClCompile Include="rey\prey\prey.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rey\mrey\mrey.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rey\grey\grey">
+    <ClInclude Include="rey\grey\grey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rey\prey\prey">
+    <ClInclude Include="rey\prey\prey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rey\mrey\mrey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,4 @@
-#include "prey"
+#include "prey.h"
 #include <stdlib.h>
 
 _Bool preyInit = 0;

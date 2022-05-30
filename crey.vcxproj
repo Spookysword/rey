@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)rey\grey;$(ProjectDir)rey\prey;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)rey\grey;$(ProjectDir)rey\prey;$(ProjectDir)rey\mrey;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -112,7 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)rey\grey;$(ProjectDir)rey\prey;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)rey\grey;$(ProjectDir)rey\prey;$(ProjectDir)rey\mrey;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,11 +162,13 @@
     <ClCompile Include="include\glad.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="rey\grey\grey.c" />
+    <ClCompile Include="rey\mrey\mrey.c" />
     <ClCompile Include="rey\prey\prey.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rey\grey\grey" />
-    <ClInclude Include="rey\prey\prey" />
+    <ClInclude Include="rey\grey\grey.h" />
+    <ClInclude Include="rey\mrey\mrey.h" />
+    <ClInclude Include="rey\prey\prey.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

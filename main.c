@@ -1,4 +1,4 @@
-#include <grey>
+#include <grey.h>
 #include <stdio.h>
 
 int main() {
