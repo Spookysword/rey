@@ -122,6 +122,8 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.height = height;
 	win.fullscreen = FALSE;
 	win.priorFullscreen = FALSE;
+	win.prevWidth = width;
+	win.prevHeight = height;
 
 	glGenBuffers(1, &win.VBO);
 	glGenVertexArrays(1, &win.VAO);
