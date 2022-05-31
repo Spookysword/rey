@@ -110,7 +110,9 @@ void C_updatePhysicsWorld(C_PhysicsWorld* world, float deltaTime) {
 		}
 	}
 }
-
+void C_deletePhysicsWorld(C_PhysicsWorld* world) {
+	free(world->rects);
+}
 
 void C_initPrey(int _rectLimit) {
 	preyInit = 1;

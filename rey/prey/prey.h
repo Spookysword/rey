@@ -64,6 +64,8 @@ void C_initPrey(int _rectLimit);
 // De-initializes the prey module
 void C_closePrey();
 
+void C_deletePhysicsWorld(C_PhysicsWorld* world);
+
 #ifndef IMPLEMENT_PREY_H
 #define PhysicsRectID C_PhysicsRectID
 #define Rectangles C_Rectangles
@@ -78,6 +80,7 @@ void C_closePrey();
 #define updatePhysicsWorld C_updatePhysicsWorld
 #define initPrey C_initPrey
 #define closePrey C_closePrey
+#define deletePhysicsWorld C_deletePhysicsWorld
 
 #endif
 #ifdef __cplusplus

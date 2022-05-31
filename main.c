@@ -44,6 +44,7 @@ int main() {
 		renderWindow(win);
 	}
 	
+	C_deletePhysicsWorld(&world);
 	deleteWindow(&win);
 	closeGrey();
 	return 0;

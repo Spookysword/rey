@@ -90,7 +90,6 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	glGenVertexArrays(1, &win.VAO);
 	glBindVertexArray(win.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(win.triangles.data), win.triangles.data, GL_DYNAMIC_DRAW);
 	// Position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
