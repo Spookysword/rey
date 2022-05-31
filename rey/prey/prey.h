@@ -11,58 +11,75 @@ extern "C" {
 #define STRUCT(a) ; typedef struct a a
 
 // A refrence to a Physics Rectangle (WORLD.rects[ID] returns the actual physics rectangle).
-typedef unsigned int PhysicsRectID;
+typedef unsigned int C_PhysicsRectID;
 
 // A rectangle struct to hold x, y, w, h.
-struct Rectangles {
+struct C_Rectangles {
 	int w;
 	int h;
 	float x;
 	float y;
-} STRUCT(Rectangles);
+} STRUCT(C_Rectangles);
 
 // Holds all of the physical data about a rectangle.
-struct PhysicsRect {
+struct C_PhysicsRect {
 	const char* type;
-	Rectangles rect;
+	C_Rectangles rect;
 	float density, rotation;
 	float velocityX, velocityY;
-} STRUCT(PhysicsRect);
+} STRUCT(C_PhysicsRect);
 
 // Holds all of the physics retangles, and applies physics to them.
-struct PhysicsWorld {
+struct C_PhysicsWorld {
 	float gravityX, gravityY;
-	PhysicsRect *rects;
+	C_PhysicsRect *rects;
+	unsigned int doCollisionResponse;
 	int i;
-} STRUCT(PhysicsWorld);
+} STRUCT(C_PhysicsWorld);
 
 // A function to calculate AABB collision on 2 Rectangles.
-int AABB(Rectangles a, Rectangles b);
+int C_AABB(C_Rectangles a, C_Rectangles b);
 
 // A function to create a physics rectangle.
-PhysicsRect createPhysicsRect(const char* type, float x, float y, float w, float h, float density, float rotation);
+C_PhysicsRect C_createPhysicsRect(const char* type, float x, float y, float w, float h, float density, float rotation);
 
 // To check if 2 physics rects are colliding.
-int isRectCollidingWithRect(PhysicsRect a, PhysicsRect b);
+int C_isRectCollidingWithRect(C_PhysicsRect a, C_PhysicsRect b);
 
 // Applies force to a physics rectangle.
-void applyForce(PhysicsRect *a, float forceX, float forceY);
+void C_applyForce(C_PhysicsRect *a, float forceX, float forceY);
 
 // Creates a physics world.
-PhysicsWorld createPhysicsWorld();
+C_PhysicsWorld C_createPhysicsWorld();
 
 // Adds a new rectangle to the world.
-PhysicsRectID newRect(PhysicsWorld* world, const char* type, float x, float y, float w, float h, float density, float rotation);
+C_PhysicsRectID C_newRect(C_PhysicsWorld* world, const char* type, float x, float y, float w, float h, float density, float rotation);
 
 // Will perform physical calcualtions of all of the rectangles in the physics world.
-void updatePhysicsWorld(PhysicsWorld* world, float deltaTime);
+void C_updatePhysicsWorld(C_PhysicsWorld* world, float deltaTime);
 
 // Initializes the prey module
-void initPrey(int _rectLimit);
+void C_initPrey(int _rectLimit);
 
 // De-initializes the prey module
-void closePrey();
+void C_closePrey();
 
+#ifndef IMPLEMENT_PREY_H
+#define PhysicsRectID C_PhysicsRectID
+#define Rectangles C_Rectangles
+#define PhysicsRect C_PhysicsRect
+#define PhysicsWorld C_PhysicsWorld
+#define AABB C_AABB
+#define createPhysicsRect C_createPhysicsRect
+#define isRectCollidingWithRect C_isRectCollidingWithRect
+#define applyForce C_applyForce
+#define createPhysicsWorld C_createPhysicsWorld
+#define newRect C_newRect
+#define updatePhysicsWorld C_updatePhysicsWorld
+#define initPrey C_initPrey
+#define closePrey C_closePrey
+
+#endif
 #ifdef __cplusplus
 }
 #endif

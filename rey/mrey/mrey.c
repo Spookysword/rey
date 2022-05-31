@@ -67,11 +67,3 @@ void C_intVecDelete(C_intVec* vec) {
 	free(vec->data);
 	vec->size = 0;
 }
-
-#ifndef IMPLEMENT_MREY_H
-#define floatVec C_floatVec
-#define floatVecCreate C_floatVecCreate
-#define floatVecPushBack C_floatVecPushBack
-#define floatVecClear C_floatVecClear
-#define floatVecDelete C_floatVecDelete
-#endif

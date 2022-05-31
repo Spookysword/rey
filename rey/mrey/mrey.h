@@ -6,6 +6,7 @@ extern "C" {
 
 #include <math.h>
 
+
 struct C_floatVec {
 	float* data;
 	int size;
@@ -28,6 +29,15 @@ C_intVec C_intVecCreate();
 void C_intVecPushBack(C_intVec* vec, float num);
 void C_intVecClear(C_intVec* vec);
 void C_intVecDelete(C_intVec* vec);
+
+#ifndef IMPLEMENT_MREY_H
+#define floatVec C_floatVec
+#define floatVecCreate C_floatVecCreate
+#define floatVecPushBack C_floatVecPushBack
+#define floatVecClear C_floatVecClear
+#define floatVecDelete C_floatVecDelete
+#endif
+
 
 #ifdef __cplusplus
 }
