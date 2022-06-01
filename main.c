@@ -1,26 +1,37 @@
 #include <grey.h>
 #include <stdio.h>
-#include <prey.h>
-
 
 int main() {
 	initGrey(4);
-	initPrey(0);
 
 	Window win = createWindow(720, 720, "grey");
-	PhysicsWorld world = createPhysicsWorld();
-	PhysicsRectID b = newRect(&world, NULL, 0, 200, 50, 50, 0.1, 0);
-	PhysicsRectID a = newRect(&world, NULL, 0, 0, 50, 50, 0.3, 0);
+
+	srand(NULL);
+
+	int amtX = 10;
+	int amtY = 10;
+	float time = 0.0f;
+	int frames = 0;
 
 	while (!shouldWindowClose(win)) {
+		float updateTime = glfwGetTime();
 		updateWindow(&win);
-		updatePhysicsWorld(&world, win.deltaTime);
+		updateTime = glfwGetTime() - updateTime;
 		
 		clearWindowBackground(win, COLOR_DISCORD);
+
+		time += win.deltaTime;
+		frames += 1;
+		if (time >= 1.0f) {
+			time = 0.0f;
+			printf("%i\n", frames);
+			frames = 0;
+		}
 
 		if (isKeyDown(win, KEY_ESCAPE)) {
 			closeWindow(win);
 		}
+
 
 		if (isKeyPressed(win, KEY_F11)) {
 			win.fullscreen = !win.fullscreen;
@@ -36,15 +47,24 @@ int main() {
 		if (isKeyPressed(win, KEY_G)) {
 			printf("powered by grey\n");
 		}
+
+		float drawCallTime = glfwGetTime();
+		for (int i = 0; i < amtX+1; i++) {
+			for (int z = 0; z < amtY+1; z++) {
+				drawRectangle(&win, (win.width/amtX)*i, (win.height/amtY)*z, win.width/amtX, win.height/amtY, (Color){ rand()%255+1, rand()%255+1, rand()%255+1, 255 });
+			}
+		}
+		drawCallTime = glfwGetTime() - drawCallTime;
 		
-		drawRectangle(&win, world.rects[a].rect.x, world.rects[a].rect.y, world.rects[a].rect.w, world.rects[a].rect.h, COLOR_RED);
-		drawRectangle(&win, world.rects[b].rect.x, world.rects[b].rect.y, world.rects[b].rect.w, world.rects[b].rect.h, COLOR_BLUE);
-		drawRectangle(&win, 0, 0, 100, 100, COLOR_SOFT_ORANGE);
-		
+		float renderTime = glfwGetTime();
 		renderWindow(win);
+		renderTime = glfwGetTime() - renderTime;
+
+		//if (updateTime > drawCallTime && updateTime > renderTime) { printf("Update time took the longest\n"); }
+		//else if (drawCallTime > updateTime && drawCallTime > renderTime) { printf("Draw call time took the longest\n"); }
+		//else if (renderTime > drawCallTime && renderTime > updateTime) { printf("Render time took the longest\n"); }
 	}
 	
-	C_deletePhysicsWorld(&world);
 	deleteWindow(&win);
 	closeGrey();
 	return 0;

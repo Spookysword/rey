@@ -6,21 +6,26 @@ extern "C" {
 
 #include <math.h>
 #include <memory.h>
+#include <stdlib.h>
 
 struct C_floatVec {
 	float* data;
 	int size;
+	int limit;
 };
 typedef struct C_floatVec C_floatVec;
 
 C_floatVec C_floatVecCreate();
 void C_floatVecPushBack(C_floatVec* vec, float num);
+void C_floatVecPushBack7(C_floatVec* vec, float num[7]);
+void C_floatVecPushBack21(C_floatVec* vec, float num[21]);
 void C_floatVecClear(C_floatVec* vec);
 void C_floatVecDelete(C_floatVec* vec);
 
 struct C_intVec {
 	int* data;
 	int size;
+	int limit;
 };
 typedef struct C_intVec C_intVec;
 

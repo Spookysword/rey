@@ -46,16 +46,18 @@ C_Batch C_createBatch() {
 }
 // These "add" functions could be optimized
 void C_addVertice(C_Batch* batch, float verts[7]) {
-	for (int i = 0; i < 7; i++) {
+	/*for (int i = 0; i < 7; i++) {
 		C_floatVecPushBack(&batch->triangles, verts[i]);
-	}
+	}*/
+	C_floatVecPushBack7(&batch->triangles, verts);
 	batch->verticeCount++;
 	batch->stack++;
 }
 void C_addTriangle(C_Batch* batch, float verts[21]) {
-	for (int i = 0; i < 21; i++) {
+	/*for (int i = 0; i < 21; i++) {
 		C_floatVecPushBack(&batch->triangles, verts[i]);
-	}
+	}*/
+	C_floatVecPushBack21(&batch->triangles, verts);
 	batch->verticeCount += 3;
 	batch->stack += 3;
 }
@@ -104,11 +106,14 @@ GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	}
 	int x = 0, y = 0;
 	glfwGetWindowPos(win, &x, &y);
+	GLFWmonitor* returnMon = glfwGetPrimaryMonitor();
 	for (int i = 0; i < widths.size; i++) {
 		if (i + 2 > widths.size || x > widths.data[i] && x < widths.data[i+1]) {
-			return monitors[i];
+			returnMon = monitors[i];
 		}
 	}
+	C_floatVecDelete(&widths);
+	return returnMon;
 }
 
 // Init/deinit funcs
@@ -149,7 +154,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	win.title = title;
 	win.shapeBatch = C_createBatch();
-	win.deltaTime = 0.0f;
+	win.deltaTime = 0.001f;
 	win.width = width;
 	win.height = height;
 	win.fullscreen = FALSE;
@@ -232,7 +237,6 @@ void C_renderWindow(C_Window win) {
 	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0.0f, 0.0f, 0.0f);
 	
 	// This should probably be called automatically
-	glBindVertexArray(win.shapeBatch.VAO);
 	C_draw(win.shapeBatch, GL_TRIANGLE_FAN);
 
 	glfwSwapBuffers(win.windowHandle);
@@ -283,13 +287,14 @@ void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float
 	C_endShape(&win->shapeBatch);
 }
 void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color) {
+	float r = (float)color[0]/255, g = (float)color[1]/255, b = (float)color[2]/255, a = (float)color[3]/255;
 	float passIn1[21] = {
-		x, -(y), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
-		x, -(y + height), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
-		x + width, -(y + height), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255
+		x, -(y), 0.0f, r, g, b, a,
+		x, -(y + height), 0.0f, r, g, b, a,
+		x + width, -(y + height), 0.0f, r, g, b, a
 	};
 	float passIn2[7] = {
-		x + width, -(y), 0.0f, (float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255
+		x + width, -(y), 0.0f, r, g, b, a
 	};
 	C_addTriangle(&win->shapeBatch, passIn1);
 	C_addVertice(&win->shapeBatch, passIn2);
