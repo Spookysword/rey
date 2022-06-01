@@ -5,7 +5,7 @@ extern "C" {
 #endif
 
 #include <math.h>
-
+#include <memory.h>
 
 struct C_floatVec {
 	float* data;
@@ -36,6 +36,12 @@ void C_intVecDelete(C_intVec* vec);
 #define floatVecPushBack C_floatVecPushBack
 #define floatVecClear C_floatVecClear
 #define floatVecDelete C_floatVecDelete
+
+#define floatVec C_intVec
+#define intVecCreate C_intVecCreate
+#define intVecPushBack C_intVecPushBack
+#define intVecClear C_intVecClear
+#define intVecDelete C_intVecDelete
 #endif
 
 

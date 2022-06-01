@@ -20,6 +20,76 @@ const char* colorFragmentShader = "#version 330 core\n"
 "	gl_FragColor = color;\n"
 "}\0";
 
+C_Batch C_createBatch() {
+	C_Batch batch;
+	glGenVertexArrays(1, &batch.VAO);
+	glGenBuffers(1, &batch.VBO);
+	glBindVertexArray(batch.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
+	batch.stack = 0;
+	batch.verticeCount = 0;
+	batch.triangles = C_floatVecCreate();
+	batch.shapeVertices = C_intVecCreate();
+	//glBufferData(GL_ARRAY_BUFFER, batch.triangles.size * sizeof(float), batch.triangles.data, GL_DYNAMIC_DRAW);
+	
+	// Position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// Color
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	return batch;
+}
+// These "add" functions could be optimized
+void C_addVertice(C_Batch* batch, float verts[7]) {
+	for (int i = 0; i < 7; i++) {
+		C_floatVecPushBack(&batch->triangles, verts[i]);
+	}
+	batch->verticeCount++;
+	batch->stack++;
+}
+void C_addTriangle(C_Batch* batch, float verts[21]) {
+	for (int i = 0; i < 21; i++) {
+		C_floatVecPushBack(&batch->triangles, verts[i]);
+	}
+	batch->verticeCount += 3;
+	batch->stack += 3;
+}
+void C_endShape(C_Batch* batch) {
+	C_intVecPushBack(&batch->shapeVertices, batch->stack);
+	batch->stack = 0;
+}
+void C_draw(C_Batch batch, GLenum type) {
+	// This could be optimized by not using a vector here
+	C_intVec first = C_intVecCreate();
+	int tempInt = 0;
+	for (int i = 0; i < batch.shapeVertices.size; i++) {
+		C_intVecPushBack(&first, tempInt);
+		tempInt += batch.shapeVertices.data[i];
+	}
+	glMultiDrawArrays(type, first.data, batch.shapeVertices.data, batch.shapeVertices.size);
+	C_intVecDelete(&first);
+}
+void C_bindBatch(C_Batch batch) {
+	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
+	glBufferData(GL_ARRAY_BUFFER, batch.triangles.size * sizeof(float), batch.triangles.data, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+void C_flushBatch(C_Batch* batch) {
+	C_floatVecClear(&batch->triangles);
+	batch->verticeCount = 0;
+	batch->stack = 0;
+	C_intVecClear(&batch->shapeVertices);
+}
+void C_deleteBatch(C_Batch* batch) {
+	C_floatVecDelete(&batch->triangles);
+	C_intVecDelete(&batch->shapeVertices);
+}
+
 GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	int count;
 	GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -77,7 +147,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	glfwSetFramebufferSizeCallback(win.windowHandle, framebufferCallback);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	win.title = title;
-	win.triangles = C_floatVecCreate();
+	win.shapeBatch = C_createBatch();
 	win.deltaTime = 0.0f;
 	win.width = width;
 	win.height = height;
@@ -85,19 +155,6 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.priorFullscreen = FALSE;
 	win.prevWidth = width;
 	win.prevHeight = height;
-
-	glGenBuffers(1, &win.VBO);
-	glGenVertexArrays(1, &win.VAO);
-	glBindVertexArray(win.VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
-	// Position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// Color
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 
 	unsigned int w_colorVertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(w_colorVertexShader, 1, &colorVertexShader, NULL);
@@ -119,18 +176,18 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	return win;
 }
 void C_deleteWindow(C_Window* win) {
-	C_floatVecDelete(&win->triangles);
+	C_deleteBatch(&win->shapeBatch);
 }
 boolean C_shouldWindowClose(C_Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
 }
 void C_updateWindow(C_Window* win) {
+	C_flushBatch(&win->shapeBatch);
 	win->currentFrame = (float)glfwGetTime();
 	win->deltaTime = win->currentFrame - win->lastFrame;
 	win->lastFrame = win->currentFrame;
 	if (win->deltaTime > 0.05f) { win->deltaTime = 0.05f; }
 	glfwSetWindowTitle(win->windowHandle, win->title);
-	C_floatVecClear(&win->triangles);
 	glfwPollEvents();
 
 	if (win->fullscreen != win->priorFullscreen) {
@@ -147,7 +204,7 @@ void C_updateWindow(C_Window* win) {
 			glfwSetWindowMonitor(win->windowHandle, NULL, win->prevX, win->prevY, win->prevWidth, win->prevHeight, mode->refreshRate);
 		}
 	}
-
+	
 	glfwGetWindowSize(win->windowHandle, &win->width, &win->height);
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
@@ -167,15 +224,15 @@ void C_updateWindow(C_Window* win) {
 void C_renderWindow(C_Window win) {
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
-
-	glBindBuffer(GL_ARRAY_BUFFER, win.VBO);
-	glBufferData(GL_ARRAY_BUFFER, win.triangles.size * sizeof(float), win.triangles.data, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(win.VAO);
+	
+	C_bindBatch(win.shapeBatch);
 	glUseProgram(win.colorShader);
 	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
 	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0.0f, 0.0f, 0.0f);
-	glDrawArrays(GL_TRIANGLES, 0, ((win.triangles.size / 7) * 3));
+	
+	// This should probably be called automatically
+	glBindVertexArray(win.shapeBatch.VAO);
+	C_draw(win.shapeBatch, GL_TRIANGLE_FAN);
 
 	glfwSwapBuffers(win.windowHandle);
 }
@@ -216,21 +273,26 @@ void C_setWireframeMode(C_Window win, boolean state) {
 	}
 }
 void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
-	float xs[3] = {x1, x2, x3};
-	float ys[3] = { -y1, -y2, -y3 };
-
-	// This could be optimized. Too bad!
-	for (int i = 1; i < 4; i++) {
-		C_floatVecPushBack(&win->triangles, xs[i-1]);
-		C_floatVecPushBack(&win->triangles, ys[i-1]);
-		C_floatVecPushBack(&win->triangles, 0.0f);
-		C_floatVecPushBack(&win->triangles, (float)color[0] / 255);
-		C_floatVecPushBack(&win->triangles, (float)color[1] / 255);
-		C_floatVecPushBack(&win->triangles, (float)color[2] / 255);
-		C_floatVecPushBack(&win->triangles, (float)color[3] / 255);
-	}
+	float passIn1[21] = {
+		x1, -y1, 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
+		x2, -y2, 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
+		x3, -y3, 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255
+	};
+	C_addTriangle(&win->shapeBatch, passIn1);
+	C_endShape(&win->shapeBatch);
 }
 void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color) {
-	C_drawTriangle(win, x, y, x, y + height, x + width, y + height, color);
-	C_drawTriangle(win, x, y, x + width, y, x + width, y + height, color);
+	//C_drawTriangle(win, x, y, x, y + height, x + width, y + height, color);
+	//C_drawTriangle(win, x, y, x + width, y, x + width, y + height, color);
+	float passIn1[21] = {
+		x, -(y), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
+		x, -(y + height), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
+		x + width, -(y + height), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255
+	};
+	float passIn2[7] = {
+		x + width, -(y), 0.0f, (float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255
+	};
+	C_addTriangle(&win->shapeBatch, passIn1);
+	C_addVertice(&win->shapeBatch, passIn2);
+	C_endShape(&win->shapeBatch);
 }

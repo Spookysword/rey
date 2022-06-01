@@ -6,7 +6,7 @@ int main() {
 	initGrey(4);
 	initPrey(0);
 
-	Window win = createWindow(1280, 720, "grey");
+	Window win = createWindow(720, 720, "grey");
 	PhysicsWorld world = createPhysicsWorld();
 	PhysicsRectID b = newRect(&world, NULL, 0, 200, 50, 50, 0.1, 0);
 	PhysicsRectID a = newRect(&world, NULL, 0, 0, 50, 50, 0.3, 0);
@@ -38,8 +38,7 @@ int main() {
 
 		drawRectangle(&win, world.rects[a].rect.x, world.rects[a].rect.y, world.rects[a].rect.w, world.rects[a].rect.h, COLOR_RED);
 		drawRectangle(&win, world.rects[b].rect.x, world.rects[b].rect.y, world.rects[b].rect.w, world.rects[b].rect.h, COLOR_BLUE);
-
-
+		//drawRectangle(&win, 0, 0, 100, 100, COLOR_SOFT_ORANGE);
 		
 		renderWindow(win);
 	}

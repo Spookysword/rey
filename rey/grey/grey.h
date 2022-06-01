@@ -159,14 +159,31 @@ COLOR STRUCT!!!!!!!!!!!
 
 typedef unsigned int Color[4];
 
+struct C_Batch {
+	GLuint VAO, VBO;
+	C_floatVec triangles;
+	int verticeCount, stack;
+	C_intVec shapeVertices;
+};
+typedef struct C_Batch C_Batch;
+
+void C_addVertice(C_Batch* batch, float verts[7]);
+void C_addTriangle(C_Batch* batch, float verts[21]);
+void C_endShape(C_Batch* batch);
+void C_draw(C_Batch batch, GLenum type);
+C_Batch C_createBatch();
+void C_bindBatch(C_Batch batch);
+void C_flushBatch(C_Batch* batch);
+void C_deleteBatch(C_Batch* batch);
+
 struct C_Window {
 	GLFWwindow* windowHandle;
 	boolean keys[349];
 	boolean tempKeys[349];
 	boolean tempKeysCheck[349];
 	const char* title;
-	unsigned int colorShader, VBO, VAO, width, height;
-	C_floatVec triangles;
+	unsigned int colorShader, width, height;
+	C_Batch shapeBatch;
 	float deltaTime;
 	float lastFrame;
 	float currentFrame;
@@ -174,13 +191,9 @@ struct C_Window {
 	boolean fullscreen, priorFullscreen;
 };
 typedef struct C_Window C_Window;
-	
-
 
 	// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 	void C_initGrey(unsigned int sampleRate);
-
-	
 
 	// Frees up any possibly used memory.
 	void C_closeGrey();
@@ -287,6 +300,17 @@ Note that this shouldn't be confused with isKeyDown, which is valid each frame t
 
 // Draws a rectangle.
 #define drawRectangle C_drawRectangle
+
+#define Batch C_Batch
+
+#define addVertice C_addVertice
+#define addTriangle C_addTriangle
+#define endShape C_endShape
+#define draw C_draw
+#define createBatch C_createBatch
+#define bindBatch C_bindBatch
+#define flushBatch C_flushBatch
+#define deleteBatch C_deleteBatch
 
 #define new_grey_float_vector C_new_grey_float_vector
 #define float_vec_push_back C_float_vec_push_back
