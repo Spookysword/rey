@@ -14,9 +14,7 @@ int main() {
 	int frames = 0;
 
 	while (!shouldWindowClose(win)) {
-		float updateTime = glfwGetTime();
 		updateWindow(&win);
-		updateTime = glfwGetTime() - updateTime;
 		
 		clearWindowBackground(win, COLOR_DISCORD);
 
@@ -47,22 +45,14 @@ int main() {
 		if (isKeyPressed(win, KEY_G)) {
 			printf("powered by grey\n");
 		}
-
-		float drawCallTime = glfwGetTime();
+		
 		for (int i = 0; i < amtX+1; i++) {
 			for (int z = 0; z < amtY+1; z++) {
 				drawRectangle(&win, (win.width/amtX)*i, (win.height/amtY)*z, win.width/amtX, win.height/amtY, (Color){ rand()%255+1, rand()%255+1, rand()%255+1, 255 });
 			}
 		}
-		drawCallTime = glfwGetTime() - drawCallTime;
 		
-		float renderTime = glfwGetTime();
 		renderWindow(win);
-		renderTime = glfwGetTime() - renderTime;
-
-		//if (updateTime > drawCallTime && updateTime > renderTime) { printf("Update time took the longest\n"); }
-		//else if (drawCallTime > updateTime && drawCallTime > renderTime) { printf("Draw call time took the longest\n"); }
-		//else if (renderTime > drawCallTime && renderTime > updateTime) { printf("Render time took the longest\n"); }
 	}
 	
 	deleteWindow(&win);
