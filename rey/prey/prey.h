@@ -39,31 +39,22 @@ struct C_PhysicsWorld {
 
 // A function to calculate AABB collision on 2 Rectangles.
 int C_AABB(C_Rectangles a, C_Rectangles b);
-
 // A function to create a physics rectangle.
 C_PhysicsRect C_createPhysicsRect(const char* type, float x, float y, float w, float h, float density, float rotation);
-
 // To check if 2 physics rects are colliding.
 int C_isRectCollidingWithRect(C_PhysicsRect a, C_PhysicsRect b);
-
 // Applies force to a physics rectangle.
 void C_applyForce(C_PhysicsRect *a, float forceX, float forceY);
-
 // Creates a physics world.
 C_PhysicsWorld C_createPhysicsWorld();
-
 // Adds a new rectangle to the world.
 C_PhysicsRectID C_newRect(C_PhysicsWorld* world, const char* type, float x, float y, float w, float h, float density, float rotation);
-
 // Will perform physical calcualtions of all of the rectangles in the physics world.
 void C_updatePhysicsWorld(C_PhysicsWorld* world, float deltaTime);
-
 // Initializes the prey module
 void C_initPrey(int _rectLimit);
-
 // De-initializes the prey module
 void C_closePrey();
-
 void C_deletePhysicsWorld(C_PhysicsWorld* world);
 
 #ifndef IMPLEMENT_PREY_H

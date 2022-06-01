@@ -7,21 +7,21 @@ C_floatVec C_floatVecCreate() {
 	return vec;
 }
 void C_floatVecPushBack(C_floatVec* vec, float num) {
-	int a = vec->size; // a = 0;
+	int a = vec->size;
 	float* before = (float*)calloc(vec->size, sizeof(float));
 	if (!before) { return; }
 	for (int i = 0; i < vec->size; i++) {
 		before[i] = vec->data[i];
 	}
-	vec->size += 1; // vecSize = 1;
-	free(vec->data); // vec = {  };
-	vec->data = (float*)calloc(vec->size, sizeof(float)); // vec = { 0 };
+	vec->size += 1;
+	free(vec->data);
+	vec->data = (float*)calloc(vec->size, sizeof(float));
 	if (!vec->data) { return; }
-	for (int i = 0; i < a; i++) { // for (int i = 0; i < 0; i++)
+	for (int i = 0; i < a; i++) {
 		// Nvm I love you C
-		vec->data[i] = before[i]; // (never exec)
+		vec->data[i] = before[i];
 	}
-	vec->data[vec->size - 1] = num; // vec[0] = num;
+	vec->data[vec->size - 1] = num;
 	free(before);
 }
 void C_floatVecClear(C_floatVec* vec) {
@@ -41,21 +41,21 @@ C_intVec C_intVecCreate() {
 	return vec;
 }
 void C_intVecPushBack(C_intVec* vec, float num) {
-	int a = vec->size; // a = 0;
+	int a = vec->size;
 	int* before = (int*)calloc(vec->size, sizeof(int));
 	if (!before) { return; }
 	for (int i = 0; i < vec->size; i++) {
 		before[i] = vec->data[i];
 	}
-	vec->size += 1; // vecSize = 1;
-	free(vec->data); // vec = {  };
-	vec->data = (int*)calloc(vec->size, sizeof(int)); // vec = { 0 };
+	vec->size += 1;
+	free(vec->data);
+	vec->data = (int*)calloc(vec->size, sizeof(int));
 	if (!vec->data) { return; }
-	for (int i = 0; i < a; i++) { // for (int i = 0; i < 0; i++)
+	for (int i = 0; i < a; i++) {
 		// Nvm I love you C
-		vec->data[i] = before[i]; // (never exec)
+		vec->data[i] = before[i];
 	}
-	vec->data[vec->size - 1] = num; // vec[0] = num;
+	vec->data[vec->size - 1] = num;
 	free(before);
 }
 void C_intVecClear(C_intVec* vec) {

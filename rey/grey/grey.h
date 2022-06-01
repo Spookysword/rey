@@ -193,114 +193,83 @@ struct C_Window {
 typedef struct C_Window C_Window;
 
 	// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
-	void C_initGrey(unsigned int sampleRate);
-
+void C_initGrey(unsigned int sampleRate);
 	// Frees up any possibly used memory.
-	void C_closeGrey();
-
-	void framebufferCallback(GLFWwindow* win, int width, int height);
-
-	// Returns a valid Window struct.
-	C_Window C_createWindow(int width, int height, const char* title);
-
-	// Deletes the Window from memory. Different from closeWindow, which closes the window.
-	void C_deleteWindow(C_Window* win);
-
-	// Checks if a Window should be closed.
-	boolean C_shouldWindowClose(C_Window win);
-
-	// Handles updating the window, including polling events & general variables within the struct.
-	void C_updateWindow(C_Window* win);
-
-	// Collects every draw call you've made and sends it in a few collective batches.
-	void C_renderWindow(C_Window win);
-
-	// Closes the Window. Different from deleteWindow, which deletes the Window from memory.
-	void C_closeWindow(C_Window win);
-
-	// Sets a window flag's state. All the window flags can be found in the grey file near line 149.
-	void C_setWindowFlag(C_Window win, uint32_t flag, boolean state);
-
-	/*
-	Checks if a certain key is down. All keys can be found in the grey file near line 26.
-	Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
-	*/
-	boolean C_isKeyDown(C_Window win, int key);
-
-	/*
-	Checks if a certain key has been pressed. All keys can be found in the grey file near line 26.
-	Note that this shouldn't be confused with isKeyDown, which is valid each frame that the user has the key down.
-	*/
-	boolean C_isKeyPressed(C_Window win, int key);
-
-	// Clears the background with a color. Generally should be called each frame before drawing anything else.
-	void C_clearWindowBackground(C_Window win, Color color);
-
-	// Enables or disables wireframe mode, which draws everything as lines.
-	void C_setWireframeMode(C_Window win, boolean state);
-
-	// Draws a triangle with three given points and a color.
-	void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
-
-	// Draws a rectangle.
-	void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color);
+void C_closeGrey();
+void framebufferCallback(GLFWwindow* win, int width, int height);
+// Returns a valid Window struct.
+C_Window C_createWindow(int width, int height, const char* title);
+// Deletes the Window from memory. Different from closeWindow, which closes the window.
+void C_deleteWindow(C_Window* win);
+// Checks if a Window should be closed.
+boolean C_shouldWindowClose(C_Window win);
+// Handles updating the window, including polling events & general variables within the struct.
+void C_updateWindow(C_Window* win);
+// Collects every draw call you've made and sends it in a few collective batches.
+void C_renderWindow(C_Window win);
+// Closes the Window. Different from deleteWindow, which deletes the Window from memory.
+void C_closeWindow(C_Window win);
+// Sets a window flag's state. All the window flags can be found in the grey file near line 149.
+void C_setWindowFlag(C_Window win, uint32_t flag, boolean state);
+/*
+Checks if a certain key is down. All keys can be found in the grey file near line 26.
+Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
+*/
+boolean C_isKeyDown(C_Window win, int key);
+/*
+Checks if a certain key has been pressed. All keys can be found in the grey file near line 26.
+Note that this shouldn't be confused with isKeyDown, which is valid each frame that the user has the key down.
+*/
+boolean C_isKeyPressed(C_Window win, int key);
+// Clears the background with a color. Generally should be called each frame before drawing anything else.
+void C_clearWindowBackground(C_Window win, Color color);
+// Enables or disables wireframe mode, which draws everything as lines.
+void C_setWireframeMode(C_Window win, boolean state);
+// Draws a triangle with three given points and a color.
+void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
+// Draws a rectangle.
+void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color);
 
 #ifndef IMPLEMENT_GREY_H
 
 // Clears the background with a color. Generally should be called each frame before drawing anything else.
 #define clearWindowBackground C_clearWindowBackground
-
 // Enables or disables wireframe mode, which draws everything as lines.
 #define setWireframeMode C_setWireframeMode
-
 /*
 Checks if a certain key is down. All keys can be found in the grey file near line 26.
 Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
 */
 #define isKeyDown C_isKeyDown
-
 /*
 Checks if a certain key has been pressed. All keys can be found in the grey file near line 26.
 Note that this shouldn't be confused with isKeyDown, which is valid each frame that the user has the key down.
 */
 #define isKeyPressed C_isKeyPressed
-
 // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
 #define setWindowFlag C_setWindowFlag
-
 // Closes the Window. Different from deleteWindow, which deletes the Window from memory.
 #define closeWindow C_closeWindow
-
 // Deletes the Window from memory. Different from closeWindow, which closes the window.
 #define deleteWindow C_deleteWindow
-
 // Collects every draw call you've made and sends it in a few collective batches.
 #define renderWindow C_renderWindow
-
 // Handles updating the window, including polling events & general variables within the struct.
 #define updateWindow C_updateWindow
-
 // Checks if a Window should be closed.
 #define shouldWindowClose C_shouldWindowClose
-
 // Returns a valid Window struct.
 #define createWindow C_createWindow
-
 // Frees up any possibly used memory.
 #define closeGrey C_closeGrey
-
 // Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 #define initGrey C_initGrey
-
 // A Window struct
 #define Window C_Window
-
 // Draws a triangle with three given points and a color.
 #define drawTriangle C_drawTriangle
-
 // Draws a rectangle.
 #define drawRectangle C_drawRectangle
-
 #define Batch C_Batch
 
 #define addVertice C_addVertice

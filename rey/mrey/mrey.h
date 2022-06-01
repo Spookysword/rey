@@ -18,7 +18,6 @@ void C_floatVecPushBack(C_floatVec* vec, float num);
 void C_floatVecClear(C_floatVec* vec);
 void C_floatVecDelete(C_floatVec* vec);
 
-
 struct C_intVec {
 	int* data;
 	int size;
@@ -43,7 +42,6 @@ void C_intVecDelete(C_intVec* vec);
 #define intVecClear C_intVecClear
 #define intVecDelete C_intVecDelete
 #endif
-
 
 #ifdef __cplusplus
 }

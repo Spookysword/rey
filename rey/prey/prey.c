@@ -86,7 +86,6 @@ void C_updatePhysicsWorld(C_PhysicsWorld* world, float deltaTime) {
 					float m1 = d1 / ratio;
 					float m2 = d2 / ratio;
 
-
 					ay1 -= ((y1 + h1) - y2) * m1;
 					ay2 += ((y1 + h1) - y2) * m2;
 				}
@@ -103,9 +102,6 @@ void C_updatePhysicsWorld(C_PhysicsWorld* world, float deltaTime) {
 				world->rects[i].rect.y = ay1;
 				world->rects[i - 1].rect.x = ax2;
 				world->rects[i - 1].rect.y = ay2;
-
-
-
 			}
 		}
 	}
