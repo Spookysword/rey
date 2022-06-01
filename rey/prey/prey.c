@@ -1,5 +1,5 @@
 #include "prey.h"
-#include <stdlib.h>
+#include <memory.h>
 
 _Bool preyInit = 0;
 int rectLimit = 1000;

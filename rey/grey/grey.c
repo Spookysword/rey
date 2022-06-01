@@ -65,6 +65,7 @@ void C_endShape(C_Batch* batch) {
 }
 void C_draw(C_Batch batch, GLenum type) {
 	// This could be optimized by not using a vector here
+	glBindVertexArray(batch.VAO);
 	C_intVec first = C_intVecCreate();
 	int tempInt = 0;
 	for (int i = 0; i < batch.shapeVertices.size; i++) {
@@ -282,8 +283,6 @@ void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float
 	C_endShape(&win->shapeBatch);
 }
 void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color) {
-	//C_drawTriangle(win, x, y, x, y + height, x + width, y + height, color);
-	//C_drawTriangle(win, x, y, x + width, y, x + width, y + height, color);
 	float passIn1[21] = {
 		x, -(y), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
 		x, -(y + height), 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
