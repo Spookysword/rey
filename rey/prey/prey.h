@@ -3,8 +3,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include <stddef.h>
-#include <xkeycheck.h>
 #include <memory.h>
 
 // An easier way to define structs.

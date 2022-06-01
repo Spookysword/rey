@@ -36,9 +36,7 @@ int main() {
 		if (isKeyPressed(win, KEY_G)) {
 			printf("powered by grey\n");
 		}
-
-		printf("%f", world.rects[a].rect.y);
-		printf("\n");
+		
 		drawRectangle(&win, world.rects[a].rect.x, world.rects[a].rect.y, world.rects[a].rect.w, world.rects[a].rect.h, COLOR_RED);
 		drawRectangle(&win, world.rects[b].rect.x, world.rects[b].rect.y, world.rects[b].rect.w, world.rects[b].rect.h, COLOR_BLUE);
 		drawRectangle(&win, 0, 0, 100, 100, COLOR_SOFT_ORANGE);
