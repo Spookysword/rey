@@ -29,11 +29,25 @@ void C_floatVecPushBack7(C_floatVec* vec, float num[7]) {
 		vec->data[vec->size-i-1] = num[6-i];
 	}
 }
+void C_floatVecPushBack9(C_floatVec* vec, float num[9]) {
+	vec->size += 9;
+	C_floatVecCheckSize(vec);
+	for (int i = 0; i < 9; i++) {
+		vec->data[vec->size-i-1] = num[8-i];
+	}
+}
 void C_floatVecPushBack21(C_floatVec* vec, float num[21]) {
 	vec->size += 21;
 	C_floatVecCheckSize(vec);
 	for (int i = 0; i < 21; i++) {
 		vec->data[vec->size-i-1] = num[20-i];
+	}
+}
+void C_floatVecPushBack27(C_floatVec* vec, float num[27]) {
+	vec->size += 27;
+	C_floatVecCheckSize(vec);
+	for (int i = 0; i < 27; i++) {
+		vec->data[vec->size-i-1] = num[26-i];
 	}
 }
 void C_floatVecClear(C_floatVec* vec) {

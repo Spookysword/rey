@@ -41,5 +41,8 @@
     <ClInclude Include="rey\mrey\mrey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

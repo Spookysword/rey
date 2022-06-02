@@ -170,6 +170,7 @@
     <ClCompile Include="rey\prey\prey.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="rey\grey\grey.h" />
     <ClInclude Include="rey\mrey\mrey.h" />
     <ClInclude Include="rey\prey\prey.h" />

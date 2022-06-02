@@ -156,8 +156,11 @@ COLOR STRUCT!!!!!!!!!!!
 #define WINDOW_TRANSPARENT_FRAMEBUFFER GLFW_TRANSPARENT_FRAMEBUFFER
 #define WINDOW_FOCUS_ON_SHOW GLFW_FOCUS_ON_SHOW
 #define WINDOW_SCALE_TO_MONITOR GLFW_SCALE_TO_MONITOR
+#define FILTER_NEAREST GL_NEAREST
+#define FILTER_LINEAR GL_LINEAR
 
 typedef unsigned int Color[4];
+typedef unsigned int Texture;
 
 struct C_Batch {
 	GLuint VAO, VBO;
@@ -166,6 +169,14 @@ struct C_Batch {
 	C_intVec shapeVertices;
 };
 typedef struct C_Batch C_Batch;
+
+struct C_TextureBatch {
+	GLuint VAO, VBO, textureID;
+	C_floatVec triangles;
+	int verticeCount, stack;
+	C_intVec shapeVertices;
+};
+typedef struct C_TextureBatch C_TextureBatch;
 
 void C_addVertice(C_Batch* batch, float verts[7]);
 void C_addTriangle(C_Batch* batch, float verts[21]);
@@ -176,19 +187,41 @@ void C_bindBatch(C_Batch batch);
 void C_flushBatch(C_Batch* batch);
 void C_deleteBatch(C_Batch* batch);
 
+void C_addTextureVertice(C_TextureBatch* batch, float verts[9]);
+void C_addTextureTriangle(C_TextureBatch* batch, float verts[27]);
+void C_endTextureShape(C_TextureBatch* batch);
+void C_drawTextureBatch(C_TextureBatch batch, GLenum type);
+C_TextureBatch C_createTextureBatch(const char* filePath, int filter);
+void C_bindTextureBatch(C_TextureBatch batch);
+void C_flushTextureBatch(C_TextureBatch* batch);
+void C_deleteTextureBatch(C_TextureBatch* batch);
+
+struct C_textureVec {
+	C_TextureBatch* data;
+	int size;
+	int limit;
+};
+typedef struct C_textureVec C_textureVec;
+
+C_textureVec C_textureVecCreate();
+void C_textureVecPushBack(C_textureVec* vec, C_TextureBatch num);
+void C_textureVecClear(C_textureVec* vec);
+void C_textureVecDelete(C_textureVec* vec);
+
 struct C_Window {
 	GLFWwindow* windowHandle;
 	boolean keys[349];
 	boolean tempKeys[349];
 	boolean tempKeysCheck[349];
 	const char* title;
-	unsigned int colorShader, width, height;
+	unsigned int colorShader, textureShader, width, height;
 	C_Batch shapeBatch;
 	float deltaTime;
 	float lastFrame;
 	float currentFrame;
 	int prevX, prevY, prevWidth, prevHeight;
 	boolean fullscreen, priorFullscreen;
+	C_textureVec textures;
 };
 typedef struct C_Window C_Window;
 
@@ -211,6 +244,10 @@ void C_renderWindow(C_Window win);
 void C_closeWindow(C_Window win);
 // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
 void C_setWindowFlag(C_Window win, uint32_t flag, boolean state);
+
+Texture c_newTexture(C_Window* win, const char* path, int filter);
+
+void c_deleteTexture(C_Window* win, Texture texture);
 /*
 Checks if a certain key is down. All keys can be found in the grey file near line 26.
 Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
@@ -230,6 +267,8 @@ void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float
 // Draws a rectangle.
 void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color);
 
+void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, Color color);
+
 #ifndef IMPLEMENT_GREY_H
 
 // Clears the background with a color. Generally should be called each frame before drawing anything else.
@@ -248,6 +287,10 @@ Note that this shouldn't be confused with isKeyDown, which is valid each frame t
 #define isKeyPressed C_isKeyPressed
 // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
 #define setWindowFlag C_setWindowFlag
+
+#define newTexture c_newTexture
+
+#define deleteTexture c_deleteTexture
 // Closes the Window. Different from deleteWindow, which deletes the Window from memory.
 #define closeWindow C_closeWindow
 // Deletes the Window from memory. Different from closeWindow, which closes the window.
@@ -270,6 +313,9 @@ Note that this shouldn't be confused with isKeyDown, which is valid each frame t
 #define drawTriangle C_drawTriangle
 // Draws a rectangle.
 #define drawRectangle C_drawRectangle
+
+#define drawTexture C_drawTexture
+
 #define Batch C_Batch
 
 #define addVertice C_addVertice
@@ -280,6 +326,15 @@ Note that this shouldn't be confused with isKeyDown, which is valid each frame t
 #define bindBatch C_bindBatch
 #define flushBatch C_flushBatch
 #define deleteBatch C_deleteBatch
+
+#define addTextureVertice C_addTextureVertice
+#define addTextureTriangle C_addTextureTriangle
+#define endTextureShape C_endTextureShape
+#define drawTextureBatch C_drawTextureBatch
+#define createTextureBatch C_createTextureBatch
+#define bindTextureBatch C_bindTextureBatch
+#define flushTextureBatch C_flushTextureBatch
+#define deleteTextureBatch C_deleteTextureBatch
 
 #define new_grey_float_vector C_new_grey_float_vector
 #define float_vec_push_back C_float_vec_push_back

@@ -18,7 +18,9 @@ typedef struct C_floatVec C_floatVec;
 C_floatVec C_floatVecCreate();
 void C_floatVecPushBack(C_floatVec* vec, float num);
 void C_floatVecPushBack7(C_floatVec* vec, float num[7]);
+void C_floatVecPushBack9(C_floatVec* vec, float num[9]);
 void C_floatVecPushBack21(C_floatVec* vec, float num[21]);
+void C_floatVecPushBack27(C_floatVec* vec, float num[27]);
 void C_floatVecClear(C_floatVec* vec);
 void C_floatVecDelete(C_floatVec* vec);
 

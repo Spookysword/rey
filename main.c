@@ -13,6 +13,9 @@ int main() {
 	float time = 0.0f;
 	int frames = 0;
 
+	Texture block = 0;
+	block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
+
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 		
@@ -30,7 +33,6 @@ int main() {
 			closeWindow(win);
 		}
 
-
 		if (isKeyPressed(win, KEY_F11)) {
 			win.fullscreen = !win.fullscreen;
 		}
@@ -46,15 +48,13 @@ int main() {
 			printf("powered by grey\n");
 		}
 		
-		for (int i = 0; i < amtX+1; i++) {
-			for (int z = 0; z < amtY+1; z++) {
-				drawRectangle(&win, (win.width/amtX)*i, (win.height/amtY)*z, win.width/amtX, win.height/amtY, (Color){ rand()%255+1, rand()%255+1, rand()%255+1, 255 });
-			}
-		}
+		drawTexture(&win, block, 0, 0, 100, 100, COLOR_WHITE);
 		
 		renderWindow(win);
+		printf("here\n");
 	}
 	
+	deleteTexture(&win, block);
 	deleteWindow(&win);
 	closeGrey();
 	return 0;

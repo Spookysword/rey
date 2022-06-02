@@ -1,6 +1,8 @@
 #include "grey.h"
 #include <stdlib.h>
 #include <stdio.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 const char* colorVertexShader = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -12,12 +14,33 @@ const char* colorVertexShader = "#version 330 core\n"
 "   gl_Position = vec4((aPos.x - viewport.x) / viewport.x - (offset.x / viewport.x), (aPos.y + viewport.y) / viewport.y + (offset.y / viewport.y), aPos.z, 1.0);\n"
 "	color = aColor;\n"
 "}\0";
-
 const char* colorFragmentShader = "#version 330 core\n"
 //"out vec4 FragColor;\n"
 "in vec4 color;\n"
 "void main() {\n"
 "	gl_FragColor = color;\n"
+"}\0";
+const char* textureVertexShader = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec4 aColor;\n"
+"layout (location = 2) in vec2 aTexCoord;\n"
+"out vec4 color;\n"
+"out vec2 TexCoord;\n"
+"uniform vec2 viewport;\n"
+"uniform vec3 offset;\n"
+"void main()\n"
+"{\n"
+"	gl_Position = vec4((aPos.x - viewport.x) / viewport.x - (offset.x / viewport.x), (aPos.y + viewport.y) / viewport.y + (offset.y / viewport.y), aPos.z, 1.0);\n"
+"	color = aColor;\n"
+"	TexCoord = aTexCoord;\n"
+"}\0";
+const char* textureFragmentShader = "#version 330 core\n"
+"in vec4 color;\n"
+"in vec2 TexCoord;\n"
+"uniform sampler2D currentTexture;\n"
+"void main()\n"
+"{\n"
+"	gl_FragColor = texture(currentTexture, TexCoord) * color;\n"
 "}\0";
 
 C_Batch C_createBatch() {
@@ -93,6 +116,130 @@ void C_deleteBatch(C_Batch* batch) {
 	C_intVecDelete(&batch->shapeVertices);
 }
 
+void C_addTextureVertice(C_TextureBatch* batch, float verts[9]) {
+	C_floatVecPushBack9(&batch->triangles, verts);
+	batch->verticeCount++;
+	batch->stack++;
+}
+void C_addTextureTriangle(C_TextureBatch* batch, float verts[27]) {
+	C_floatVecPushBack27(&batch->triangles, verts);
+	batch->verticeCount+= 3;
+	batch->stack+= 3;
+}
+void C_endTextureShape(C_TextureBatch* batch) {
+	C_intVecPushBack(&batch->shapeVertices, batch->stack);
+	batch->stack = 0;
+}
+void C_drawTextureBatch(C_TextureBatch batch, GLenum type) {
+	glBindVertexArray(batch.VAO);
+	C_intVec first = C_intVecCreate();
+	int tempInt = 0;
+	for (int i = 0; i < batch.shapeVertices.size; i++) {
+		C_intVecPushBack(&first, tempInt);
+		tempInt += batch.shapeVertices.data[i];
+	}
+	printf("%i", batch.shapeVertices.size);
+	glMultiDrawArrays(type, first.data, batch.shapeVertices.data, batch.shapeVertices.size);
+	printf("help\n");
+	C_intVecDelete(&first);
+}
+C_TextureBatch C_createTextureBatch(const char* filePath, int filter) {
+	C_TextureBatch batch;
+	glGenVertexArrays(1, &batch.VAO);
+	glGenBuffers(1, &batch.VBO);
+	glBindVertexArray(batch.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
+	batch.stack = 0;
+	batch.verticeCount = 0;
+	batch.triangles = C_floatVecCreate();
+	batch.shapeVertices = C_intVecCreate();
+
+	// Position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// Color
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	// Texture coords
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	glGenTextures(1, &batch.textureID);
+	glBindTexture(GL_TEXTURE_2D, batch.textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+
+	int width, height, nrChannels;
+	// No clue what "desired_channels" does here
+	unsigned char* data = stbi_load(filePath, &width, &height, &nrChannels, 4);
+	if (data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	} else {
+		printf("Error generating texture\n");
+	}
+	// If any memory errors pop up, probably cuz of this
+	stbi_image_free(data);
+
+	return batch;
+}
+void C_bindTextureBatch(C_TextureBatch batch) {
+	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
+	glBufferData(GL_ARRAY_BUFFER, batch.triangles.size * sizeof(float), batch.triangles.data, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+void C_flushTextureBatch(C_TextureBatch* batch) {
+	C_floatVecClear(&batch->triangles);
+	batch->verticeCount = 0;
+	batch->stack = 0;
+	C_intVecClear(&batch->shapeVertices);
+}
+void C_deleteTextureBatch(C_TextureBatch* batch) {
+	C_floatVecDelete(&batch->triangles);
+	C_intVecDelete(&batch->shapeVertices);
+	//glDeleteTextures(1, batch->textureID); // This line may cause problems
+}
+
+C_textureVec C_textureVecCreate() {
+	C_textureVec vec;
+	vec.data = (C_TextureBatch*)calloc(0, sizeof(C_TextureBatch));
+	vec.size = 0;
+	vec.limit = 0;
+	return vec;
+}
+void C_textureVecCheckSize(C_textureVec* vec) {
+	if (vec->size + 1 > vec->limit) {
+		C_TextureBatch* temp;
+		vec->limit = vec->size * 2;
+		temp = (C_TextureBatch*)realloc(vec->data, vec->limit * sizeof(C_TextureBatch));
+		if (temp) { vec->data = temp; }
+	}
+}
+void C_textureVecPushBack(C_textureVec* vec, C_TextureBatch num) {
+	vec->size += 1;
+	C_textureVecCheckSize(vec);
+	vec->data[vec->size-1] = num;
+}
+void C_textureVecClear(C_textureVec* vec) {
+	free(vec->data);
+	vec->limit /= 2;
+	vec->data = (C_TextureBatch*)calloc(vec->limit, sizeof(C_TextureBatch));
+	vec->size = 0;
+}
+void C_textureVecDelete(C_textureVec* vec) {
+	for (int i = 0; i < vec->size; i++) {
+		C_deleteTextureBatch(&vec->data[i-1]);
+	}
+	free(vec->data);
+	vec->size = 0;
+	vec->limit = 0;
+}
+
 GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	int count;
 	GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -161,6 +308,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.priorFullscreen = FALSE;
 	win.prevWidth = width;
 	win.prevHeight = height;
+	win.textures = C_textureVecCreate();
 
 	unsigned int w_colorVertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(w_colorVertexShader, 1, &colorVertexShader, NULL);
@@ -175,6 +323,20 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	glDeleteShader(w_colorVertexShader);
 	glDeleteShader(w_colorFragmentShader);
 
+	// Prob should make this a function
+	unsigned int w_textureVertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(w_textureVertexShader, 1, &textureVertexShader, NULL);
+	glCompileShader(w_textureVertexShader);
+	unsigned int w_textureFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(w_textureFragmentShader, 1, &textureFragmentShader, NULL);
+	glCompileShader(w_textureFragmentShader);
+	win.textureShader = glCreateProgram();
+	glAttachShader(win.textureShader, w_textureVertexShader);
+	glAttachShader(win.textureShader, w_textureFragmentShader);
+	glLinkProgram(win.textureShader);
+	glDeleteShader(w_textureVertexShader);
+	glDeleteShader(w_textureFragmentShader);
+
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -183,12 +345,25 @@ C_Window C_createWindow(int width, int height, const char* title) {
 }
 void C_deleteWindow(C_Window* win) {
 	C_deleteBatch(&win->shapeBatch);
+	C_textureVecClear(&win->textures);
 }
 boolean C_shouldWindowClose(C_Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
 }
+Texture c_newTexture(C_Window* win, const char* path, int filter) {
+	C_TextureBatch text = C_createTextureBatch(path, filter);
+	C_textureVecPushBack(&win->textures, text);
+	// May have to free here, prob not tho
+	return win->textures.size-1;
+}
+void c_deleteTexture(C_Window* win, Texture texture) {
+	C_deleteTextureBatch(&win->textures.data[texture]);
+}
 void C_updateWindow(C_Window* win) {
 	C_flushBatch(&win->shapeBatch);
+	for (int i = 0; i < win->textures.size; i++) {
+		C_flushTextureBatch(&win->textures.data[i]);
+	}
 	win->currentFrame = (float)glfwGetTime();
 	win->deltaTime = win->currentFrame - win->lastFrame;
 	win->lastFrame = win->currentFrame;
@@ -236,8 +411,19 @@ void C_renderWindow(C_Window win) {
 	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
 	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0.0f, 0.0f, 0.0f);
 	
-	// This should probably be called automatically
 	C_draw(win.shapeBatch, GL_TRIANGLE_FAN);
+	
+	glUseProgram(win.textureShader);
+	glUniform2f(glGetUniformLocation(win.textureShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+	glUniform3f(glGetUniformLocation(win.textureShader, "offset"), 0.0f, 0.0f, 0.0f);
+	for (int i = 0; i < win.textures.size; i++) {
+		C_bindTextureBatch(win.textures.data[i]);
+		glBindTexture(GL_TEXTURE_2D, win.textures.data[i].textureID);
+		glBindVertexArray(win.textures.data[i].VAO);
+		printf("%i\n", win.textures.data[i].verticeCount);
+		C_drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
+		printf("here\n");
+	}
 
 	glfwSwapBuffers(win.windowHandle);
 }
@@ -299,4 +485,18 @@ void C_drawRectangle(C_Window* win, float x, float y, float width, float height,
 	C_addTriangle(&win->shapeBatch, passIn1);
 	C_addVertice(&win->shapeBatch, passIn2);
 	C_endShape(&win->shapeBatch);
+}
+void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, Color color) {
+	float r = (float)color[0]/255, g = (float)color[1]/255, b = (float)color[2]/255, a = (float)color[3]/255;
+	float passIn1[27] = {
+		x, -(y), 0.0f, r, g, b, a, 0.0f, 1.0f,
+		x, -(y + height), 0.0f, r, g, b, a, 0.0f, 0.0f,
+		x + width, -(y + height), 0.0f, r, g, b, a, 1.0f, 0.0f
+	};
+	float passIn2[9] = {
+		x + width, -(y), 0.0f, r, g, b, a, 1.0f, 1.0f
+	};
+	C_addTextureTriangle(&win->textures.data[texture], passIn1);
+	C_addTextureVertice(&win->textures.data[texture], passIn2);
+	C_endTextureShape(&win->textures.data[texture]);
 }
