@@ -13,8 +13,7 @@ int main() {
 	float time = 0.0f;
 	int frames = 0;
 
-	Texture block = 0;
-	block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
+	Texture block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
@@ -51,7 +50,6 @@ int main() {
 		drawTexture(&win, block, 0, 0, 100, 100, COLOR_WHITE);
 		
 		renderWindow(win);
-		printf("here\n");
 	}
 	
 	deleteTexture(&win, block);

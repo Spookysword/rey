@@ -138,9 +138,7 @@ void C_drawTextureBatch(C_TextureBatch batch, GLenum type) {
 		C_intVecPushBack(&first, tempInt);
 		tempInt += batch.shapeVertices.data[i];
 	}
-	printf("%i", batch.shapeVertices.size);
 	glMultiDrawArrays(type, first.data, batch.shapeVertices.data, batch.shapeVertices.size);
-	printf("help\n");
 	C_intVecDelete(&first);
 }
 C_TextureBatch C_createTextureBatch(const char* filePath, int filter) {
@@ -353,7 +351,6 @@ boolean C_shouldWindowClose(C_Window win) {
 Texture c_newTexture(C_Window* win, const char* path, int filter) {
 	C_TextureBatch text = C_createTextureBatch(path, filter);
 	C_textureVecPushBack(&win->textures, text);
-	// May have to free here, prob not tho
 	return win->textures.size-1;
 }
 void c_deleteTexture(C_Window* win, Texture texture) {
@@ -420,9 +417,7 @@ void C_renderWindow(C_Window win) {
 		C_bindTextureBatch(win.textures.data[i]);
 		glBindTexture(GL_TEXTURE_2D, win.textures.data[i].textureID);
 		glBindVertexArray(win.textures.data[i].VAO);
-		printf("%i\n", win.textures.data[i].verticeCount);
 		C_drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
-		printf("here\n");
 	}
 
 	glfwSwapBuffers(win.windowHandle);

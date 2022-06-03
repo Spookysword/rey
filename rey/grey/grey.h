@@ -11,13 +11,6 @@ extern "C" {
 #include <Windows.h>
 #endif
 
-/*
-NOTES:
-Multiple windows won't work currently because I don't know how to clear screen to a certain window.
-Create a grey_vector struct in order to manage triangle float sizes.
-COLOR STRUCT!!!!!!!!!!!
-*/
-
 /* The unknown key */
 #define KEY_UNKNOWN            -1
 
@@ -244,9 +237,14 @@ void C_renderWindow(C_Window win);
 void C_closeWindow(C_Window win);
 // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
 void C_setWindowFlag(C_Window win, uint32_t flag, boolean state);
-
+/*
+Loads a texture. Beware that the file path you link is relative to the .exe, so you need to have the resources within your build file.
+Also, don't forget to call deleteTexture when you aren't going to use it anymore, otherwise it could cause memory leaks!
+*/
 Texture c_newTexture(C_Window* win, const char* path, int filter);
-
+/*
+Deloads a texture, freeing up the memory it's using.
+*/
 void c_deleteTexture(C_Window* win, Texture texture);
 /*
 Checks if a certain key is down. All keys can be found in the grey file near line 26.
@@ -287,9 +285,14 @@ Note that this shouldn't be confused with isKeyDown, which is valid each frame t
 #define isKeyPressed C_isKeyPressed
 // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
 #define setWindowFlag C_setWindowFlag
-
+/*
+Loads a texture. Beware that the file path you link is relative to the .exe, so you need to have the resources within your build file.
+Also, don't forget to call deleteTexture when you aren't going to use it anymore, otherwise it could cause memory leaks!
+*/
 #define newTexture c_newTexture
-
+/*
+Deloads a texture, freeing up the memory it's using.
+*/
 #define deleteTexture c_deleteTexture
 // Closes the Window. Different from deleteWindow, which deletes the Window from memory.
 #define closeWindow C_closeWindow
@@ -335,11 +338,6 @@ Note that this shouldn't be confused with isKeyDown, which is valid each frame t
 #define bindTextureBatch C_bindTextureBatch
 #define flushTextureBatch C_flushTextureBatch
 #define deleteTextureBatch C_deleteTextureBatch
-
-#define new_grey_float_vector C_new_grey_float_vector
-#define float_vec_push_back C_float_vec_push_back
-#define float_vec_clear C_float_vec_clear
-#define float_vec_delete C_float_vec_delete
 
 #endif
 
