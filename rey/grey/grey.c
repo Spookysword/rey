@@ -299,6 +299,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.prevHeight = height;
 	win.textures = C_textureVecCreate();
 	win.zmod = 0.0f;
+	win.camera.x = 0.0f, win.camera.y = 0.0f, win.camera.z = 0.0f;
 
 	unsigned int w_colorVertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(w_colorVertexShader, 1, &colorVertexShader, NULL);
@@ -400,13 +401,13 @@ void C_renderWindow(C_Window win) {
 	C_bindBatch(win.shapeBatch);
 	glUseProgram(win.colorShader);
 	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
-	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), 0.0f, 0.0f, 0.0f);
+	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	
 	C_draw(win.shapeBatch, GL_TRIANGLE_FAN);
 	
 	glUseProgram(win.textureShader);
 	glUniform2f(glGetUniformLocation(win.textureShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-	glUniform3f(glGetUniformLocation(win.textureShader, "offset"), 0.0f, 0.0f, 0.0f);
+	glUniform3f(glGetUniformLocation(win.textureShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	for (int i = 0; i < win.textures.size; i++) {
 		C_bindTextureBatch(win.textures.data[i]);
 		glBindTexture(GL_TEXTURE_2D, win.textures.data[i].textureID);

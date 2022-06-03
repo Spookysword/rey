@@ -201,6 +201,11 @@ void C_textureVecPushBack(C_textureVec* vec, C_TextureBatch num);
 void C_textureVecClear(C_textureVec* vec);
 void C_textureVecDelete(C_textureVec* vec);
 
+struct C_Camera {
+	float x, y, z;
+};
+typedef struct C_Camera C_Camera;
+
 struct C_Window {
 	GLFWwindow* windowHandle;
 	boolean keys[349];
@@ -216,6 +221,7 @@ struct C_Window {
 	int prevX, prevY, prevWidth, prevHeight;
 	boolean fullscreen, priorFullscreen;
 	C_textureVec textures;
+	C_Camera camera;
 };
 typedef struct C_Window C_Window;
 
@@ -313,6 +319,8 @@ Deloads a texture, freeing up the memory it's using.
 #define closeGrey C_closeGrey
 // Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 #define initGrey C_initGrey
+
+#define Camera C_Camera
 // A Window struct
 #define Window C_Window
 // Draws a triangle with three given points and a color.

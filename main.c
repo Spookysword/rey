@@ -12,6 +12,7 @@ int main() {
 	int amtY = 10;
 	float time = 0.0f;
 	int frames = 0;
+	float moveSpeed = 250.0f;
 
 	Texture block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
 
@@ -46,6 +47,11 @@ int main() {
 		if (isKeyPressed(win, KEY_G)) {
 			printf("powered by grey\n");
 		}
+
+		if (isKeyDown(win, KEY_W)) { win.camera.y -= moveSpeed * win.deltaTime; }
+		if (isKeyDown(win, KEY_S)) { win.camera.y += moveSpeed * win.deltaTime; }
+		if (isKeyDown(win, KEY_A)) { win.camera.x -= moveSpeed * win.deltaTime; }
+		if (isKeyDown(win, KEY_D)) { win.camera.x += moveSpeed * win.deltaTime; }
 		
 		drawRectangle(&win, 0, 0, 100, 100, -30.0f, COLOR_BLUE);
 		drawTexture(&win, block, 0, 0, 100, 100, 30.0f, COLOR_WHITE);
