@@ -240,6 +240,8 @@ void C_setWindowFlag(C_Window win, uint32_t flag, boolean state);
 /*
 Loads a texture. Beware that the file path you link is relative to the .exe, so you need to have the resources within your build file.
 Also, don't forget to call deleteTexture when you aren't going to use it anymore, otherwise it could cause memory leaks!
+Also also, if you don't know what to put for filter, you can put either FILTER_NEAREST or FILTER_LINEAR.
+(For reference, when upscaling/downscaling, FILTER_NEAREST can make it look blurry (better for realistic images), and FILTER_LINEAR can make it look pixelated (better for low-pixel images AKA pixel art).
 */
 Texture c_newTexture(C_Window* win, const char* path, int filter);
 /*

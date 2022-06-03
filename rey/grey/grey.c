@@ -67,19 +67,12 @@ C_Batch C_createBatch() {
 
 	return batch;
 }
-// These "add" functions could be optimized
 void C_addVertice(C_Batch* batch, float verts[7]) {
-	/*for (int i = 0; i < 7; i++) {
-		C_floatVecPushBack(&batch->triangles, verts[i]);
-	}*/
 	C_floatVecPushBack7(&batch->triangles, verts);
 	batch->verticeCount++;
 	batch->stack++;
 }
 void C_addTriangle(C_Batch* batch, float verts[21]) {
-	/*for (int i = 0; i < 21; i++) {
-		C_floatVecPushBack(&batch->triangles, verts[i]);
-	}*/
 	C_floatVecPushBack21(&batch->triangles, verts);
 	batch->verticeCount += 3;
 	batch->stack += 3;
@@ -181,7 +174,6 @@ C_TextureBatch C_createTextureBatch(const char* filePath, int filter) {
 	} else {
 		printf("Error generating texture\n");
 	}
-	// If any memory errors pop up, probably cuz of this
 	stbi_image_free(data);
 
 	return batch;
@@ -200,7 +192,6 @@ void C_flushTextureBatch(C_TextureBatch* batch) {
 void C_deleteTextureBatch(C_TextureBatch* batch) {
 	C_floatVecDelete(&batch->triangles);
 	C_intVecDelete(&batch->shapeVertices);
-	//glDeleteTextures(1, batch->textureID); // This line may cause problems
 }
 
 C_textureVec C_textureVecCreate() {
