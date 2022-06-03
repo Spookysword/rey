@@ -7,11 +7,7 @@ int main() {
 	Window win = createWindow(720, 720, "grey");
 
 	srand(NULL);
-
-	int amtX = 10;
-	int amtY = 10;
-	float time = 0.0f;
-	int frames = 0;
+	
 	float moveSpeed = 250.0f;
 
 	Texture block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
@@ -21,13 +17,7 @@ int main() {
 		
 		clearWindowBackground(win, COLOR_DISCORD);
 
-		time += win.deltaTime;
-		frames += 1;
-		if (time >= 1.0f) {
-			time = 0.0f;
-			printf("%i\n", frames);
-			frames = 0;
-		}
+		printf("%f\n", win.framesPerSecond);
 
 		if (isKeyDown(win, KEY_ESCAPE)) {
 			closeWindow(win);

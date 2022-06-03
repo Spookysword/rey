@@ -222,6 +222,7 @@ struct C_Window {
 	boolean fullscreen, priorFullscreen;
 	C_textureVec textures;
 	C_Camera camera;
+	float framesPerSecond;
 };
 typedef struct C_Window C_Window;
 

@@ -300,6 +300,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.textures = C_textureVecCreate();
 	win.zmod = 0.0f;
 	win.camera.x = 0.0f, win.camera.y = 0.0f, win.camera.z = 0.0f;
+	win.framesPerSecond = 0.0f;
 
 	unsigned int w_colorVertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(w_colorVertexShader, 1, &colorVertexShader, NULL);
@@ -355,6 +356,7 @@ void C_updateWindow(C_Window* win) {
 	for (int i = 0; i < win->textures.size; i++) {
 		C_flushTextureBatch(&win->textures.data[i]);
 	}
+	win->framesPerSecond = 1.0f / (glfwGetTime() - win->currentFrame);
 	win->currentFrame = (float)glfwGetTime();
 	win->deltaTime = win->currentFrame - win->lastFrame;
 	win->lastFrame = win->currentFrame;
