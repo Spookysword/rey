@@ -265,9 +265,9 @@ void C_setWireframeMode(C_Window win, boolean state);
 // Draws a triangle with three given points and a color.
 void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
 // Draws a rectangle.
-void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color);
+void C_drawRectangle(C_Window* win, float x, float y, float width, float height, float rotation, Color color);
 
-void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, Color color);
+void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color);
 
 #ifndef IMPLEMENT_GREY_H
 

@@ -458,31 +458,73 @@ void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float
 	C_addTriangle(&win->shapeBatch, passIn1);
 	C_endShape(&win->shapeBatch);
 }
-void C_drawRectangle(C_Window* win, float x, float y, float width, float height, Color color) {
-	float r = (float)color[0]/255, g = (float)color[1]/255, b = (float)color[2]/255, a = (float)color[3]/255;
-	float passIn1[21] = {
-		x, -(y), 0.0f, r, g, b, a,
-		x, -(y + height), 0.0f, r, g, b, a,
-		x + width, -(y + height), 0.0f, r, g, b, a
-	};
-	float passIn2[7] = {
-		x + width, -(y), 0.0f, r, g, b, a
-	};
-	C_addTriangle(&win->shapeBatch, passIn1);
-	C_addVertice(&win->shapeBatch, passIn2);
-	C_endShape(&win->shapeBatch);
+void C_drawRectangle(C_Window* win, float x, float y, float width, float height, float rotation, Color color) {
+	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	y = -y;
+	if (rotation == 0.0f || (int)rotation % 360 == 0) {
+		float passIn1[21] = {
+			x, y, 0.0f, r, g, b, a,
+			x, y - height, 0.0f, r, g, b, a,
+			x + width, y - height, 0.0f, r, g, b, a
+		};
+		float passIn2[7] = {
+			x + width, y, 0.0f, r, g, b, a
+		};
+		C_addTriangle(&win->shapeBatch, passIn1);
+		C_addVertice(&win->shapeBatch, passIn2);
+		C_endShape(&win->shapeBatch);
+	}
+	else {
+		float pi = 3.1415926535897932384626433;
+		rotation = -rotation * (pi / 180);
+		float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
+		float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
+		float c1 = x + width / 2, c2 = y - height / 2;
+		float passIn1[21] = {
+			a1 * cos(r1) + c1, a1 * sin(r1) + c2, 0.0f, r, g, b, a,
+			a1 * cos(r2) + c1, a1 * sin(r2) + c2, 0.0f, r, g, b, a,
+			a1 * cos(r3) + c1, a1 * sin(r3) + c2, 0.0f, r, g, b, a
+		};
+		float passIn2[7] = {
+			a1 * cos(r4) + c1, a1 * sin(r4) + c2, 0.0f, r, g, b, a
+		};
+		C_addTriangle(&win->shapeBatch, passIn1);
+		C_addVertice(&win->shapeBatch, passIn2);
+		C_endShape(&win->shapeBatch);
+	}
 }
-void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, Color color) {
-	float r = (float)color[0]/255, g = (float)color[1]/255, b = (float)color[2]/255, a = (float)color[3]/255;
-	float passIn1[27] = {
-		x, -(y), 0.0f, r, g, b, a, 0.0f, 1.0f,
-		x, -(y + height), 0.0f, r, g, b, a, 0.0f, 0.0f,
-		x + width, -(y + height), 0.0f, r, g, b, a, 1.0f, 0.0f
-	};
-	float passIn2[9] = {
-		x + width, -(y), 0.0f, r, g, b, a, 1.0f, 1.0f
-	};
-	C_addTextureTriangle(&win->textures.data[texture], passIn1);
-	C_addTextureVertice(&win->textures.data[texture], passIn2);
-	C_endTextureShape(&win->textures.data[texture]);
+void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color) {
+	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	y = -y;
+	if (rotation == 0.0f || (int)rotation % 360 == 0) {
+		float passIn1[27] = {
+			x, y, 0.0f, r, g, b, a, 0.0f, 1.0f,
+			x, y - height, 0.0f, r, g, b, a, 0.0f, 0.0f,
+			x + width, y - height, 0.0f, r, g, b, a, 1.0f, 0.0f
+		};
+		float passIn2[9] = {
+			x + width, y, 0.0f, r, g, b, a, 1.0f, 1.0f
+		};
+		C_addTextureTriangle(&win->textures.data[texture], passIn1);
+		C_addTextureVertice(&win->textures.data[texture], passIn2);
+		C_endTextureShape(&win->textures.data[texture]);
+	}
+	else {
+		float pi = 3.1415926535897932384626433;
+		rotation = -rotation * (pi / 180);
+		float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
+		float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
+		float c1 = x + width / 2, c2 = y - height / 2;
+		float passIn1[27] = {
+			a1 * cos(r1) + c1, a1 * sin(r1) + c2, 0.0f, r, g, b, a, 0.0f, 1.0f,
+			a1 * cos(r2) + c1, a1 * sin(r2) + c2, 0.0f, r, g, b, a, 0.0f, 0.0f,
+			a1 * cos(r3) + c1, a1 * sin(r3) + c2, 0.0f, r, g, b, a, 1.0f, 0.0f
+		};
+		float passIn2[9] = {
+			a1 * cos(r4) + c1, a1 * sin(r4) + c2, 0.0f, r, g, b, a, 1.0f, 1.0f
+		};
+		C_addTextureTriangle(&win->textures.data[texture], passIn1);
+		C_addTextureVertice(&win->textures.data[texture], passIn2);
+		C_endTextureShape(&win->textures.data[texture]);
+	}
 }

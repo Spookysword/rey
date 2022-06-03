@@ -47,7 +47,8 @@ int main() {
 			printf("powered by grey\n");
 		}
 		
-		drawTexture(&win, block, 0, 0, 100, 100, COLOR_WHITE);
+		drawTexture(&win, block, 0, 0, 100, 100, 30.0f, COLOR_WHITE);
+		drawRectangle(&win, 100, 100, 100, 100, -30.0f, COLOR_BLUE);
 		
 		renderWindow(win);
 	}
