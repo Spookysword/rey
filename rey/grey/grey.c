@@ -298,6 +298,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.prevWidth = width;
 	win.prevHeight = height;
 	win.textures = C_textureVecCreate();
+	win.zmod = 0.0f;
 
 	unsigned int w_colorVertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(w_colorVertexShader, 1, &colorVertexShader, NULL);
@@ -326,6 +327,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	glDeleteShader(w_textureVertexShader);
 	glDeleteShader(w_textureFragmentShader);
 
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -355,6 +357,7 @@ void C_updateWindow(C_Window* win) {
 	win->currentFrame = (float)glfwGetTime();
 	win->deltaTime = win->currentFrame - win->lastFrame;
 	win->lastFrame = win->currentFrame;
+	win->zmod = 0.0f;
 	if (win->deltaTime > 0.05f) { win->deltaTime = 0.05f; }
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	glfwPollEvents();
@@ -438,7 +441,7 @@ boolean C_isKeyPressed(C_Window win, int key) {
 void C_clearWindowBackground(C_Window win, Color color) {
 	glfwMakeContextCurrent(win.windowHandle);
 	glClearColor((float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 void C_setWireframeMode(C_Window win, boolean state) {
 	glfwMakeContextCurrent(win.windowHandle);
@@ -451,24 +454,25 @@ void C_setWireframeMode(C_Window win, boolean state) {
 }
 void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 	float passIn1[21] = {
-		x1, -y1, 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
-		x2, -y2, 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
-		x3, -y3, 0.0f, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255
+		x1, -y1, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
+		x2, -y2, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
+		x3, -y3, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255
 	};
 	C_addTriangle(&win->shapeBatch, passIn1);
 	C_endShape(&win->shapeBatch);
+	win->zmod -= 0.000001f;
 }
 void C_drawRectangle(C_Window* win, float x, float y, float width, float height, float rotation, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	y = -y;
 	if (rotation == 0.0f || (int)rotation % 360 == 0) {
 		float passIn1[21] = {
-			x, y, 0.0f, r, g, b, a,
-			x, y - height, 0.0f, r, g, b, a,
-			x + width, y - height, 0.0f, r, g, b, a
+			x, y, win->zmod, r, g, b, a,
+			x, y - height, win->zmod, r, g, b, a,
+			x + width, y - height, win->zmod, r, g, b, a
 		};
 		float passIn2[7] = {
-			x + width, y, 0.0f, r, g, b, a
+			x + width, y, win->zmod, r, g, b, a
 		};
 		C_addTriangle(&win->shapeBatch, passIn1);
 		C_addVertice(&win->shapeBatch, passIn2);
@@ -481,29 +485,30 @@ void C_drawRectangle(C_Window* win, float x, float y, float width, float height,
 		float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
 		float c1 = x + width / 2, c2 = y - height / 2;
 		float passIn1[21] = {
-			a1 * cos(r1) + c1, a1 * sin(r1) + c2, 0.0f, r, g, b, a,
-			a1 * cos(r2) + c1, a1 * sin(r2) + c2, 0.0f, r, g, b, a,
-			a1 * cos(r3) + c1, a1 * sin(r3) + c2, 0.0f, r, g, b, a
+			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a,
+			a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a,
+			a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a
 		};
 		float passIn2[7] = {
-			a1 * cos(r4) + c1, a1 * sin(r4) + c2, 0.0f, r, g, b, a
+			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a
 		};
 		C_addTriangle(&win->shapeBatch, passIn1);
 		C_addVertice(&win->shapeBatch, passIn2);
 		C_endShape(&win->shapeBatch);
 	}
+	win->zmod -= 0.000001f;
 }
 void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	y = -y;
 	if (rotation == 0.0f || (int)rotation % 360 == 0) {
 		float passIn1[27] = {
-			x, y, 0.0f, r, g, b, a, 0.0f, 1.0f,
-			x, y - height, 0.0f, r, g, b, a, 0.0f, 0.0f,
-			x + width, y - height, 0.0f, r, g, b, a, 1.0f, 0.0f
+			x, y, win->zmod, r, g, b, a, 0.0f, 1.0f,
+			x, y - height, win->zmod, r, g, b, a, 0.0f, 0.0f,
+			x + width, y - height, win->zmod, r, g, b, a, 1.0f, 0.0f
 		};
 		float passIn2[9] = {
-			x + width, y, 0.0f, r, g, b, a, 1.0f, 1.0f
+			x + width, y, win->zmod, r, g, b, a, 1.0f, 1.0f
 		};
 		C_addTextureTriangle(&win->textures.data[texture], passIn1);
 		C_addTextureVertice(&win->textures.data[texture], passIn2);
@@ -516,15 +521,16 @@ void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width
 		float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
 		float c1 = x + width / 2, c2 = y - height / 2;
 		float passIn1[27] = {
-			a1 * cos(r1) + c1, a1 * sin(r1) + c2, 0.0f, r, g, b, a, 0.0f, 1.0f,
-			a1 * cos(r2) + c1, a1 * sin(r2) + c2, 0.0f, r, g, b, a, 0.0f, 0.0f,
-			a1 * cos(r3) + c1, a1 * sin(r3) + c2, 0.0f, r, g, b, a, 1.0f, 0.0f
+			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a, 0.0f, 1.0f,
+			a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a, 0.0f, 0.0f,
+			a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a, 1.0f, 0.0f
 		};
 		float passIn2[9] = {
-			a1 * cos(r4) + c1, a1 * sin(r4) + c2, 0.0f, r, g, b, a, 1.0f, 1.0f
+			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f
 		};
 		C_addTextureTriangle(&win->textures.data[texture], passIn1);
 		C_addTextureVertice(&win->textures.data[texture], passIn2);
 		C_endTextureShape(&win->textures.data[texture]);
 	}
+	win->zmod -= 0.000001f;
 }

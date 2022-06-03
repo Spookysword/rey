@@ -212,6 +212,7 @@ struct C_Window {
 	float deltaTime;
 	float lastFrame;
 	float currentFrame;
+	float zmod;
 	int prevX, prevY, prevWidth, prevHeight;
 	boolean fullscreen, priorFullscreen;
 	C_textureVec textures;
