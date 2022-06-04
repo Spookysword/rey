@@ -9,9 +9,11 @@ int main() {
 	float moveSpeed = 250.0f;
 
 	Texture block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
+	float rot = 0.0f;
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
+		rot += 1.0f;
 		
 		clearWindowBackground(win, COLOR_DISCORD);
 
@@ -43,8 +45,7 @@ int main() {
 		if (isKeyDown(win, KEY_A)) { win.camera.x -= moveSpeed * win.deltaTime; }
 		if (isKeyDown(win, KEY_D)) { win.camera.x += moveSpeed * win.deltaTime; }
 		
-		drawRectangle(&win, 0, 0, 100, 100, -30.0f, COLOR_BLUE);
-		drawTexture(&win, block, 0, 0, 100, 100, 30.0f, COLOR_WHITE);
+		drawTexture(&win, block, 0, 0, 100, 100, rot, COLOR_WHITE);
 		
 		renderWindow(win);
 	}
