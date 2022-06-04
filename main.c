@@ -5,8 +5,6 @@ int main() {
 	initGrey(4);
 
 	Window win = createWindow(720, 720, "grey");
-
-	srand(NULL);
 	
 	float moveSpeed = 250.0f;
 
@@ -17,10 +15,12 @@ int main() {
 		
 		clearWindowBackground(win, COLOR_DISCORD);
 
-		printf("%f\n", win.framesPerSecond);
-
 		if (isKeyDown(win, KEY_ESCAPE)) {
 			closeWindow(win);
+		}
+
+		if (isKeyPressed(win, KEY_F)) {
+			printf("%f\n", win.framesPerSecond);
 		}
 
 		if (isKeyPressed(win, KEY_F11)) {

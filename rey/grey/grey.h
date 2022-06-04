@@ -207,21 +207,45 @@ struct C_Camera {
 typedef struct C_Camera C_Camera;
 
 struct C_Window {
+	// The GLFW window obj for the window. Shouldn't be used unless directly using OpenGL functions.
 	GLFWwindow* windowHandle;
+	// A list of all of the keys and if they're pressed or not. Shouldn't be used, instead use isKeyDown()
 	boolean keys[349];
+	// A list of all of the keys and if they were clicked first on this frame. Shouldn't be used, instead use isKeyPressed()
 	boolean tempKeys[349];
+	// Used to check if a key has been clicked. Shouldn't be used.
 	boolean tempKeysCheck[349];
+	// The window's title. You can use this to change the window's title or get it with no functions needed (pretty cool amiright)
 	const char* title;
-	unsigned int colorShader, textureShader, width, height;
+	// The int passed to OpenGL that's used to draw basic color objects. Shouldn't be used unless directly using OpenGL functions.
+	unsigned int colorShader;
+	// The int passed to OpenGL that's used to draw textures. Shouldn't be used unless directly using OpenGL functions.
+	unsigned int textureShader;
+	// The window's width. You can use this to change the window's width or get it with no functions needed (pretty cool amiright)
+	unsigned int width;
+	// The window's height. You can use this to change the window's height or get it with no functions needed (pretty cool amiright)
+	unsigned int height;
+	// The batch that's used to draw all basic shapes. Shouldn't be used unless directly using openGL functions.
 	C_Batch shapeBatch;
+	// The time since the last frame happened. Multiplying values by this makes the value frame independent, meaning that it moves at the same rate of change regardless of the FPS.
 	float deltaTime;
+	// Value used to calculate deltaTime and shouldn't be used or modified.
 	float lastFrame;
+	// Value used to calculate deltaTime and shouldn't be used or modified.
 	float currentFrame;
+	// The Z-value used to draw items in order despite being sent in different batches.
 	float zmod;
+	// Used to store vars for fullscreen info and shouldn't be used or modified.
 	int prevX, prevY, prevWidth, prevHeight;
-	boolean fullscreen, priorFullscreen;
+	// Whether or not the window is fullscreen. You can use this to change the window's fullscreen status or get it with no functions needed (pretty cool amiright)
+	boolean fullscreen;
+	// Value used to manage the "fullscreen" var and shouldn't be used or modified.
+	boolean priorFullscreen;
+	// The vector used to hold all of the textures and their respective batch info. Shouldn't be used.
 	C_textureVec textures;
+	// The camera used to project everything. It has modifiable x, y, & z values.
 	C_Camera camera;
+	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
 };
 typedef struct C_Window C_Window;
