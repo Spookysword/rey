@@ -339,6 +339,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 void C_deleteWindow(C_Window* win) {
 	C_deleteBatch(&win->shapeBatch);
 	C_textureVecClear(&win->textures);
+	C_textureVecDelete(&win->textures);
 }
 boolean C_shouldWindowClose(C_Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
