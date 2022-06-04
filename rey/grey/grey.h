@@ -358,26 +358,6 @@ Deloads a texture, freeing up the memory it's using.
 // Draws a texture. Note that rotation is measured in degrees.
 #define drawTexture C_drawTexture
 
-#define Batch C_Batch
-
-#define addVertice C_addVertice
-#define addTriangle C_addTriangle
-#define endShape C_endShape
-#define draw C_draw
-#define createBatch C_createBatch
-#define bindBatch C_bindBatch
-#define flushBatch C_flushBatch
-#define deleteBatch C_deleteBatch
-
-#define addTextureVertice C_addTextureVertice
-#define addTextureTriangle C_addTextureTriangle
-#define endTextureShape C_endTextureShape
-#define drawTextureBatch C_drawTextureBatch
-#define createTextureBatch C_createTextureBatch
-#define bindTextureBatch C_bindTextureBatch
-#define flushTextureBatch C_flushTextureBatch
-#define deleteTextureBatch C_deleteTextureBatch
-
 #endif
 
 #ifdef __cplusplus
