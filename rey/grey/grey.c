@@ -242,9 +242,9 @@ GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	}
 	int x = 0, y = 0;
 	glfwGetWindowPos(win, &x, &y);
-	GLFWmonitor* returnMon = glfwGetPrimaryMonitor();
+	GLFWmonitor* returnMon = monitors[widths.size-1];
 	for (int i = 0; i < widths.size; i++) {
-		if (i + 2 > widths.size || x > widths.data[i] && x < widths.data[i+1]) {
+		if (widths.size && x > widths.data[i] && x < widths.data[i+1]) {
 			returnMon = monitors[i];
 		}
 	}
