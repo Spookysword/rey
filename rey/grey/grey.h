@@ -6,6 +6,8 @@ extern "C" {
 #endif
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include "mrey.h"
 #ifdef _WIN32
 #include <Windows.h>
@@ -253,7 +255,7 @@ struct C_Window {
 };
 typedef struct C_Window C_Window;
 
-	// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
+// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 void C_initGrey(unsigned int sampleRate);
 	// Frees up any possibly used memory.
 void C_closeGrey();
