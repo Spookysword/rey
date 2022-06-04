@@ -1,10 +1,13 @@
 #include <grey.h>
 #include <stdio.h>
+#include <arey.h>
 
 int main() {
 	initGrey(4);
+	initArey();
 
 	Window win = createWindow(720, 720, "grey");
+	playSound("resources/aeh.wav");
 	
 	float moveSpeed = 250.0f;
 
@@ -31,6 +34,7 @@ int main() {
 
 		if (isKeyDown(win, KEY_SPACE)) {
 			setWireframeMode(win, TRUE);
+			playSound("resources/aeh.ogg");
 		}
 		else {
 			setWireframeMode(win, FALSE);
@@ -52,6 +56,8 @@ int main() {
 	
 	deleteTexture(&win, block);
 	deleteWindow(&win);
+
+	closeArey();
 	closeGrey();
 	return 0;
 }
