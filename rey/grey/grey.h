@@ -152,7 +152,9 @@ extern "C" {
 #define FILTER_NEAREST GL_NEAREST
 #define FILTER_LINEAR GL_LINEAR
 
+// A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
 typedef unsigned int Color[4];
+// A texture, which is really just an ID of the texture.
 typedef unsigned int Texture;
 
 struct C_Batch {
@@ -206,6 +208,7 @@ struct C_Camera {
 };
 typedef struct C_Camera C_Camera;
 
+// A window struct. You can use multiple if you're wondering, by the way.
 struct C_Window {
 	// The GLFW window obj for the window. Shouldn't be used unless directly using OpenGL functions.
 	GLFWwindow* windowHandle;
@@ -346,7 +349,7 @@ Deloads a texture, freeing up the memory it's using.
 #define initGrey C_initGrey
 
 #define Camera C_Camera
-// A Window struct
+// A window struct. You can use multiple if you're wondering, by the way.
 #define Window C_Window
 // Draws a triangle with three given points and a color.
 #define drawTriangle C_drawTriangle
