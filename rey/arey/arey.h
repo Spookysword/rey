@@ -29,7 +29,7 @@ inline void playSound(const char* sound) {
 
 	ma_result res = ma_engine_play_sound(&engine, sound, NULL);
 	if (res != MA_SUCCESS) {
-		printf("Couln't play sound!");
+		printf("Couln't play sound located at path '%s'", sound);
 	}
 }
 
