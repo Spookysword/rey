@@ -213,6 +213,23 @@ struct C_Camera {
 };
 typedef struct C_Camera C_Camera;
 
+FT_Library FT;
+
+struct C_Character {
+	unsigned int ID;
+	char character;
+	float sizeX, sizeY;
+	float bearingX, bearingY;
+	unsigned int advance;
+	C_TextureBatch batch;
+};
+typedef struct C_Character C_Character;
+struct C_Font {
+	FT_Face face;
+	C_Character characters[128];
+};
+typedef struct C_Font C_Font;
+
 // A window struct. You can use multiple if you're wondering, by the way.
 struct C_Window {
 	// The GLFW window obj for the window. Shouldn't be used unless directly using OpenGL functions.
@@ -255,6 +272,8 @@ struct C_Window {
 	C_Camera camera;
 	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
+
+	C_Font arial;
 };
 typedef struct C_Window C_Window;
 
