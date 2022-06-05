@@ -544,7 +544,7 @@ void C_drawCircle(C_Window* win, float x, float y, float radius, Color color) {
 	y = -y;
 	float pi = 3.1415926535897932384626433f;
 	float pi2 = 2 * pi;
-	int amount = 360*2;
+	int amount = CIRCLE_ACCURACY;
 	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
 	C_addVertice(&win->shapeBatch, passIn);
 	for (int i = 0; i <= amount; i++) {
@@ -592,7 +592,7 @@ void C_drawRoundedRect(C_Window* win, float x, float y, float width, float heigh
 	float xi = rotateX(xii, yii,c1,c2,rot);
 	float yi = rotateY(xii, yii,c1,c2,rot);
 	float pi2 = 2 * PI;
-	int amount = 360*2;
+	int amount = CIRCLE_ACCURACY;
 	float passIn4[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
 	C_addVertice(&win->shapeBatch, passIn4);
 	for (int i = 0; i <= amount; i++) {

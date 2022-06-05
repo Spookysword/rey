@@ -12,6 +12,9 @@ extern "C" {
 #ifdef _WIN32
 #include <Windows.h>
 #endif
+#ifndef CIRCLE_ACCURACY
+#define CIRCLE_ACCURACY 360
+#endif
 
 /* The unknown key */
 #define KEY_UNKNOWN            -1
