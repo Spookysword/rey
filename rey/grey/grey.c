@@ -483,10 +483,9 @@ void C_drawRectangle(C_Window* win, float x, float y, float width, float height,
 		C_endShape(&win->shapeBatch);
 	}
 	else {
-		float pi = 3.1415926535897932384626433;
-		rotation = -rotation * (pi / 180);
+		rotation = -rotation * (PI / 180);
 		float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
-		float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
+		float r0 = asin(((height / 2) * (sin(PI / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - PI, r4 = r2 - PI;
 		float c1 = x + width / 2, c2 = y - height / 2;
 		float passIn1[21] = {
 			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a,
@@ -542,8 +541,7 @@ void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width
 void C_drawCircle(C_Window* win, float x, float y, float radius, Color color) {
 	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
 	y = -y;
-	float pi = 3.1415926535897932384626433f;
-	float pi2 = 2 * pi;
+	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
 	C_addVertice(&win->shapeBatch, passIn);
