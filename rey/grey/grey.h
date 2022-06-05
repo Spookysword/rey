@@ -274,6 +274,7 @@ struct C_Window {
 	float framesPerSecond;
 
 	C_Font arial;
+	unsigned int fontShader;
 };
 typedef struct C_Window C_Window;
 

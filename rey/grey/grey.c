@@ -42,6 +42,29 @@ const char* textureFragmentShader = "#version 330 core\n"
 "{\n"
 "	gl_FragColor = texture(currentTexture, TexCoord) * color;\n"
 "}\0";
+const char* fontVertexShader = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec4 aColor;\n"
+"layout (location = 2) in vec2 aTexCoord;\n"
+"out vec4 color;\n"
+"out vec2 TexCoord;\n"
+"uniform vec2 viewport;\n"
+"uniform vec3 offset;\n"
+"void main()\n"
+"{\n"
+"	gl_Position = vec4((aPos.x - viewport.x) / viewport.x - (offset.x / viewport.x), (aPos.y + viewport.y) / viewport.y + (offset.y / viewport.y), aPos.z, 1.0);\n"
+"	color = aColor;\n"
+"	TexCoord = aTexCoord;\n"
+"}\0";
+const char* fontFragmentShader = "#version 330 core\n"
+"in vec4 color;\n"
+"in vec2 TexCoord;\n"
+"uniform sampler2D currentTexture;\n"
+"void main()\n"
+"{\n"
+"	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(currentTexture, TexCoord).r);\n"
+"	gl_FragColor = color * sampled;\n"
+"}\0";
 
 C_Batch C_createBatch() {
 	C_Batch batch;
@@ -308,7 +331,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	if (FT_New_Face(FT, "resources/arial.ttf", 0, &win.arial.face)) {
 		printf("Could load font!\n");
 	}
-	FT_Set_Pixel_Sizes(win.arial.face, 0, 48);
+	FT_Set_Pixel_Sizes(win.arial.face, 0, 200);
 	if (FT_Load_Char(win.arial.face, 'A', FT_LOAD_RENDER)) {
 		printf("Couldn't load glyph!\n");
 	}
@@ -387,6 +410,20 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	glLinkProgram(win.textureShader);
 	glDeleteShader(w_textureVertexShader);
 	glDeleteShader(w_textureFragmentShader);
+
+	// Def should make this a function
+	unsigned int w_fontVertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(w_fontVertexShader, 1, &fontVertexShader, NULL);
+	glCompileShader(w_fontVertexShader);
+	unsigned int w_fontFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(w_fontFragmentShader, 1, &fontFragmentShader, NULL);
+	glCompileShader(w_fontFragmentShader);
+	win.fontShader = glCreateProgram();
+	glAttachShader(win.fontShader, w_fontVertexShader);
+	glAttachShader(win.fontShader, w_fontFragmentShader);
+	glLinkProgram(win.fontShader);
+	glDeleteShader(w_fontVertexShader);
+	glDeleteShader(w_fontFragmentShader);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
@@ -492,6 +529,9 @@ void C_renderWindow(C_Window win) {
 		C_drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
 	}
 
+	glUseProgram(win.fontShader);
+	glUniform2f(glGetUniformLocation(win.fontShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+	glUniform3f(glGetUniformLocation(win.fontShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	C_bindTextureBatch(win.arial.characters[69].batch);
 	glBindTexture(GL_TEXTURE_2D, win.arial.characters[69].batch.textureID);
 	glBindVertexArray(win.arial.characters[69].batch.VAO);
