@@ -172,7 +172,7 @@ C_TextureBatch C_createTextureBatch(const char* filePath, int filter) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else {
-		printf("Error generating texture\n");
+		printf("Error generating texture located at '%s'\n", filePath);
 	}
 	stbi_image_free(data);
 
