@@ -5,6 +5,10 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+
+#define STB_VORBIS_HEADER_ONLY
+#include "extras/stb_vorbis.c"
+
 #define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio.h>
 
@@ -21,6 +25,8 @@ inline void initArey() {
 }
 
 inline void playSound(const char* sound) {
+
+
 	ma_result res = ma_engine_play_sound(&engine, sound, NULL);
 	if (res != MA_SUCCESS) {
 		printf("Couln't play sound!");

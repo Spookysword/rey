@@ -17,7 +17,7 @@ int main() {
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 		rot += 1.0f;
-		
+
 		clearWindowBackground(win, COLOR_DISCORD);
 
 		if (isKeyDown(win, KEY_ESCAPE)) {
@@ -32,10 +32,14 @@ int main() {
 			win.fullscreen = !win.fullscreen;
 		}
 
-		if (isKeyDown(win, KEY_SPACE)) {
-			setWireframeMode(win, TRUE);
+		if (isKeyPressed(win, KEY_SPACE)) {
 			playSound("resources/aeh.ogg");
 		}
+
+		if (isKeyDown(win, KEY_SPACE)) {
+			setWireframeMode(win, TRUE);
+		}
+
 		else {
 			setWireframeMode(win, FALSE);
 		}

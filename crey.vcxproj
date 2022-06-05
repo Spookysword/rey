@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\extras\stb_vorbis.c" />
     <ClCompile Include="include\glad.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="rey\grey\grey.c" />
@@ -170,6 +171,10 @@
     <ClCompile Include="rey\prey\prey.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\extras\miniaudio_libopus.h" />
+    <ClInclude Include="include\extras\miniaudio_libvorbis.h" />
+    <ClInclude Include="include\ft2build.h" />
+    <ClInclude Include="include\miniaudio.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="rey\arey\arey.h" />
     <ClInclude Include="rey\grey\grey.h" />
