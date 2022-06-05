@@ -305,6 +305,10 @@ void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float
 void C_drawRectangle(C_Window* win, float x, float y, float width, float height, float rotation, Color color);
 // Draws a texture. Note that rotation is measured in degrees.
 void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color);
+// Draws a circle.
+void C_drawCircle(C_Window* win, float x, float y, float radius, Color color);
+// Draws a rounded rectangle.
+void C_drawRoundedRect(C_Window* win, float x, float y, float width, float height, float radius, float rotation, Color color);
 
 #ifndef IMPLEMENT_GREY_H
 
@@ -359,6 +363,10 @@ Deloads a texture, freeing up the memory it's using.
 #define drawRectangle C_drawRectangle
 // Draws a texture. Note that rotation is measured in degrees.
 #define drawTexture C_drawTexture
+// Draws a circle.
+#define drawCircle C_drawCircle
+// Draws a rounded rectangle.
+#define drawRoundedRect C_drawRoundedRect
 
 #endif
 

@@ -538,3 +538,104 @@ void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width
 	}
 	win->zmod -= 0.000001f;
 }
+
+void C_drawCircle(C_Window* win, float x, float y, float radius, Color color) {
+	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
+	y = -y;
+	float pi = 3.1415926535897932384626433f;
+	float pi2 = 2 * pi;
+	int amount = 360*2;
+	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
+	C_addVertice(&win->shapeBatch, passIn);
+	for (int i = 0; i <= amount; i++) {
+		float passIn2[7] = { x + (radius * cos(i * pi2 / amount)), y + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
+		C_addVertice(&win->shapeBatch, passIn2);
+	}
+	C_endShape(&win->shapeBatch);
+
+	win->zmod -= 0.000001f;
+}
+
+void C_drawRoundedRect(C_Window* win, float x, float y, float width, float height, float radius, float rotation, Color color) {
+	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
+	float x1 = x;
+	float y1 = y;
+	y1 += height;
+	y1 -= y1 * 2;
+	float rot = rotation * (PI / 180);
+	float c1 = x1 + width / 2;
+	float c2 = y1 + height / 2;
+
+	float a = x1 + radius;
+	float b = y1;
+	float c = x1 + width - radius;
+	float d = y1 + height;
+	float passIn0[21] = { rotateX(a,b,c1,c2,rot),rotateY(a,b,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(a,d,c1,c2,rot),rotateY(a,d,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(c,d,c1,c2,rot),rotateY(c,d,c1,c2,rot),win->zmod,cR,cG,cB,cA };
+	float passIn1[7] = { rotateX(c,b,c1,c2,rot),rotateY(c,b,c1,c2,rot),win->zmod,cR,cG,cB,cA };
+	C_addTriangle(&win->shapeBatch, passIn0);
+	C_addVertice(&win->shapeBatch, passIn1);
+	C_endShape(&win->shapeBatch);
+
+	a = x1;
+	b = y1 + radius;
+	c = x1 + width;
+	d = y1 + height - radius;
+	float passIn2[21] = { rotateX(a,b,c1,c2,rot),rotateY(a,b,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(a,d,c1,c2,rot),rotateY(a,d,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(c,d,c1,c2,rot),rotateY(c,d,c1,c2,rot),win->zmod,cR,cG,cB,cA };
+	float passIn3[7] = { rotateX(c,b,c1,c2,rot),rotateY(c,b,c1,c2,rot),win->zmod,cR,cG,cB,cA };
+	C_addTriangle(&win->shapeBatch, passIn2);
+	C_addVertice(&win->shapeBatch, passIn3);
+	C_endShape(&win->shapeBatch);
+
+
+	float xii = x1 + radius;
+	float yii = y1 + radius;
+	float xi = rotateX(xii, yii,c1,c2,rot);
+	float yi = rotateY(xii, yii,c1,c2,rot);
+	float pi2 = 2 * PI;
+	int amount = 360*2;
+	float passIn4[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
+	C_addVertice(&win->shapeBatch, passIn4);
+	for (int i = 0; i <= amount; i++) {
+		float passIn5[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
+		C_addVertice(&win->shapeBatch, passIn5);
+	}
+	C_endShape(&win->shapeBatch);
+
+	xii = x1 + width - radius;
+	yii = y1 + radius;
+	xi = rotateX(xii, yii, c1, c2, rot);
+	yi = rotateY(xii, yii, c1, c2, rot);
+	float passIn6[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
+	C_addVertice(&win->shapeBatch, passIn6);
+	for (int i = 0; i <= amount; i++) {
+		float passIn7[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
+		C_addVertice(&win->shapeBatch, passIn7);
+	}
+	C_endShape(&win->shapeBatch);
+
+	xii = x1 + width - radius;
+	yii = y1 + height - radius;
+	xi = rotateX(xii, yii, c1, c2, rot);
+	yi = rotateY(xii, yii, c1, c2, rot);
+	float passIn8[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
+	C_addVertice(&win->shapeBatch, passIn8);
+	for (int i = 0; i <= amount; i++) {
+		float passIn9[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
+		C_addVertice(&win->shapeBatch, passIn9);
+	}
+	C_endShape(&win->shapeBatch);
+
+	xii = x1 + radius;
+	yii = y1 + height - radius;
+	xi = rotateX(xii, yii, c1, c2, rot);
+	yi = rotateY(xii, yii, c1, c2, rot);
+	float passIn10[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
+	C_addVertice(&win->shapeBatch, passIn10);
+	for (int i = 0; i <= amount; i++) {
+		float passIn11[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
+		C_addVertice(&win->shapeBatch, passIn11);
+	}
+	C_endShape(&win->shapeBatch);
+
+	win->zmod -= 0.000001f;
+}

@@ -8,6 +8,8 @@ extern "C" {
 #include <memory.h>
 #include <stdlib.h>
 
+#define PI 3.1415926535897932384626433
+
 struct C_floatVec {
 	float* data;
 	int size;
@@ -35,6 +37,9 @@ C_intVec C_intVecCreate();
 void C_intVecPushBack(C_intVec* vec, float num);
 void C_intVecClear(C_intVec* vec);
 void C_intVecDelete(C_intVec* vec);
+
+float rotateX(float x, float y, float c1, float c2, float rotation);
+float rotateY(float x, float y, float c1, float c2, float rotation);
 
 #ifndef IMPLEMENT_MREY_H
 #define floatVec C_floatVec

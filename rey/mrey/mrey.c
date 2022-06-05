@@ -94,3 +94,21 @@ void C_intVecDelete(C_intVec* vec) {
 	free(vec->data);
 	vec->size = 0;
 }
+
+float rotateX(float x, float y, float c1, float c2, float rotation) {
+	float pi = 3.1415926535897932384626433;
+
+	float cor = cos(rotation);
+	float sir = sin(rotation);
+
+	return cos(rotation) * (x - c1) + (y - c2) * sin(rotation) + c1;
+}
+
+float rotateY(float x, float y, float c1, float c2, float rotation) {
+	float pi = 3.1415926535897932384626433;
+
+	float cor = cos(rotation);
+	float sir = sin(rotation);
+
+	return -sin(rotation) * (x - c1) + cos(rotation) * (y - c2) + c2;
+}
