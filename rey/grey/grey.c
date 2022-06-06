@@ -927,6 +927,7 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 	win->zmod -= 0.000001f;
 }
 void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
+	scale = scale / win->fonts.data[font].scale;
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; text[i] != '\0'; i++) {
 		Character c = win->fonts.data[font].characters[text[i]];
