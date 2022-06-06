@@ -367,6 +367,8 @@ void drawText(Window* win, const char* text, FontID font, float x, float y, floa
 
 void drawPolygon(Window* win, float* xs, float* ys, int points, Color color);
 
+void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color color1, Color color2, Color color3, Color color4);
+
 #ifdef __cplusplus
 // Chromakey
 #define COLOR_BLACK Color{ 0, 0, 0, 255 }
