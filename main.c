@@ -14,6 +14,8 @@ int main() {
 	Texture block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
 	float rot = 0.0f;
 
+	FontID arial = loadFont(&win, "resources/arial.ttf", 50.0f);
+
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 		rot += 1.0f;
@@ -57,11 +59,14 @@ int main() {
 		if (isKeyDown(win, KEY_D)) { win.camera.x += moveSpeed * win.deltaTime; }
 		
 		drawTexture(&win, block, 0, 0, 100, 100, rot, COLOR_WHITE);
+
+		drawText(&win, "hello grey", arial, 0.0f, 100.0f, 1.0f, COLOR_GREEN);
 		
 		renderWindow(win);
 	}
 	
 	deleteTexture(&win, block);
+	deleteFont(&win, arial);
 	deleteWindow(&win);
 
 	closeArey();

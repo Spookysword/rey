@@ -251,6 +251,38 @@ void C_textureVecDelete(C_textureVec* vec) {
 	vec->size = 0;
 	vec->limit = 0;
 }
+C_fontVec C_fontVecCreate() {
+	C_fontVec vec;
+	vec.data = (C_Font*)calloc(0, sizeof(C_Font));
+	vec.size = 0;
+	vec.limit = 0;
+	return vec;
+}
+void C_fontVecCheckSize(C_fontVec* vec) {
+	if (vec->size + 1 > vec->limit) {
+		C_Font* temp;
+		vec->limit = vec->size * 2;
+		temp = (C_Font*)realloc(vec->data, vec->limit * sizeof(C_Font));
+		if (temp) { vec->data = temp; }
+	}
+}
+void C_fontVecPushBack(C_fontVec* vec, C_Font num) {
+	vec->size += 1;
+	C_fontVecCheckSize(vec);
+	vec->data[vec->size-1] = num;
+}
+void C_fontVecClear(C_fontVec* vec) {
+	free(vec->data);
+	vec->limit /= 2;
+	vec->data = (C_Font*)calloc(vec->limit, sizeof(C_Font));
+	vec->size = 0;
+}
+// This function kinda maybe doesn't exist yet possibly perhaps
+void C_fontVecDelete(C_fontVec* vec) {
+	for (int i = 0; i < vec->size; i++) {
+		
+	}
+}
 
 GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	int count;
@@ -298,6 +330,7 @@ void C_initGrey(unsigned int sampleRate) {
 #endif
 }
 void C_closeGrey() {
+	FT_Done_FreeType(FT);
 	glfwTerminate();
 }
 
@@ -327,11 +360,13 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.zmod = 0.0f;
 	win.camera.x = 0.0f, win.camera.y = 0.0f, win.camera.z = 0.0f;
 	win.framesPerSecond = 0.0f;
+	win.fonts = C_fontVecCreate();
 
-	if (FT_New_Face(FT, "resources/arial.ttf", 0, &win.arial.face)) {
+	/*if (FT_New_Face(FT, "resources/arial.ttf", 0, &win.arial.face)) {
 		printf("Could load font!\n");
 	}
-	FT_Set_Pixel_Sizes(win.arial.face, 0, 200);
+	FT_Set_Pixel_Sizes(win.arial.face, 0, 45);
+	win.arial.scale = 45;
 	if (FT_Load_Char(win.arial.face, 'A', FT_LOAD_RENDER)) {
 		printf("Couldn't load glyph!\n");
 	}
@@ -382,7 +417,7 @@ C_Window C_createWindow(int width, int height, const char* title) {
 		win.arial.characters[c] = character;
 	}
 	FT_Done_Face(win.arial.face);
-	FT_Done_FreeType(FT);
+	FT_Done_FreeType(FT);*/
 
 	unsigned int w_colorVertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(w_colorVertexShader, 1, &colorVertexShader, NULL);
@@ -445,6 +480,129 @@ Texture c_newTexture(C_Window* win, const char* path, int filter) {
 	C_textureVecPushBack(&win->textures, text);
 	return win->textures.size-1;
 }
+FontID loadFont(C_Window* win, const char* filePath, float size) {
+	/*
+	if (FT_New_Face(FT, "resources/arial.ttf", 0, &win.arial.face)) {
+		printf("Could load font!\n");
+	}
+	FT_Set_Pixel_Sizes(win.arial.face, 0, 45);
+	win.arial.scale = 45;
+	if (FT_Load_Char(win.arial.face, 'A', FT_LOAD_RENDER)) {
+		printf("Couldn't load glyph!\n");
+	}
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // This line may cause problems
+	for (unsigned char c = 0; c < 128; c++) {
+		if (FT_Load_Char(win.arial.face, c, FT_LOAD_RENDER)) {
+			printf("Failed to load particular glyph!\n");
+		}
+		C_TextureBatch testBatch;
+		C_Character character;
+		glGenVertexArrays(1, &testBatch.VAO);
+		glGenBuffers(1, &testBatch.VBO);
+		glBindVertexArray(testBatch.VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, testBatch.VBO);
+		testBatch.stack = 0;
+		testBatch.verticeCount = 0;
+		testBatch.triangles = C_floatVecCreate();
+		testBatch.shapeVertices = C_intVecCreate();
+
+		// Position
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		// Color
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		// Texture coords
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		glGenTextures(1, &testBatch.textureID);
+		glBindTexture(GL_TEXTURE_2D, testBatch.textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, win.arial.face->glyph->bitmap.width, win.arial.face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, win.arial.face->glyph->bitmap.buffer);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		character.ID = testBatch.textureID;
+		character.character = c;
+		character.sizeX = win.arial.face->glyph->bitmap.width;
+		character.sizeY = win.arial.face->glyph->bitmap.rows;
+		character.bearingX = win.arial.face->glyph->bitmap_left;
+		character.bearingY = win.arial.face->glyph->bitmap_top;
+		character.advance = win.arial.face->glyph->advance.x;
+		character.batch = testBatch;
+		win.arial.characters[c] = character;
+	}
+	FT_Done_Face(win.arial.face);
+	FT_Done_FreeType(FT);
+	*/
+	C_Font thisFont;
+	if (FT_New_Face(FT, "resources/arial.ttf", 0, &thisFont.face)) {
+		printf("Could load font!\n");
+	}
+	FT_Set_Pixel_Sizes(thisFont.face, 0, size);
+	thisFont.scale = size;
+	if (FT_Load_Char(thisFont.face, 'A', FT_LOAD_RENDER)) {
+		printf("Couldn't load glyph!\n");
+	}
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // This line may cause problems
+	for (unsigned char c = 0; c < 128; c++) {
+		if (FT_Load_Char(thisFont.face, c, FT_LOAD_RENDER)) {
+			printf("Failed to load particular glyph!\n");
+		}
+		C_TextureBatch testBatch;
+		C_Character character;
+		glGenVertexArrays(1, &testBatch.VAO);
+		glGenBuffers(1, &testBatch.VBO);
+		glBindVertexArray(testBatch.VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, testBatch.VBO);
+		testBatch.stack = 0;
+		testBatch.verticeCount = 0;
+		testBatch.triangles = C_floatVecCreate();
+		testBatch.shapeVertices = C_intVecCreate();
+
+		// Position
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		// Color
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		// Texture coords
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(7 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		glGenTextures(1, &testBatch.textureID);
+		glBindTexture(GL_TEXTURE_2D, testBatch.textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, thisFont.face->glyph->bitmap.width, thisFont.face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, thisFont.face->glyph->bitmap.buffer);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		character.ID = testBatch.textureID;
+		character.character = c;
+		character.sizeX = thisFont.face->glyph->bitmap.width;
+		character.sizeY = thisFont.face->glyph->bitmap.rows;
+		character.bearingX = thisFont.face->glyph->bitmap_left;
+		character.bearingY = thisFont.face->glyph->bitmap_top;
+		character.advance = thisFont.face->glyph->advance.x;
+		character.batch = testBatch;
+		thisFont.characters[c] = character;
+	}
+	FT_Done_Face(thisFont.face);
+	C_fontVecPushBack(&win->fonts, thisFont);
+	return win->fonts.size - 1;
+}
+void deleteFont(C_Window* win, FontID font) {
+	for (int i = 0; i < 128; i++) {
+		C_deleteTextureBatch(&win->fonts.data[font].characters[i].batch);
+	}
+}
 void c_deleteTexture(C_Window* win, Texture texture) {
 	C_deleteTextureBatch(&win->textures.data[texture]);
 }
@@ -453,7 +611,11 @@ void C_updateWindow(C_Window* win) {
 	for (int i = 0; i < win->textures.size; i++) {
 		C_flushTextureBatch(&win->textures.data[i]);
 	}
-	C_flushTextureBatch(&win->arial.characters[69].batch);
+	for (int i = 0; i < win->fonts.size; i++) {
+		for (int z = 0; z < 128; z++) {
+			C_flushTextureBatch(&win->fonts.data[i].characters[z].batch);
+		}
+	}
 	win->framesPerSecond = 1.0f / (glfwGetTime() - win->currentFrame);
 	win->currentFrame = (float)glfwGetTime();
 	win->deltaTime = win->currentFrame - win->lastFrame;
@@ -462,20 +624,6 @@ void C_updateWindow(C_Window* win) {
 	if (win->deltaTime > 0.05f) { win->deltaTime = 0.05f; }
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	glfwPollEvents();
-
-	float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
-	float x = 0.0f, y = -200.0f, width = 100, height = 100;
-	float passIn1[27] = {
-			x, y, win->zmod, r, g, b, a, 0.0f, 1.0f,
-			x, y - height, win->zmod, r, g, b, a, 0.0f, 0.0f,
-			x + width, y - height, win->zmod, r, g, b, a, 1.0f, 0.0f
-	};
-	float passIn2[9] = {
-		x + width, y, win->zmod, r, g, b, a, 1.0f, 1.0f
-	};
-	C_addTextureTriangle(&win->arial.characters[69].batch, passIn1);
-	C_addTextureVertice(&win->arial.characters[69].batch, passIn2);
-	C_endTextureShape(&win->arial.characters[69].batch);
 
 	if (win->fullscreen != win->priorFullscreen) {
 		win->priorFullscreen = win->fullscreen;
@@ -529,13 +677,26 @@ void C_renderWindow(C_Window win) {
 		C_drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
 	}
 
+	/*glUseProgram(win.fontShader);
+	glUniform2f(glGetUniformLocation(win.fontShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+	glUniform3f(glGetUniformLocation(win.fontShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
+	for (int i = 0; i < 128; i++) {
+		C_bindTextureBatch(win.arial.characters[i].batch);
+		glBindTexture(GL_TEXTURE_2D, win.arial.characters[i].batch.textureID);
+		glBindVertexArray(win.arial.characters[i].batch.VAO);
+		C_drawTextureBatch(win.arial.characters[i].batch, GL_TRIANGLE_FAN);
+	}*/
 	glUseProgram(win.fontShader);
 	glUniform2f(glGetUniformLocation(win.fontShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 	glUniform3f(glGetUniformLocation(win.fontShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
-	C_bindTextureBatch(win.arial.characters[69].batch);
-	glBindTexture(GL_TEXTURE_2D, win.arial.characters[69].batch.textureID);
-	glBindVertexArray(win.arial.characters[69].batch.VAO);
-	C_drawTextureBatch(win.arial.characters[69].batch, GL_TRIANGLE_FAN);
+	for (int i = 0; i < win.fonts.size; i++) {
+		for (int z = 0; z < 128; z++) {
+			C_bindTextureBatch(win.fonts.data[i].characters[z].batch);
+			glBindTexture(GL_TEXTURE_2D, win.fonts.data[i].characters[z].batch.textureID);
+			glBindVertexArray(win.fonts.data[i].characters[z].batch.VAO);
+			C_drawTextureBatch(win.fonts.data[i].characters[z].batch, GL_TRIANGLE_FAN);
+		}
+	}
 
 	glfwSwapBuffers(win.windowHandle);
 }
@@ -755,4 +916,26 @@ void C_drawRoundedRect(C_Window* win, float x, float y, float width, float heigh
 	C_endShape(&win->shapeBatch);
 
 	win->zmod -= 0.000001f;
+}
+void C_drawText(C_Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
+	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	for (int i = 0; text[i] != '\0'; i++) {
+		C_Character c = win->fonts.data[font].characters[text[i]];
+		float xpos = x + c.bearingX * scale;
+		float ypos = y + (c.sizeY - c.bearingY) * scale;
+		float w = c.sizeX * scale, h = c.sizeY * scale;
+		float passIn1[27] = {
+			xpos, -(ypos), win->zmod, r, g, b, a, 0.0f, 1.0f,
+			xpos, -(ypos - h), win->zmod, r, g, b, a, 0.0f, 0.0f,
+			xpos + w, -(ypos - h), win->zmod, r, g, b, a, 1.0f, 0.0f
+		};
+		float passIn2[9] = {
+			xpos + w, -(ypos), win->zmod, r, g, b, a, 1.0f, 1.0f
+		};
+		C_addTextureTriangle(&win->fonts.data[font].characters[text[i]].batch, passIn1);
+		C_addTextureVertice(&win->fonts.data[font].characters[text[i]].batch, passIn2);
+		C_endTextureShape(&win->fonts.data[font].characters[text[i]].batch);
+		x += (c.advance >> 6) * scale;
+		win->zmod -= 0.000001f;
+	}
 }

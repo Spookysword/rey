@@ -162,6 +162,8 @@ typedef unsigned int Color[4];
 // A texture, which is really just an ID of the texture.
 typedef unsigned int Texture;
 
+typedef unsigned int FontID;
+
 struct C_Batch {
 	GLuint VAO, VBO;
 	C_floatVec triangles;
@@ -227,8 +229,20 @@ typedef struct C_Character C_Character;
 struct C_Font {
 	FT_Face face;
 	C_Character characters[128];
+	float scale;
 };
 typedef struct C_Font C_Font;
+struct C_fontVec {
+	C_Font* data;
+	int size;
+	int limit;
+};
+typedef struct C_fontVec C_fontVec;
+C_fontVec C_fontVecCreate();
+void C_fontVecCheckSize(C_fontVec* vec);
+void C_fontVecPushBack(C_fontVec* vec, C_Font num);
+void C_fontVecClear(C_fontVec* vec);
+void C_fontVecDelete(C_fontVec* vec);
 
 // A window struct. You can use multiple if you're wondering, by the way.
 struct C_Window {
@@ -272,11 +286,14 @@ struct C_Window {
 	C_Camera camera;
 	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
-
-	C_Font arial;
+	
 	unsigned int fontShader;
+	C_fontVec fonts;
 };
 typedef struct C_Window C_Window;
+
+FontID loadFont(C_Window* win, const char* filePath, float size);
+void deleteFont(C_Window* win, FontID font);
 
 // Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
 void C_initGrey(unsigned int sampleRate);
@@ -333,6 +350,8 @@ void C_drawCircle(C_Window* win, float x, float y, float radius, Color color);
 // Draws a rounded rectangle.
 void C_drawRoundedRect(C_Window* win, float x, float y, float width, float height, float radius, float rotation, Color color);
 
+void C_drawText(C_Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
+
 #ifndef IMPLEMENT_GREY_H
 
 // Clears the background with a color. Generally should be called each frame before drawing anything else.
@@ -380,6 +399,9 @@ Deloads a texture, freeing up the memory it's using.
 #define Camera C_Camera
 // A window struct. You can use multiple if you're wondering, by the way.
 #define Window C_Window
+
+#define Font C_Font
+
 // Draws a triangle with three given points and a color.
 #define drawTriangle C_drawTriangle
 // Draws a rectangle. Note that rotation is measured in degrees.
@@ -390,6 +412,8 @@ Deloads a texture, freeing up the memory it's using.
 #define drawCircle C_drawCircle
 // Draws a rounded rectangle.
 #define drawRoundedRect C_drawRoundedRect
+
+#define drawText C_drawText
 
 #endif
 
