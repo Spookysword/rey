@@ -491,10 +491,12 @@ void deleteFont(Window* win, FontID font) {
 	if (font == -1) { return; }
 	for (int i = 0; i < 128; i++) {
 		deleteTextureBatch(&win->fonts.data[font].characters[i].batch);
+		glDeleteTextures(1, &win->fonts.data[font].characters[i].ID);
 	}
 }
 void deleteTexture(Window* win, Texture texture) {
 	deleteTextureBatch(&win->textures.data[texture]);
+	glDeleteTextures(1, &win->textures.data[texture].textureID);
 }
 void updateWindow(Window* win) {
 	flushBatch(&win->shapeBatch);
