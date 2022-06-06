@@ -540,7 +540,7 @@ FontID loadFont(Window* win, const char* filePath, float size) {
 	FT_Done_FreeType(FT);
 	*/
 	Font thisFont;
-	if (FT_New_Face(FT, "resources/arial.ttf", 0, &thisFont.face)) {
+	if (FT_New_Face(FT, filePath, 0, &thisFont.face)) {
 		printf("Could load font!\n");
 	}
 	FT_Set_Pixel_Sizes(thisFont.face, 0, size);
