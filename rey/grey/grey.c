@@ -66,16 +66,16 @@ const char* fontFragmentShader = "#version 330 core\n"
 "	gl_FragColor = color * sampled;\n"
 "}\0";
 
-C_Batch C_createBatch() {
-	C_Batch batch;
+Batch createBatch() {
+	Batch batch;
 	glGenVertexArrays(1, &batch.VAO);
 	glGenBuffers(1, &batch.VBO);
 	glBindVertexArray(batch.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
 	batch.stack = 0;
 	batch.verticeCount = 0;
-	batch.triangles = C_floatVecCreate();
-	batch.shapeVertices = C_intVecCreate();
+	batch.triangles = floatVecCreate();
+	batch.shapeVertices = intVecCreate();
 	//glBufferData(GL_ARRAY_BUFFER, batch.triangles.size * sizeof(float), batch.triangles.data, GL_DYNAMIC_DRAW);
 	
 	// Position
@@ -90,83 +90,83 @@ C_Batch C_createBatch() {
 
 	return batch;
 }
-void C_addVertice(C_Batch* batch, float verts[7]) {
-	C_floatVecPushBack7(&batch->triangles, verts);
+void addVertice(Batch* batch, float verts[7]) {
+	floatVecPushBack7(&batch->triangles, verts);
 	batch->verticeCount++;
 	batch->stack++;
 }
-void C_addTriangle(C_Batch* batch, float verts[21]) {
-	C_floatVecPushBack21(&batch->triangles, verts);
+void addTriangle(Batch* batch, float verts[21]) {
+	floatVecPushBack21(&batch->triangles, verts);
 	batch->verticeCount += 3;
 	batch->stack += 3;
 }
-void C_endShape(C_Batch* batch) {
-	C_intVecPushBack(&batch->shapeVertices, batch->stack);
+void endShape(Batch* batch) {
+	intVecPushBack(&batch->shapeVertices, batch->stack);
 	batch->stack = 0;
 }
-void C_draw(C_Batch batch, GLenum type) {
+void draw(Batch batch, GLenum type) {
 	// This could be optimized by not using a vector here
 	glBindVertexArray(batch.VAO);
-	C_intVec first = C_intVecCreate();
+	intVec first = intVecCreate();
 	int tempInt = 0;
 	for (int i = 0; i < batch.shapeVertices.size; i++) {
-		C_intVecPushBack(&first, tempInt);
+		intVecPushBack(&first, tempInt);
 		tempInt += batch.shapeVertices.data[i];
 	}
 	glMultiDrawArrays(type, first.data, batch.shapeVertices.data, batch.shapeVertices.size);
-	C_intVecDelete(&first);
+	intVecDelete(&first);
 }
-void C_bindBatch(C_Batch batch) {
+void bindBatch(Batch batch) {
 	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
 	glBufferData(GL_ARRAY_BUFFER, batch.triangles.size * sizeof(float), batch.triangles.data, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void C_flushBatch(C_Batch* batch) {
-	C_floatVecClear(&batch->triangles);
+void flushBatch(Batch* batch) {
+	floatVecClear(&batch->triangles);
 	batch->verticeCount = 0;
 	batch->stack = 0;
-	C_intVecClear(&batch->shapeVertices);
+	intVecClear(&batch->shapeVertices);
 }
-void C_deleteBatch(C_Batch* batch) {
-	C_floatVecDelete(&batch->triangles);
-	C_intVecDelete(&batch->shapeVertices);
+void deleteBatch(Batch* batch) {
+	floatVecDelete(&batch->triangles);
+	intVecDelete(&batch->shapeVertices);
 }
 
-void C_addTextureVertice(C_TextureBatch* batch, float verts[9]) {
-	C_floatVecPushBack9(&batch->triangles, verts);
+void addTextureVertice(TextureBatch* batch, float verts[9]) {
+	floatVecPushBack9(&batch->triangles, verts);
 	batch->verticeCount++;
 	batch->stack++;
 }
-void C_addTextureTriangle(C_TextureBatch* batch, float verts[27]) {
-	C_floatVecPushBack27(&batch->triangles, verts);
+void addTextureTriangle(TextureBatch* batch, float verts[27]) {
+	floatVecPushBack27(&batch->triangles, verts);
 	batch->verticeCount+= 3;
 	batch->stack+= 3;
 }
-void C_endTextureShape(C_TextureBatch* batch) {
-	C_intVecPushBack(&batch->shapeVertices, batch->stack);
+void endTextureShape(TextureBatch* batch) {
+	intVecPushBack(&batch->shapeVertices, batch->stack);
 	batch->stack = 0;
 }
-void C_drawTextureBatch(C_TextureBatch batch, GLenum type) {
+void drawTextureBatch(TextureBatch batch, GLenum type) {
 	glBindVertexArray(batch.VAO);
-	C_intVec first = C_intVecCreate();
+	intVec first = intVecCreate();
 	int tempInt = 0;
 	for (int i = 0; i < batch.shapeVertices.size; i++) {
-		C_intVecPushBack(&first, tempInt);
+		intVecPushBack(&first, tempInt);
 		tempInt += batch.shapeVertices.data[i];
 	}
 	glMultiDrawArrays(type, first.data, batch.shapeVertices.data, batch.shapeVertices.size);
-	C_intVecDelete(&first);
+	intVecDelete(&first);
 }
-C_TextureBatch C_createTextureBatch(const char* filePath, int filter) {
-	C_TextureBatch batch;
+TextureBatch createTextureBatch(const char* filePath, int filter) {
+	TextureBatch batch;
 	glGenVertexArrays(1, &batch.VAO);
 	glGenBuffers(1, &batch.VBO);
 	glBindVertexArray(batch.VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
 	batch.stack = 0;
 	batch.verticeCount = 0;
-	batch.triangles = C_floatVecCreate();
-	batch.shapeVertices = C_intVecCreate();
+	batch.triangles = floatVecCreate();
+	batch.shapeVertices = intVecCreate();
 
 	// Position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
@@ -201,84 +201,84 @@ C_TextureBatch C_createTextureBatch(const char* filePath, int filter) {
 
 	return batch;
 }
-void C_bindTextureBatch(C_TextureBatch batch) {
+void bindTextureBatch(TextureBatch batch) {
 	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
 	glBufferData(GL_ARRAY_BUFFER, batch.triangles.size * sizeof(float), batch.triangles.data, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void C_flushTextureBatch(C_TextureBatch* batch) {
-	C_floatVecClear(&batch->triangles);
+void flushTextureBatch(TextureBatch* batch) {
+	floatVecClear(&batch->triangles);
 	batch->verticeCount = 0;
 	batch->stack = 0;
-	C_intVecClear(&batch->shapeVertices);
+	intVecClear(&batch->shapeVertices);
 }
-void C_deleteTextureBatch(C_TextureBatch* batch) {
-	C_floatVecDelete(&batch->triangles);
-	C_intVecDelete(&batch->shapeVertices);
+void deleteTextureBatch(TextureBatch* batch) {
+	floatVecDelete(&batch->triangles);
+	intVecDelete(&batch->shapeVertices);
 }
 
-C_textureVec C_textureVecCreate() {
-	C_textureVec vec;
-	vec.data = (C_TextureBatch*)calloc(0, sizeof(C_TextureBatch));
+textureVec textureVecCreate() {
+	textureVec vec;
+	vec.data = (TextureBatch*)calloc(0, sizeof(TextureBatch));
 	vec.size = 0;
 	vec.limit = 0;
 	return vec;
 }
-void C_textureVecCheckSize(C_textureVec* vec) {
+void textureVecCheckSize(textureVec* vec) {
 	if (vec->size + 1 > vec->limit) {
-		C_TextureBatch* temp;
+		TextureBatch* temp;
 		vec->limit = vec->size * 2;
-		temp = (C_TextureBatch*)realloc(vec->data, vec->limit * sizeof(C_TextureBatch));
+		temp = (TextureBatch*)realloc(vec->data, vec->limit * sizeof(TextureBatch));
 		if (temp) { vec->data = temp; }
 	}
 }
-void C_textureVecPushBack(C_textureVec* vec, C_TextureBatch num) {
+void textureVecPushBack(textureVec* vec, TextureBatch num) {
 	vec->size += 1;
-	C_textureVecCheckSize(vec);
+	textureVecCheckSize(vec);
 	vec->data[vec->size-1] = num;
 }
-void C_textureVecClear(C_textureVec* vec) {
+void textureVecClear(textureVec* vec) {
 	free(vec->data);
 	vec->limit /= 2;
-	vec->data = (C_TextureBatch*)calloc(vec->limit, sizeof(C_TextureBatch));
+	vec->data = (TextureBatch*)calloc(vec->limit, sizeof(TextureBatch));
 	vec->size = 0;
 }
-void C_textureVecDelete(C_textureVec* vec) {
+void textureVecDelete(textureVec* vec) {
 	for (int i = 0; i < vec->size; i++) {
-		C_deleteTextureBatch(&vec->data[i-1]);
+		deleteTextureBatch(&vec->data[i-1]);
 	}
 	free(vec->data);
 	vec->size = 0;
 	vec->limit = 0;
 }
-C_fontVec C_fontVecCreate() {
-	C_fontVec vec;
-	vec.data = (C_Font*)calloc(0, sizeof(C_Font));
+fontVec fontVecCreate() {
+	fontVec vec;
+	vec.data = (Font*)calloc(0, sizeof(Font));
 	vec.size = 0;
 	vec.limit = 0;
 	return vec;
 }
-void C_fontVecCheckSize(C_fontVec* vec) {
+void fontVecCheckSize(fontVec* vec) {
 	if (vec->size + 1 > vec->limit) {
-		C_Font* temp;
+		Font* temp;
 		vec->limit = vec->size * 2;
-		temp = (C_Font*)realloc(vec->data, vec->limit * sizeof(C_Font));
+		temp = (Font*)realloc(vec->data, vec->limit * sizeof(Font));
 		if (temp) { vec->data = temp; }
 	}
 }
-void C_fontVecPushBack(C_fontVec* vec, C_Font num) {
+void fontVecPushBack(fontVec* vec, Font num) {
 	vec->size += 1;
-	C_fontVecCheckSize(vec);
+	fontVecCheckSize(vec);
 	vec->data[vec->size-1] = num;
 }
-void C_fontVecClear(C_fontVec* vec) {
+void fontVecClear(fontVec* vec) {
 	free(vec->data);
 	vec->limit /= 2;
-	vec->data = (C_Font*)calloc(vec->limit, sizeof(C_Font));
+	vec->data = (Font*)calloc(vec->limit, sizeof(Font));
 	vec->size = 0;
 }
 // This function kinda maybe doesn't exist yet possibly perhaps
-void C_fontVecDelete(C_fontVec* vec) {
+void fontVecDelete(fontVec* vec) {
 	for (int i = 0; i < vec->size; i++) {
 		
 	}
@@ -287,12 +287,12 @@ void C_fontVecDelete(C_fontVec* vec) {
 GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	int count;
 	GLFWmonitor** monitors = glfwGetMonitors(&count);
-	C_floatVec widths = C_floatVecCreate();
+	floatVec widths = floatVecCreate();
 	for (int i = 0; i < count; i++) {
-		if (i == 0) { C_floatVecPushBack(&widths, 0.0f); }
+		if (i == 0) { floatVecPushBack(&widths, 0.0f); }
 		else {
 			const GLFWvidmode* modee = glfwGetVideoMode(monitors[i]);
-			C_floatVecPushBack(&widths, modee->width + widths.data[widths.size - 1]);
+			floatVecPushBack(&widths, modee->width + widths.data[widths.size - 1]);
 		}
 	}
 	int x = 0, y = 0;
@@ -303,12 +303,12 @@ GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 			returnMon = monitors[i];
 		}
 	}
-	C_floatVecDelete(&widths);
+	floatVecDelete(&widths);
 	return returnMon;
 }
 
 // Init/deinit funcs
-void C_initGrey(unsigned int sampleRate) {
+void initGrey(unsigned int sampleRate) {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -329,7 +329,7 @@ void C_initGrey(unsigned int sampleRate) {
 	glfwSwapInterval(1);
 #endif
 }
-void C_closeGrey() {
+void closeGrey() {
 	FT_Done_FreeType(FT);
 	glfwTerminate();
 }
@@ -339,16 +339,16 @@ void framebufferCallback(GLFWwindow * win, int width, int height) {
 	glfwMakeContextCurrent(win);
 	glViewport(0, 0, width, height);
 }
-C_Window C_createWindow(int width, int height, const char* title) {
+Window createWindow(int width, int height, const char* title) {
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	C_Window win;
+	Window win;
 	win.windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
 	glfwSetWindowPos(win.windowHandle, (mode->width / 2) - (width / 2), (mode->height / 2) - (height / 2));
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetFramebufferSizeCallback(win.windowHandle, framebufferCallback);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	win.title = title;
-	win.shapeBatch = C_createBatch();
+	win.shapeBatch = createBatch();
 	win.deltaTime = 0.001f;
 	win.width = width;
 	win.height = height;
@@ -356,11 +356,11 @@ C_Window C_createWindow(int width, int height, const char* title) {
 	win.priorFullscreen = FALSE;
 	win.prevWidth = width;
 	win.prevHeight = height;
-	win.textures = C_textureVecCreate();
+	win.textures = textureVecCreate();
 	win.zmod = 0.0f;
 	win.camera.x = 0.0f, win.camera.y = 0.0f, win.camera.z = 0.0f;
 	win.framesPerSecond = 0.0f;
-	win.fonts = C_fontVecCreate();
+	win.fonts = fontVecCreate();
 
 	/*if (FT_New_Face(FT, "resources/arial.ttf", 0, &win.arial.face)) {
 		printf("Could load font!\n");
@@ -375,16 +375,16 @@ C_Window C_createWindow(int width, int height, const char* title) {
 		if (FT_Load_Char(win.arial.face, c, FT_LOAD_RENDER)) {
 			printf("Failed to load particular glyph!\n");
 		}
-		C_TextureBatch testBatch;
-		C_Character character;
+		TextureBatch testBatch;
+		Character character;
 		glGenVertexArrays(1, &testBatch.VAO);
 		glGenBuffers(1, &testBatch.VBO);
 		glBindVertexArray(testBatch.VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, testBatch.VBO);
 		testBatch.stack = 0;
 		testBatch.verticeCount = 0;
-		testBatch.triangles = C_floatVecCreate();
-		testBatch.shapeVertices = C_intVecCreate();
+		testBatch.triangles = floatVecCreate();
+		testBatch.shapeVertices = intVecCreate();
 
 		// Position
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
@@ -467,20 +467,20 @@ C_Window C_createWindow(int width, int height, const char* title) {
 
 	return win;
 }
-void C_deleteWindow(C_Window* win) {
-	C_deleteBatch(&win->shapeBatch);
-	C_textureVecClear(&win->textures);
-	C_textureVecDelete(&win->textures);
+void deleteWindow(Window* win) {
+	deleteBatch(&win->shapeBatch);
+	textureVecClear(&win->textures);
+	textureVecDelete(&win->textures);
 }
-boolean C_shouldWindowClose(C_Window win) {
+boolean shouldWindowClose(Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
 }
-Texture c_newTexture(C_Window* win, const char* path, int filter) {
-	C_TextureBatch text = C_createTextureBatch(path, filter);
-	C_textureVecPushBack(&win->textures, text);
+Texture newTexture(Window* win, const char* path, int filter) {
+	TextureBatch text = createTextureBatch(path, filter);
+	textureVecPushBack(&win->textures, text);
 	return win->textures.size-1;
 }
-FontID loadFont(C_Window* win, const char* filePath, float size) {
+FontID loadFont(Window* win, const char* filePath, float size) {
 	/*
 	if (FT_New_Face(FT, "resources/arial.ttf", 0, &win.arial.face)) {
 		printf("Could load font!\n");
@@ -495,16 +495,16 @@ FontID loadFont(C_Window* win, const char* filePath, float size) {
 		if (FT_Load_Char(win.arial.face, c, FT_LOAD_RENDER)) {
 			printf("Failed to load particular glyph!\n");
 		}
-		C_TextureBatch testBatch;
-		C_Character character;
+		TextureBatch testBatch;
+		Character character;
 		glGenVertexArrays(1, &testBatch.VAO);
 		glGenBuffers(1, &testBatch.VBO);
 		glBindVertexArray(testBatch.VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, testBatch.VBO);
 		testBatch.stack = 0;
 		testBatch.verticeCount = 0;
-		testBatch.triangles = C_floatVecCreate();
-		testBatch.shapeVertices = C_intVecCreate();
+		testBatch.triangles = floatVecCreate();
+		testBatch.shapeVertices = intVecCreate();
 
 		// Position
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
@@ -539,7 +539,7 @@ FontID loadFont(C_Window* win, const char* filePath, float size) {
 	FT_Done_Face(win.arial.face);
 	FT_Done_FreeType(FT);
 	*/
-	C_Font thisFont;
+	Font thisFont;
 	if (FT_New_Face(FT, "resources/arial.ttf", 0, &thisFont.face)) {
 		printf("Could load font!\n");
 	}
@@ -553,16 +553,16 @@ FontID loadFont(C_Window* win, const char* filePath, float size) {
 		if (FT_Load_Char(thisFont.face, c, FT_LOAD_RENDER)) {
 			printf("Failed to load particular glyph!\n");
 		}
-		C_TextureBatch testBatch;
-		C_Character character;
+		TextureBatch testBatch;
+		Character character;
 		glGenVertexArrays(1, &testBatch.VAO);
 		glGenBuffers(1, &testBatch.VBO);
 		glBindVertexArray(testBatch.VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, testBatch.VBO);
 		testBatch.stack = 0;
 		testBatch.verticeCount = 0;
-		testBatch.triangles = C_floatVecCreate();
-		testBatch.shapeVertices = C_intVecCreate();
+		testBatch.triangles = floatVecCreate();
+		testBatch.shapeVertices = intVecCreate();
 
 		// Position
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
@@ -595,25 +595,25 @@ FontID loadFont(C_Window* win, const char* filePath, float size) {
 		thisFont.characters[c] = character;
 	}
 	FT_Done_Face(thisFont.face);
-	C_fontVecPushBack(&win->fonts, thisFont);
+	fontVecPushBack(&win->fonts, thisFont);
 	return win->fonts.size - 1;
 }
-void deleteFont(C_Window* win, FontID font) {
+void deleteFont(Window* win, FontID font) {
 	for (int i = 0; i < 128; i++) {
-		C_deleteTextureBatch(&win->fonts.data[font].characters[i].batch);
+		deleteTextureBatch(&win->fonts.data[font].characters[i].batch);
 	}
 }
-void c_deleteTexture(C_Window* win, Texture texture) {
-	C_deleteTextureBatch(&win->textures.data[texture]);
+void deleteTexture(Window* win, Texture texture) {
+	deleteTextureBatch(&win->textures.data[texture]);
 }
-void C_updateWindow(C_Window* win) {
-	C_flushBatch(&win->shapeBatch);
+void updateWindow(Window* win) {
+	flushBatch(&win->shapeBatch);
 	for (int i = 0; i < win->textures.size; i++) {
-		C_flushTextureBatch(&win->textures.data[i]);
+		flushTextureBatch(&win->textures.data[i]);
 	}
 	for (int i = 0; i < win->fonts.size; i++) {
 		for (int z = 0; z < 128; z++) {
-			C_flushTextureBatch(&win->fonts.data[i].characters[z].batch);
+			flushTextureBatch(&win->fonts.data[i].characters[z].batch);
 		}
 	}
 	win->framesPerSecond = 1.0f / (glfwGetTime() - win->currentFrame);
@@ -656,65 +656,65 @@ void C_updateWindow(C_Window* win) {
 		}
 	}
 }
-void C_renderWindow(C_Window win) {
+void renderWindow(Window win) {
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
 	
-	C_bindBatch(win.shapeBatch);
+	bindBatch(win.shapeBatch);
 	glUseProgram(win.colorShader);
 	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
 	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	
-	C_draw(win.shapeBatch, GL_TRIANGLE_FAN);
+	draw(win.shapeBatch, GL_TRIANGLE_FAN);
 	
 	glUseProgram(win.textureShader);
 	glUniform2f(glGetUniformLocation(win.textureShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 	glUniform3f(glGetUniformLocation(win.textureShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	for (int i = 0; i < win.textures.size; i++) {
-		C_bindTextureBatch(win.textures.data[i]);
+		bindTextureBatch(win.textures.data[i]);
 		glBindTexture(GL_TEXTURE_2D, win.textures.data[i].textureID);
 		glBindVertexArray(win.textures.data[i].VAO);
-		C_drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
+		drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
 	}
 
 	/*glUseProgram(win.fontShader);
 	glUniform2f(glGetUniformLocation(win.fontShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 	glUniform3f(glGetUniformLocation(win.fontShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	for (int i = 0; i < 128; i++) {
-		C_bindTextureBatch(win.arial.characters[i].batch);
+		bindTextureBatch(win.arial.characters[i].batch);
 		glBindTexture(GL_TEXTURE_2D, win.arial.characters[i].batch.textureID);
 		glBindVertexArray(win.arial.characters[i].batch.VAO);
-		C_drawTextureBatch(win.arial.characters[i].batch, GL_TRIANGLE_FAN);
+		drawTextureBatch(win.arial.characters[i].batch, GL_TRIANGLE_FAN);
 	}*/
 	glUseProgram(win.fontShader);
 	glUniform2f(glGetUniformLocation(win.fontShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 	glUniform3f(glGetUniformLocation(win.fontShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	for (int i = 0; i < win.fonts.size; i++) {
 		for (int z = 0; z < 128; z++) {
-			C_bindTextureBatch(win.fonts.data[i].characters[z].batch);
+			bindTextureBatch(win.fonts.data[i].characters[z].batch);
 			glBindTexture(GL_TEXTURE_2D, win.fonts.data[i].characters[z].batch.textureID);
 			glBindVertexArray(win.fonts.data[i].characters[z].batch.VAO);
-			C_drawTextureBatch(win.fonts.data[i].characters[z].batch, GL_TRIANGLE_FAN);
+			drawTextureBatch(win.fonts.data[i].characters[z].batch, GL_TRIANGLE_FAN);
 		}
 	}
 
 	glfwSwapBuffers(win.windowHandle);
 }
-void C_closeWindow(C_Window win) {
+void closeWindow(Window win) {
 	glfwSetWindowShouldClose(win.windowHandle, GLFW_TRUE);
 }
-void C_setWindowFlag(C_Window win, uint32_t flag, boolean state) {
+void setWindowFlag(Window win, uint32_t flag, boolean state) {
 	glfwSetWindowAttrib(win.windowHandle, flag, state);
 }
 
 // Key input
-boolean C_isKeyDown(C_Window win, int key) {
+boolean isKeyDown(Window win, int key) {
 	if (key < sizeof(win.keys) / sizeof(win.keys[0])) {
 		return win.keys[key];
 	}
 	return 0;
 }
-boolean C_isKeyPressed(C_Window win, int key) {
+boolean isKeyPressed(Window win, int key) {
 	if (key < sizeof(win.tempKeys) / sizeof(win.tempKeys[0])) {
 		return win.tempKeys[key];
 	}
@@ -722,12 +722,12 @@ boolean C_isKeyPressed(C_Window win, int key) {
 }
 
 // Draw funcs
-void C_clearWindowBackground(C_Window win, Color color) {
+void clearWindowBackground(Window win, Color color) {
 	glfwMakeContextCurrent(win.windowHandle);
 	glClearColor((float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-void C_setWireframeMode(C_Window win, boolean state) {
+void setWireframeMode(Window win, boolean state) {
 	glfwMakeContextCurrent(win.windowHandle);
 	if (state) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -736,17 +736,17 @@ void C_setWireframeMode(C_Window win, boolean state) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }
-void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
+void drawTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 	float passIn1[21] = {
 		x1, -y1, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
 		x2, -y2, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
 		x3, -y3, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255
 	};
-	C_addTriangle(&win->shapeBatch, passIn1);
-	C_endShape(&win->shapeBatch);
+	addTriangle(&win->shapeBatch, passIn1);
+	endShape(&win->shapeBatch);
 	win->zmod -= 0.000001f;
 }
-void C_drawRectangle(C_Window* win, float x, float y, float width, float height, float rotation, Color color) {
+void drawRectangle(Window* win, float x, float y, float width, float height, float rotation, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	y = -y;
 	if (rotation == 0.0f || (int)rotation % 360 == 0) {
@@ -758,9 +758,9 @@ void C_drawRectangle(C_Window* win, float x, float y, float width, float height,
 		float passIn2[7] = {
 			x + width, y, win->zmod, r, g, b, a
 		};
-		C_addTriangle(&win->shapeBatch, passIn1);
-		C_addVertice(&win->shapeBatch, passIn2);
-		C_endShape(&win->shapeBatch);
+		addTriangle(&win->shapeBatch, passIn1);
+		addVertice(&win->shapeBatch, passIn2);
+		endShape(&win->shapeBatch);
 	}
 	else {
 		rotation = -rotation * (PI / 180);
@@ -775,13 +775,13 @@ void C_drawRectangle(C_Window* win, float x, float y, float width, float height,
 		float passIn2[7] = {
 			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a
 		};
-		C_addTriangle(&win->shapeBatch, passIn1);
-		C_addVertice(&win->shapeBatch, passIn2);
-		C_endShape(&win->shapeBatch);
+		addTriangle(&win->shapeBatch, passIn1);
+		addVertice(&win->shapeBatch, passIn2);
+		endShape(&win->shapeBatch);
 	}
 	win->zmod -= 0.000001f;
 }
-void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color) {
+void drawTexture(Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	y = -y;
 	if (rotation == 0.0f || (int)rotation % 360 == 0) {
@@ -793,9 +793,9 @@ void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width
 		float passIn2[9] = {
 			x + width, y, win->zmod, r, g, b, a, 1.0f, 1.0f
 		};
-		C_addTextureTriangle(&win->textures.data[texture], passIn1);
-		C_addTextureVertice(&win->textures.data[texture], passIn2);
-		C_endTextureShape(&win->textures.data[texture]);
+		addTextureTriangle(&win->textures.data[texture], passIn1);
+		addTextureVertice(&win->textures.data[texture], passIn2);
+		endTextureShape(&win->textures.data[texture]);
 	}
 	else {
 		float pi = 3.1415926535897932384626433;
@@ -811,30 +811,30 @@ void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width
 		float passIn2[9] = {
 			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f
 		};
-		C_addTextureTriangle(&win->textures.data[texture], passIn1);
-		C_addTextureVertice(&win->textures.data[texture], passIn2);
-		C_endTextureShape(&win->textures.data[texture]);
+		addTextureTriangle(&win->textures.data[texture], passIn1);
+		addTextureVertice(&win->textures.data[texture], passIn2);
+		endTextureShape(&win->textures.data[texture]);
 	}
 	win->zmod -= 0.000001f;
 }
 
-void C_drawCircle(C_Window* win, float x, float y, float radius, Color color) {
+void drawCircle(Window* win, float x, float y, float radius, Color color) {
 	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
 	y = -y;
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
-	C_addVertice(&win->shapeBatch, passIn);
+	addVertice(&win->shapeBatch, passIn);
 	for (int i = 0; i <= amount; i++) {
 		float passIn2[7] = { x + (radius * cos(i * pi2 / amount)), y + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		C_addVertice(&win->shapeBatch, passIn2);
+		addVertice(&win->shapeBatch, passIn2);
 	}
-	C_endShape(&win->shapeBatch);
+	endShape(&win->shapeBatch);
 
 	win->zmod -= 0.000001f;
 }
 
-void C_drawRoundedRect(C_Window* win, float x, float y, float width, float height, float radius, float rotation, Color color) {
+void drawRoundedRect(Window* win, float x, float y, float width, float height, float radius, float rotation, Color color) {
 	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
 	float x1 = x;
 	float y1 = y;
@@ -850,9 +850,9 @@ void C_drawRoundedRect(C_Window* win, float x, float y, float width, float heigh
 	float d = y1 + height;
 	float passIn0[21] = { rotateX(a,b,c1,c2,rot),rotateY(a,b,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(a,d,c1,c2,rot),rotateY(a,d,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(c,d,c1,c2,rot),rotateY(c,d,c1,c2,rot),win->zmod,cR,cG,cB,cA };
 	float passIn1[7] = { rotateX(c,b,c1,c2,rot),rotateY(c,b,c1,c2,rot),win->zmod,cR,cG,cB,cA };
-	C_addTriangle(&win->shapeBatch, passIn0);
-	C_addVertice(&win->shapeBatch, passIn1);
-	C_endShape(&win->shapeBatch);
+	addTriangle(&win->shapeBatch, passIn0);
+	addVertice(&win->shapeBatch, passIn1);
+	endShape(&win->shapeBatch);
 
 	a = x1;
 	b = y1 + radius;
@@ -860,9 +860,9 @@ void C_drawRoundedRect(C_Window* win, float x, float y, float width, float heigh
 	d = y1 + height - radius;
 	float passIn2[21] = { rotateX(a,b,c1,c2,rot),rotateY(a,b,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(a,d,c1,c2,rot),rotateY(a,d,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(c,d,c1,c2,rot),rotateY(c,d,c1,c2,rot),win->zmod,cR,cG,cB,cA };
 	float passIn3[7] = { rotateX(c,b,c1,c2,rot),rotateY(c,b,c1,c2,rot),win->zmod,cR,cG,cB,cA };
-	C_addTriangle(&win->shapeBatch, passIn2);
-	C_addVertice(&win->shapeBatch, passIn3);
-	C_endShape(&win->shapeBatch);
+	addTriangle(&win->shapeBatch, passIn2);
+	addVertice(&win->shapeBatch, passIn3);
+	endShape(&win->shapeBatch);
 
 
 	float xii = x1 + radius;
@@ -872,55 +872,55 @@ void C_drawRoundedRect(C_Window* win, float x, float y, float width, float heigh
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn4[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	C_addVertice(&win->shapeBatch, passIn4);
+	addVertice(&win->shapeBatch, passIn4);
 	for (int i = 0; i <= amount; i++) {
 		float passIn5[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		C_addVertice(&win->shapeBatch, passIn5);
+		addVertice(&win->shapeBatch, passIn5);
 	}
-	C_endShape(&win->shapeBatch);
+	endShape(&win->shapeBatch);
 
 	xii = x1 + width - radius;
 	yii = y1 + radius;
 	xi = rotateX(xii, yii, c1, c2, rot);
 	yi = rotateY(xii, yii, c1, c2, rot);
 	float passIn6[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	C_addVertice(&win->shapeBatch, passIn6);
+	addVertice(&win->shapeBatch, passIn6);
 	for (int i = 0; i <= amount; i++) {
 		float passIn7[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		C_addVertice(&win->shapeBatch, passIn7);
+		addVertice(&win->shapeBatch, passIn7);
 	}
-	C_endShape(&win->shapeBatch);
+	endShape(&win->shapeBatch);
 
 	xii = x1 + width - radius;
 	yii = y1 + height - radius;
 	xi = rotateX(xii, yii, c1, c2, rot);
 	yi = rotateY(xii, yii, c1, c2, rot);
 	float passIn8[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	C_addVertice(&win->shapeBatch, passIn8);
+	addVertice(&win->shapeBatch, passIn8);
 	for (int i = 0; i <= amount; i++) {
 		float passIn9[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		C_addVertice(&win->shapeBatch, passIn9);
+		addVertice(&win->shapeBatch, passIn9);
 	}
-	C_endShape(&win->shapeBatch);
+	endShape(&win->shapeBatch);
 
 	xii = x1 + radius;
 	yii = y1 + height - radius;
 	xi = rotateX(xii, yii, c1, c2, rot);
 	yi = rotateY(xii, yii, c1, c2, rot);
 	float passIn10[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	C_addVertice(&win->shapeBatch, passIn10);
+	addVertice(&win->shapeBatch, passIn10);
 	for (int i = 0; i <= amount; i++) {
 		float passIn11[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		C_addVertice(&win->shapeBatch, passIn11);
+		addVertice(&win->shapeBatch, passIn11);
 	}
-	C_endShape(&win->shapeBatch);
+	endShape(&win->shapeBatch);
 
 	win->zmod -= 0.000001f;
 }
-void C_drawText(C_Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
+void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; text[i] != '\0'; i++) {
-		C_Character c = win->fonts.data[font].characters[text[i]];
+		Character c = win->fonts.data[font].characters[text[i]];
 		float xpos = x + c.bearingX * scale;
 		float ypos = y + (c.sizeY - c.bearingY) * scale;
 		float w = c.sizeX * scale, h = c.sizeY * scale;
@@ -932,9 +932,9 @@ void C_drawText(C_Window* win, const char* text, FontID font, float x, float y, 
 		float passIn2[9] = {
 			xpos + w, -(ypos), win->zmod, r, g, b, a, 1.0f, 1.0f
 		};
-		C_addTextureTriangle(&win->fonts.data[font].characters[text[i]].batch, passIn1);
-		C_addTextureVertice(&win->fonts.data[font].characters[text[i]].batch, passIn2);
-		C_endTextureShape(&win->fonts.data[font].characters[text[i]].batch);
+		addTextureTriangle(&win->fonts.data[font].characters[text[i]].batch, passIn1);
+		addTextureVertice(&win->fonts.data[font].characters[text[i]].batch, passIn2);
+		endTextureShape(&win->fonts.data[font].characters[text[i]].batch);
 		x += (c.advance >> 6) * scale;
 		win->zmod -= 0.000001f;
 	}

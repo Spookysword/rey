@@ -10,50 +10,36 @@ extern "C" {
 
 #define PI 3.1415926535897932384626433
 
-struct C_floatVec {
+struct floatVec {
 	float* data;
 	int size;
 	int limit;
 };
-typedef struct C_floatVec C_floatVec;
+typedef struct floatVec floatVec;
 
-C_floatVec C_floatVecCreate();
-void C_floatVecPushBack(C_floatVec* vec, float num);
-void C_floatVecPushBack7(C_floatVec* vec, float num[7]);
-void C_floatVecPushBack9(C_floatVec* vec, float num[9]);
-void C_floatVecPushBack21(C_floatVec* vec, float num[21]);
-void C_floatVecPushBack27(C_floatVec* vec, float num[27]);
-void C_floatVecClear(C_floatVec* vec);
-void C_floatVecDelete(C_floatVec* vec);
+floatVec floatVecCreate();
+void floatVecPushBack(floatVec* vec, float num);
+void floatVecPushBack7(floatVec* vec, float num[7]);
+void floatVecPushBack9(floatVec* vec, float num[9]);
+void floatVecPushBack21(floatVec* vec, float num[21]);
+void floatVecPushBack27(floatVec* vec, float num[27]);
+void floatVecClear(floatVec* vec);
+void floatVecDelete(floatVec* vec);
 
-struct C_intVec {
+struct intVec {
 	int* data;
 	int size;
 	int limit;
 };
-typedef struct C_intVec C_intVec;
+typedef struct intVec intVec;
 
-C_intVec C_intVecCreate();
-void C_intVecPushBack(C_intVec* vec, float num);
-void C_intVecClear(C_intVec* vec);
-void C_intVecDelete(C_intVec* vec);
+intVec intVecCreate();
+void intVecPushBack(intVec* vec, float num);
+void intVecClear(intVec* vec);
+void intVecDelete(intVec* vec);
 
 float rotateX(float x, float y, float c1, float c2, float rotation);
 float rotateY(float x, float y, float c1, float c2, float rotation);
-
-#ifndef IMPLEMENT_MREY_H
-#define floatVec C_floatVec
-#define floatVecCreate C_floatVecCreate
-#define floatVecPushBack C_floatVecPushBack
-#define floatVecClear C_floatVecClear
-#define floatVecDelete C_floatVecDelete
-
-#define floatVec C_intVec
-#define intVecCreate C_intVecCreate
-#define intVecPushBack C_intVecPushBack
-#define intVecClear C_intVecClear
-#define intVecDelete C_intVecDelete
-#endif
 
 #ifdef __cplusplus
 }

@@ -164,88 +164,88 @@ typedef unsigned int Texture;
 
 typedef unsigned int FontID;
 
-struct C_Batch {
+struct Batch {
 	GLuint VAO, VBO;
-	C_floatVec triangles;
+	floatVec triangles;
 	int verticeCount, stack;
-	C_intVec shapeVertices;
+	intVec shapeVertices;
 };
-typedef struct C_Batch C_Batch;
+typedef struct Batch Batch;
 
-struct C_TextureBatch {
+struct TextureBatch {
 	GLuint VAO, VBO, textureID;
-	C_floatVec triangles;
+	floatVec triangles;
 	int verticeCount, stack;
-	C_intVec shapeVertices;
+	intVec shapeVertices;
 };
-typedef struct C_TextureBatch C_TextureBatch;
+typedef struct TextureBatch TextureBatch;
 
-void C_addVertice(C_Batch* batch, float verts[7]);
-void C_addTriangle(C_Batch* batch, float verts[21]);
-void C_endShape(C_Batch* batch);
-void C_draw(C_Batch batch, GLenum type);
-C_Batch C_createBatch();
-void C_bindBatch(C_Batch batch);
-void C_flushBatch(C_Batch* batch);
-void C_deleteBatch(C_Batch* batch);
+void addVertice(Batch* batch, float verts[7]);
+void addTriangle(Batch* batch, float verts[21]);
+void endShape(Batch* batch);
+void draw(Batch batch, GLenum type);
+Batch createBatch();
+void bindBatch(Batch batch);
+void flushBatch(Batch* batch);
+void deleteBatch(Batch* batch);
 
-void C_addTextureVertice(C_TextureBatch* batch, float verts[9]);
-void C_addTextureTriangle(C_TextureBatch* batch, float verts[27]);
-void C_endTextureShape(C_TextureBatch* batch);
-void C_drawTextureBatch(C_TextureBatch batch, GLenum type);
-C_TextureBatch C_createTextureBatch(const char* filePath, int filter);
-void C_bindTextureBatch(C_TextureBatch batch);
-void C_flushTextureBatch(C_TextureBatch* batch);
-void C_deleteTextureBatch(C_TextureBatch* batch);
+void addTextureVertice(TextureBatch* batch, float verts[9]);
+void addTextureTriangle(TextureBatch* batch, float verts[27]);
+void endTextureShape(TextureBatch* batch);
+void drawTextureBatch(TextureBatch batch, GLenum type);
+TextureBatch createTextureBatch(const char* filePath, int filter);
+void bindTextureBatch(TextureBatch batch);
+void flushTextureBatch(TextureBatch* batch);
+void deleteTextureBatch(TextureBatch* batch);
 
-struct C_textureVec {
-	C_TextureBatch* data;
+struct textureVec {
+	TextureBatch* data;
 	int size;
 	int limit;
 };
-typedef struct C_textureVec C_textureVec;
+typedef struct textureVec textureVec;
 
-C_textureVec C_textureVecCreate();
-void C_textureVecPushBack(C_textureVec* vec, C_TextureBatch num);
-void C_textureVecClear(C_textureVec* vec);
-void C_textureVecDelete(C_textureVec* vec);
+textureVec textureVecCreate();
+void textureVecPushBack(textureVec* vec, TextureBatch num);
+void textureVecClear(textureVec* vec);
+void textureVecDelete(textureVec* vec);
 
-struct C_Camera {
+struct Camera {
 	float x, y, z;
 };
-typedef struct C_Camera C_Camera;
+typedef struct Camera Camera;
 
 FT_Library FT;
 
-struct C_Character {
+struct Character {
 	unsigned int ID;
 	char character;
 	float sizeX, sizeY;
 	float bearingX, bearingY;
 	unsigned int advance;
-	C_TextureBatch batch;
+	TextureBatch batch;
 };
-typedef struct C_Character C_Character;
-struct C_Font {
+typedef struct Character Character;
+struct Font {
 	FT_Face face;
-	C_Character characters[128];
+	Character characters[128];
 	float scale;
 };
-typedef struct C_Font C_Font;
-struct C_fontVec {
-	C_Font* data;
+typedef struct Font Font;
+struct fontVec {
+	Font* data;
 	int size;
 	int limit;
 };
-typedef struct C_fontVec C_fontVec;
-C_fontVec C_fontVecCreate();
-void C_fontVecCheckSize(C_fontVec* vec);
-void C_fontVecPushBack(C_fontVec* vec, C_Font num);
-void C_fontVecClear(C_fontVec* vec);
-void C_fontVecDelete(C_fontVec* vec);
+typedef struct fontVec fontVec;
+fontVec fontVecCreate();
+void fontVecCheckSize(fontVec* vec);
+void fontVecPushBack(fontVec* vec, Font num);
+void fontVecClear(fontVec* vec);
+void fontVecDelete(fontVec* vec);
 
 // A window struct. You can use multiple if you're wondering, by the way.
-struct C_Window {
+struct Window {
 	// The GLFW window obj for the window. Shouldn't be used unless directly using OpenGL functions.
 	GLFWwindow* windowHandle;
 	// A list of all of the keys and if they're pressed or not. Shouldn't be used, instead use isKeyDown()
@@ -265,7 +265,7 @@ struct C_Window {
 	// The window's height. You can use this to change the window's height or get it with no functions needed (pretty cool amiright)
 	unsigned int height;
 	// The batch that's used to draw all basic shapes. Shouldn't be used unless directly using openGL functions.
-	C_Batch shapeBatch;
+	Batch shapeBatch;
 	// The time since the last frame happened. Multiplying values by this makes the value frame independent, meaning that it moves at the same rate of change regardless of the FPS.
 	float deltaTime;
 	// Value used to calculate deltaTime and shouldn't be used or modified.
@@ -281,141 +281,76 @@ struct C_Window {
 	// Value used to manage the "fullscreen" var and shouldn't be used or modified.
 	boolean priorFullscreen;
 	// The vector used to hold all of the textures and their respective batch info. Shouldn't be used.
-	C_textureVec textures;
+	textureVec textures;
 	// The camera used to project everything. It has modifiable x, y, & z values.
-	C_Camera camera;
+	Camera camera;
 	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
 	
 	unsigned int fontShader;
-	C_fontVec fonts;
+	fontVec fonts;
 };
-typedef struct C_Window C_Window;
+typedef struct Window Window;
 
-FontID loadFont(C_Window* win, const char* filePath, float size);
-void deleteFont(C_Window* win, FontID font);
+FontID loadFont(Window* win, const char* filePath, float size);
+void deleteFont(Window* win, FontID font);
 
 // Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
-void C_initGrey(unsigned int sampleRate);
+void initGrey(unsigned int sampleRate);
 	// Frees up any possibly used memory.
-void C_closeGrey();
+void closeGrey();
 void framebufferCallback(GLFWwindow* win, int width, int height);
 // Returns a valid Window struct.
-C_Window C_createWindow(int width, int height, const char* title);
+Window createWindow(int width, int height, const char* title);
 // Deletes the Window from memory. Different from closeWindow, which closes the window.
-void C_deleteWindow(C_Window* win);
+void deleteWindow(Window* win);
 // Checks if a Window should be closed.
-boolean C_shouldWindowClose(C_Window win);
+boolean shouldWindowClose(Window win);
 // Handles updating the window, including polling events & general variables within the struct.
-void C_updateWindow(C_Window* win);
+void updateWindow(Window* win);
 // Collects every draw call you've made and sends it in a few collective batches.
-void C_renderWindow(C_Window win);
+void renderWindow(Window win);
 // Closes the Window. Different from deleteWindow, which deletes the Window from memory.
-void C_closeWindow(C_Window win);
+void closeWindow(Window win);
 // Sets a window flag's state. All the window flags can be found in the grey file near line 149.
-void C_setWindowFlag(C_Window win, uint32_t flag, boolean state);
+void setWindowFlag(Window win, uint32_t flag, boolean state);
 /*
 Loads a texture. Beware that the file path you link is relative to the .exe, so you need to have the resources within your build file.
 Also, don't forget to call deleteTexture when you aren't going to use it anymore, otherwise it could cause memory leaks!
 Also also, if you don't know what to put for filter, you can put either FILTER_NEAREST or FILTER_LINEAR.
 (For reference, when upscaling/downscaling, FILTER_NEAREST can make it look blurry (better for realistic images), and FILTER_LINEAR can make it look pixelated (better for low-pixel images AKA pixel art).
 */
-Texture c_newTexture(C_Window* win, const char* path, int filter);
+Texture newTexture(Window* win, const char* path, int filter);
 /*
 Deloads a texture, freeing up the memory it's using.
 */
-void c_deleteTexture(C_Window* win, Texture texture);
+void deleteTexture(Window* win, Texture texture);
 /*
 Checks if a certain key is down. All keys can be found in the grey file near line 26.
 Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
 */
-boolean C_isKeyDown(C_Window win, int key);
+boolean isKeyDown(Window win, int key);
 /*
 Checks if a certain key has been pressed. All keys can be found in the grey file near line 26.
 Note that this shouldn't be confused with isKeyDown, which is valid each frame that the user has the key down.
 */
-boolean C_isKeyPressed(C_Window win, int key);
+boolean isKeyPressed(Window win, int key);
 // Clears the background with a color. Generally should be called each frame before drawing anything else.
-void C_clearWindowBackground(C_Window win, Color color);
+void clearWindowBackground(Window win, Color color);
 // Enables or disables wireframe mode, which draws everything as lines.
-void C_setWireframeMode(C_Window win, boolean state);
+void setWireframeMode(Window win, boolean state);
 // Draws a triangle with three given points and a color.
-void C_drawTriangle(C_Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
+void drawTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
 // Draws a rectangle. Note that rotation is measured in degrees,
-void C_drawRectangle(C_Window* win, float x, float y, float width, float height, float rotation, Color color);
+void drawRectangle(Window* win, float x, float y, float width, float height, float rotation, Color color);
 // Draws a texture. Note that rotation is measured in degrees.
-void C_drawTexture(C_Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color);
+void drawTexture(Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color);
 // Draws a circle.
-void C_drawCircle(C_Window* win, float x, float y, float radius, Color color);
+void drawCircle(Window* win, float x, float y, float radius, Color color);
 // Draws a rounded rectangle.
-void C_drawRoundedRect(C_Window* win, float x, float y, float width, float height, float radius, float rotation, Color color);
+void drawRoundedRect(Window* win, float x, float y, float width, float height, float radius, float rotation, Color color);
 
-void C_drawText(C_Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
-
-#ifndef IMPLEMENT_GREY_H
-
-// Clears the background with a color. Generally should be called each frame before drawing anything else.
-#define clearWindowBackground C_clearWindowBackground
-// Enables or disables wireframe mode, which draws everything as lines.
-#define setWireframeMode C_setWireframeMode
-/*
-Checks if a certain key is down. All keys can be found in the grey file near line 26.
-Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
-*/
-#define isKeyDown C_isKeyDown
-/*
-Checks if a certain key has been pressed. All keys can be found in the grey file near line 26.
-Note that this shouldn't be confused with isKeyDown, which is valid each frame that the user has the key down.
-*/
-#define isKeyPressed C_isKeyPressed
-// Sets a window flag's state. All the window flags can be found in the grey file near line 149.
-#define setWindowFlag C_setWindowFlag
-/*
-Loads a texture. Beware that the file path you link is relative to the .exe, so you need to have the resources within your build file.
-Also, don't forget to call deleteTexture when you aren't going to use it anymore, otherwise it could cause memory leaks!
-*/
-#define newTexture c_newTexture
-/*
-Deloads a texture, freeing up the memory it's using.
-*/
-#define deleteTexture c_deleteTexture
-// Closes the Window. Different from deleteWindow, which deletes the Window from memory.
-#define closeWindow C_closeWindow
-// Deletes the Window from memory. Different from closeWindow, which closes the window.
-#define deleteWindow C_deleteWindow
-// Collects every draw call you've made and sends it in a few collective batches.
-#define renderWindow C_renderWindow
-// Handles updating the window, including polling events & general variables within the struct.
-#define updateWindow C_updateWindow
-// Checks if a Window should be closed.
-#define shouldWindowClose C_shouldWindowClose
-// Returns a valid Window struct.
-#define createWindow C_createWindow
-// Frees up any possibly used memory.
-#define closeGrey C_closeGrey
-// Starts up all graphics. "sampleRate" controls the amount of anti-aliasing planned to be used.
-#define initGrey C_initGrey
-
-#define Camera C_Camera
-// A window struct. You can use multiple if you're wondering, by the way.
-#define Window C_Window
-
-#define Font C_Font
-
-// Draws a triangle with three given points and a color.
-#define drawTriangle C_drawTriangle
-// Draws a rectangle. Note that rotation is measured in degrees.
-#define drawRectangle C_drawRectangle
-// Draws a texture. Note that rotation is measured in degrees.
-#define drawTexture C_drawTexture
-// Draws a circle.
-#define drawCircle C_drawCircle
-// Draws a rounded rectangle.
-#define drawRoundedRect C_drawRoundedRect
-
-#define drawText C_drawText
-
-#endif
+void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
 
 #ifdef __cplusplus
 // Chromakey
