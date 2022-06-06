@@ -146,6 +146,7 @@ void endTextureShape(TextureBatch* batch) {
 	intVecPushBack(&batch->shapeVertices, batch->stack);
 	batch->stack = 0;
 }
+
 void drawTextureBatch(TextureBatch batch, GLenum type) {
 	glBindVertexArray(batch.VAO);
 	intVec first = intVecCreate();
@@ -283,43 +284,6 @@ void textureVecDelete(textureVec* vec) {
 	free(vec->data);
 	vec->size = 0;
 	vec->limit = 0;
-}
-
-
-colorVec colorVecCreate() {
-	colorVec vec;
-	vec.data = (Color*)calloc(0, sizeof(Color));
-	vec.size = 0;
-	vec.limit = 0;
-	return vec;
-}
-void colorVecCheckSize(colorVec* vec) {
-	if (vec->size + 1 > vec->limit) {
-		Color* temp;
-		vec->limit = vec->size * 2;
-		temp = (Color*)realloc(vec->data, vec->limit * sizeof(Color));
-		if (temp) { vec->data = temp; }
-	}
-}
-void colorVecPushBack(colorVec* vec, Color num) {
-	vec->size += 1;
-	colorVecCheckSize(vec);
-	vec->data[vec->size - 1][0] = num[0];
-	vec->data[vec->size - 1][1] = num[1];
-	vec->data[vec->size - 1][2] = num[2];
-	vec->data[vec->size - 1][3] = num[3];
-}
-void colorVecClear(colorVec* vec) {
-	free(vec->data);
-	vec->limit /= 2;
-	vec->data = (Color*)calloc(vec->limit, sizeof(Color));
-	vec->size = 0;
-}
-// This function kinda maybe doesn't exist yet possibly perhaps
-void colorVecDelete(colorVec* vec) {
-	for (int i = 0; i < vec->size; i++) {
-
-	}
 }
 
 
@@ -825,12 +789,12 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 	y = -y;
 	if (rotation == 0.0f || (int)rotation % 360 == 0) {
 		float passIn1[27] = {
-			x, y, win->zmod, r, g, b, a, 0.0f, 1.0f,
-			x, y - height, win->zmod, r, g, b, a, 0.0f, 0.0f,
-			x + width, y - height, win->zmod, r, g, b, a, 1.0f, 0.0f
+			x, y, win->zmod, r, g, b, a, 0.0f, 0.0f,
+			x, y - height, win->zmod, r, g, b, a, 0.0f, 1.0f,
+			x + width, y - height, win->zmod, r, g, b, a, 1.0f, 1.0f
 		};
 		float passIn2[9] = {
-			x + width, y, win->zmod, r, g, b, a, 1.0f, 1.0f
+			x + width, y, win->zmod, r, g, b, a, 1.0f, 0.0f
 		};
 		addTextureTriangle(&win->textures.data[texture], passIn1);
 		addTextureVertice(&win->textures.data[texture], passIn2);
@@ -843,12 +807,12 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 		float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
 		float c1 = x + width / 2, c2 = y - height / 2;
 		float passIn1[27] = {
-			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a, 0.0f, 1.0f,
-			a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a, 0.0f, 0.0f,
-			a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a, 1.0f, 0.0f
+			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a, 1.0f, 0.0f,
+			a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f,
+			a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a, 0.0f, 1.0f
 		};
 		float passIn2[9] = {
-			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f
+			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 0.0f, 0.0f
 		};
 		addTextureTriangle(&win->textures.data[texture], passIn1);
 		addTextureVertice(&win->textures.data[texture], passIn2);
