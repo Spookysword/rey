@@ -64,6 +64,9 @@ int main() {
 		drawPolygon(&win, (float[5]) { 550.0f, 600.0f, 650.0f, 580.0f, 500.0f }, (float[5]) { 550.0f, 550.0f, 600.0f, 680.0f, 600.0f }, 5, COLOR_RED);
 
 		drawAdvancedRect(&win, 10, 500, 100, 100, 0, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW);
+		drawAdvancedRect(&win, 10, 600, 100, 100, 1, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW);
+
+		drawAdvancedTriangle(&win, 720 / 2 - 50, 300-50, 300 - 50, 720 - 300 - 50, 720 - 300 - 50, 720 - 300 - 50, COLOR_RED, COLOR_GREEN, COLOR_BLUE);
 
 		renderWindow(win);
 	}

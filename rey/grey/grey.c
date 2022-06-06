@@ -987,40 +987,37 @@ void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 	endShape(&win->shapeBatch);
 }
 void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color color1, Color color2, Color color3, Color color4) {
-	float r1 = (float)color1[0] / 255, g1 = (float)color1[1] / 255, b1 = (float)color1[2] / 255, a1 = (float)color1[3] / 255;
-	float r2 = (float)color2[0] / 255, g2 = (float)color2[1] / 255, b2 = (float)color2[2] / 255, a2 = (float)color2[3] / 255;
-	float r3 = (float)color3[0] / 255, g3 = (float)color3[1] / 255, b3 = (float)color3[2] / 255, a3 = (float)color3[3] / 255;
-	float r4 = (float)color4[0] / 255, g4 = (float)color4[1] / 255, b4 = (float)color4[2] / 255, a4 = (float)color4[3] / 255;
+	float cr1 = (float)color1[0] / 255, cg1 = (float)color1[1] / 255, cb1 = (float)color1[2] / 255, ca1 = (float)color1[3] / 255;
+	float cr2 = (float)color2[0] / 255, cg2 = (float)color2[1] / 255, cb2 = (float)color2[2] / 255, ca2 = (float)color2[3] / 255;
+	float cr3 = (float)color3[0] / 255, cg3 = (float)color3[1] / 255, cb3 = (float)color3[2] / 255, ca3 = (float)color3[3] / 255;
+	float cr4 = (float)color4[0] / 255, cg4 = (float)color4[1] / 255, cb4 = (float)color4[2] / 255, ca4 = (float)color4[3] / 255;
 	y = -y;
-	if (rotation == 0.0f || (int)rotation % 360 == 0) {
-		float passIn1[21] = {
-			x, y, win->zmod, r1, g1, b1, a1,
-			x, y - height, win->zmod, r2, g2, b2, a2,
-			x + width, y - height, win->zmod, r3, g3, b3, a3
-		};
-		float passIn2[7] = {
-			x + width, y, win->zmod, r4, g4, b4, a4
-		};
-		addTriangle(&win->shapeBatch, passIn1);
-		addVertice(&win->shapeBatch, passIn2);
-		endShape(&win->shapeBatch);
-	}
-	else {
-		rotation = -rotation * (PI / 180);
-		float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
-		float r0 = asin(((height / 2) * (sin(PI / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - PI, r4 = r2 - PI;
-		float c1 = x + width / 2, c2 = y - height / 2;
-		float passIn1[21] = {
-			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r1, g1, b1, a1,
-			a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r2, g2, b2, a2,
-			a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r3, g3, b3, a3
-		};
-		float passIn2[7] = {
-			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r4, g4, b4, a4
-		};
-		addTriangle(&win->shapeBatch, passIn1);
-		addVertice(&win->shapeBatch, passIn2);
-		endShape(&win->shapeBatch);
-	}
+
+	rotation = -rotation * (PI / 180);
+	float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
+	float r0 = asin(((height / 2) * (sin(PI / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - PI, r4 = r2 - PI;
+	float c1 = x + width / 2, c2 = y - height / 2;
+	float passIn1[21] = {
+		a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, cr1, cg1, cb1, ca1,
+		a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, cr2, cg2, cb2, ca2,
+		a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, cr3, cg3, cb3, ca3
+	};
+	float passIn2[7] = {
+		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, cr4, cg4, cb4, ca4
+	};
+	addTriangle(&win->shapeBatch, passIn1);
+	addVertice(&win->shapeBatch, passIn2);
+	endShape(&win->shapeBatch);
+
+	win->zmod -= 0.000001f;
+}
+void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color1, Color color2, Color color3) {
+	float passIn1[21] = {
+		x1, -y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255,
+		x2, -y2, win->zmod, (float)color2[0] / 255, (float)color2[1] / 255, (float)color2[2] / 255, (float)color2[3] / 255,
+		x3, -y3, win->zmod, (float)color3[0] / 255, (float)color3[1] / 255, (float)color3[2] / 255, (float)color3[3] / 255
+	};
+	addTriangle(&win->shapeBatch, passIn1);
+	endShape(&win->shapeBatch);
 	win->zmod -= 0.000001f;
 }
