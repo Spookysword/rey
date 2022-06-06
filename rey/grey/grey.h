@@ -365,7 +365,7 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 
 void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
 
-void drawPolygon(Window* win, intVec xs, intVec ys, Color color);
+void drawPolygon(Window* win, floatVec xs, floatVec ys, Color color);
 
 #ifdef __cplusplus
 // Chromakey
