@@ -244,6 +244,11 @@ void fontVecPushBack(fontVec* vec, Font num);
 void fontVecClear(fontVec* vec);
 void fontVecDelete(fontVec* vec);
 
+struct Shader {
+	GLuint vertexID, fragmentID, shaderID;
+};
+typedef struct Shader Shader;
+Shader createShader(const char* vertexShader, const char* fragmentShader);
 
 // A window struct. You can use multiple if you're wondering, by the way.
 struct Window {
@@ -258,9 +263,9 @@ struct Window {
 	// The window's title. You can use this to change the window's title or get it with no functions needed (pretty cool amiright)
 	const char* title;
 	// The int passed to OpenGL that's used to draw basic color objects. Shouldn't be used unless directly using OpenGL functions.
-	unsigned int colorShader;
+	Shader colorShader;
 	// The int passed to OpenGL that's used to draw textures. Shouldn't be used unless directly using OpenGL functions.
-	unsigned int textureShader;
+	Shader textureShader;
 	// The window's width. You can use this to change the window's width or get it with no functions needed (pretty cool amiright)
 	unsigned int width;
 	// The window's height. You can use this to change the window's height or get it with no functions needed (pretty cool amiright)
@@ -288,7 +293,7 @@ struct Window {
 	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
 	
-	unsigned int fontShader;
+	Shader fontShader;
 	fontVec fonts;
 };
 typedef struct Window Window;

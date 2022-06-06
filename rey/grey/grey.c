@@ -286,6 +286,22 @@ void textureVecDelete(textureVec* vec) {
 	vec->limit = 0;
 }
 
+Shader createShader(const char* vertexShader, const char* fragmentShader) {
+	Shader returnShader;
+	returnShader.vertexID = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(returnShader.vertexID, 1, &vertexShader, NULL);
+	glCompileShader(returnShader.vertexID);
+	returnShader.fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(returnShader.fragmentID, 1, &fragmentShader, NULL);
+	glCompileShader(returnShader.fragmentID);
+	returnShader.shaderID = glCreateProgram();
+	glAttachShader(returnShader.shaderID, returnShader.vertexID);
+	glAttachShader(returnShader.shaderID, returnShader.fragmentID);
+	glLinkProgram(returnShader.shaderID);
+	glDeleteShader(returnShader.vertexID);
+	glDeleteShader(returnShader.fragmentID);
+	return returnShader;
+}
 
 GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	int count;
@@ -365,46 +381,9 @@ Window createWindow(int width, int height, const char* title) {
 	win.framesPerSecond = 0.0f;
 	win.fonts = fontVecCreate();
 
-	unsigned int w_colorVertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(w_colorVertexShader, 1, &colorVertexShader, NULL);
-	glCompileShader(w_colorVertexShader);
-	unsigned int w_colorFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(w_colorFragmentShader, 1, &colorFragmentShader, NULL);
-	glCompileShader(w_colorFragmentShader);
-	win.colorShader = glCreateProgram();
-	glAttachShader(win.colorShader, w_colorVertexShader);
-	glAttachShader(win.colorShader, w_colorFragmentShader);
-	glLinkProgram(win.colorShader);
-	glDeleteShader(w_colorVertexShader);
-	glDeleteShader(w_colorFragmentShader);
-
-	// Prob should make this a function
-	unsigned int w_textureVertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(w_textureVertexShader, 1, &textureVertexShader, NULL);
-	glCompileShader(w_textureVertexShader);
-	unsigned int w_textureFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(w_textureFragmentShader, 1, &textureFragmentShader, NULL);
-	glCompileShader(w_textureFragmentShader);
-	win.textureShader = glCreateProgram();
-	glAttachShader(win.textureShader, w_textureVertexShader);
-	glAttachShader(win.textureShader, w_textureFragmentShader);
-	glLinkProgram(win.textureShader);
-	glDeleteShader(w_textureVertexShader);
-	glDeleteShader(w_textureFragmentShader);
-
-	// Def should make this a function
-	unsigned int w_fontVertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(w_fontVertexShader, 1, &fontVertexShader, NULL);
-	glCompileShader(w_fontVertexShader);
-	unsigned int w_fontFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(w_fontFragmentShader, 1, &fontFragmentShader, NULL);
-	glCompileShader(w_fontFragmentShader);
-	win.fontShader = glCreateProgram();
-	glAttachShader(win.fontShader, w_fontVertexShader);
-	glAttachShader(win.fontShader, w_fontFragmentShader);
-	glLinkProgram(win.fontShader);
-	glDeleteShader(w_fontVertexShader);
-	glDeleteShader(w_fontFragmentShader);
+	win.colorShader = createShader(colorVertexShader, colorFragmentShader);
+	win.textureShader = createShader(textureVertexShader, textureFragmentShader);
+	win.fontShader = createShader(fontVertexShader, fontFragmentShader);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
@@ -553,15 +532,15 @@ void renderWindow(Window win) {
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
 	
 	bindBatch(win.shapeBatch);
-	glUseProgram(win.colorShader);
-	glUniform2f(glGetUniformLocation(win.colorShader, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
-	glUniform3f(glGetUniformLocation(win.colorShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
+	glUseProgram(win.colorShader.shaderID);
+	glUniform2f(glGetUniformLocation(win.colorShader.shaderID, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
+	glUniform3f(glGetUniformLocation(win.colorShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	
 	draw(win.shapeBatch, GL_TRIANGLE_FAN);
 	
-	glUseProgram(win.textureShader);
-	glUniform2f(glGetUniformLocation(win.textureShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-	glUniform3f(glGetUniformLocation(win.textureShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
+	glUseProgram(win.textureShader.shaderID);
+	glUniform2f(glGetUniformLocation(win.textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+	glUniform3f(glGetUniformLocation(win.textureShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	for (int i = 0; i < win.textures.size; i++) {
 		bindTextureBatch(win.textures.data[i]);
 		glBindTexture(GL_TEXTURE_2D, win.textures.data[i].textureID);
@@ -569,9 +548,9 @@ void renderWindow(Window win) {
 		drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
 	}
 	
-	glUseProgram(win.fontShader);
-	glUniform2f(glGetUniformLocation(win.fontShader, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-	glUniform3f(glGetUniformLocation(win.fontShader, "offset"), win.camera.x, win.camera.y, win.camera.z);
+	glUseProgram(win.fontShader.shaderID);
+	glUniform2f(glGetUniformLocation(win.fontShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+	glUniform3f(glGetUniformLocation(win.fontShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	for (int i = 0; i < win.fonts.size; i++) {
 		for (int z = 0; z < 128; z++) {
 			bindTextureBatch(win.fonts.data[i].characters[z].batch);
