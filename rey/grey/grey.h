@@ -244,6 +244,19 @@ void fontVecPushBack(fontVec* vec, Font num);
 void fontVecClear(fontVec* vec);
 void fontVecDelete(fontVec* vec);
 
+
+struct colorVec {
+	Color* data;
+	int size;
+	int limit;
+};
+typedef struct colorVec colorVec;
+colorVec colorVecCreate();
+void colorVecCheckSize(colorVec* vec);
+void colorVecPushBack(colorVec* vec, Color num);
+void colorVecClear(colorVec* vec);
+void colorVecDelete(colorVec* vec);
+
 // A window struct. You can use multiple if you're wondering, by the way.
 struct Window {
 	// The GLFW window obj for the window. Shouldn't be used unless directly using OpenGL functions.
@@ -351,6 +364,8 @@ void drawCircle(Window* win, float x, float y, float radius, Color color);
 void drawRoundedRect(Window* win, float x, float y, float width, float height, float radius, float rotation, Color color);
 
 void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
+
+void drawPolygon(Window* win, intVec xs, intVec ys, Color color);
 
 #ifdef __cplusplus
 // Chromakey

@@ -217,6 +217,39 @@ void deleteTextureBatch(TextureBatch* batch) {
 	intVecDelete(&batch->shapeVertices);
 }
 
+fontVec fontVecCreate() {
+	fontVec vec;
+	vec.data = (Font*)calloc(0, sizeof(Font));
+	vec.size = 0;
+	vec.limit = 0;
+	return vec;
+}
+void fontVecCheckSize(fontVec* vec) {
+	if (vec->size + 1 > vec->limit) {
+		Font* temp;
+		vec->limit = vec->size * 2;
+		temp = (Font*)realloc(vec->data, vec->limit * sizeof(Font));
+		if (temp) { vec->data = temp; }
+	}
+}
+void fontVecPushBack(fontVec* vec, Font num) {
+	vec->size += 1;
+	fontVecCheckSize(vec);
+	vec->data[vec->size - 1] = num;
+}
+void fontVecClear(fontVec* vec) {
+	free(vec->data);
+	vec->limit /= 2;
+	vec->data = (Font*)calloc(vec->limit, sizeof(Font));
+	vec->size = 0;
+}
+// This function kinda maybe doesn't exist yet possibly perhaps
+void fontVecDelete(fontVec* vec) {
+	for (int i = 0; i < vec->size; i++) {
+
+	}
+}
+
 textureVec textureVecCreate() {
 	textureVec vec;
 	vec.data = (TextureBatch*)calloc(0, sizeof(TextureBatch));
@@ -251,38 +284,44 @@ void textureVecDelete(textureVec* vec) {
 	vec->size = 0;
 	vec->limit = 0;
 }
-fontVec fontVecCreate() {
-	fontVec vec;
-	vec.data = (Font*)calloc(0, sizeof(Font));
+
+
+colorVec colorVecCreate() {
+	colorVec vec;
+	vec.data = (Color*)calloc(0, sizeof(Color));
 	vec.size = 0;
 	vec.limit = 0;
 	return vec;
 }
-void fontVecCheckSize(fontVec* vec) {
+void colorVecCheckSize(colorVec* vec) {
 	if (vec->size + 1 > vec->limit) {
-		Font* temp;
+		Color* temp;
 		vec->limit = vec->size * 2;
-		temp = (Font*)realloc(vec->data, vec->limit * sizeof(Font));
+		temp = (Color*)realloc(vec->data, vec->limit * sizeof(Color));
 		if (temp) { vec->data = temp; }
 	}
 }
-void fontVecPushBack(fontVec* vec, Font num) {
+void colorVecPushBack(colorVec* vec, Color num) {
 	vec->size += 1;
-	fontVecCheckSize(vec);
-	vec->data[vec->size-1] = num;
+	colorVecCheckSize(vec);
+	vec->data[vec->size - 1][0] = num[0];
+	vec->data[vec->size - 1][1] = num[1];
+	vec->data[vec->size - 1][2] = num[2];
+	vec->data[vec->size - 1][3] = num[3];
 }
-void fontVecClear(fontVec* vec) {
+void colorVecClear(colorVec* vec) {
 	free(vec->data);
 	vec->limit /= 2;
-	vec->data = (Font*)calloc(vec->limit, sizeof(Font));
+	vec->data = (Color*)calloc(vec->limit, sizeof(Color));
 	vec->size = 0;
 }
 // This function kinda maybe doesn't exist yet possibly perhaps
-void fontVecDelete(fontVec* vec) {
+void colorVecDelete(colorVec* vec) {
 	for (int i = 0; i < vec->size; i++) {
-		
+
 	}
 }
+
 
 GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	int count;
@@ -938,4 +977,17 @@ void drawText(Window* win, const char* text, FontID font, float x, float y, floa
 		x += (c.advance >> 6) * scale;
 		win->zmod -= 0.000001f;
 	}
+}
+void drawPolygon(Window* win, intVec xs, intVec ys, Color color) {
+	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	int size = xs.size;
+	if (size > ys.size) {
+		printf("Invalid polygon!\n");
+		size = ys.size;
+	}
+	for (int i = 0; i < size; i++) {
+		float passIn[7] = { xs.data[i], ys.data[i], win->zmod, r, g, b, a };
+		addVertice(&win->shapeBatch, passIn);
+	}
+	endShape(&win->shapeBatch);
 }

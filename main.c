@@ -10,7 +10,6 @@ int main() {
 	playSound("resources/aeh.wav");
 	
 	float moveSpeed = 250.0f;
-
 	Texture block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
 	float rot = 0.0f;
 
@@ -61,7 +60,7 @@ int main() {
 		drawTexture(&win, block, 0, 0, 100, 100, rot, COLOR_WHITE);
 
 		drawText(&win, "hello grey", arial, 0.0f, 100.0f, 1.0f, COLOR_GREEN);
-		
+
 		renderWindow(win);
 	}
 	
