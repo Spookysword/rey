@@ -59,7 +59,7 @@ int main() {
 		
 		drawTexture(&win, block, 0, 0, 100, 100, rot, COLOR_WHITE);
 
-		drawText(&win, "hello grey", arial, 0.0f, 100.0f, 1.0f, COLOR_GREEN);
+		drawText(&win, "hello grey", arial, 0.0f, 100.0f, 50.0f, COLOR_GREEN);
 
 		drawPolygon(&win, (float[5]) { 550.0f, 600.0f, 650.0f, 580.0f, 500.0f }, (float[5]) { 550.0f, 550.0f, 600.0f, 680.0f, 600.0f }, 5, COLOR_RED);
 
@@ -71,8 +71,8 @@ int main() {
 		renderWindow(win);
 	}
 	
-	deleteTexture(&win, block);
 	deleteFont(&win, arial);
+	deleteTexture(&win, block);
 	deleteWindow(&win);
 
 	closeArey();

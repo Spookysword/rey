@@ -544,17 +544,18 @@ FontID loadFont(Window* win, const char* filePath, float size) {
 	*/
 	Font thisFont;
 	if (FT_New_Face(FT, filePath, 0, &thisFont.face)) {
-		printf("Could load font!\n");
+		printf("Could load font at path '%s'!\n", filePath);
+		return -1;
 	}
 	FT_Set_Pixel_Sizes(thisFont.face, 0, size);
 	thisFont.scale = size;
 	if (FT_Load_Char(thisFont.face, 'A', FT_LOAD_RENDER)) {
-		printf("Couldn't load glyph!\n");
+		printf("Couldn't load glyph A!\n");
 	}
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // This line may cause problems
 	for (unsigned char c = 0; c < 128; c++) {
 		if (FT_Load_Char(thisFont.face, c, FT_LOAD_RENDER)) {
-			printf("Failed to load particular glyph!\n");
+			printf("Failed to load glyph %c!\n", c);
 		}
 		TextureBatch testBatch;
 		Character character;
@@ -602,6 +603,7 @@ FontID loadFont(Window* win, const char* filePath, float size) {
 	return win->fonts.size - 1;
 }
 void deleteFont(Window* win, FontID font) {
+	if (font == -1) { return; }
 	for (int i = 0; i < 128; i++) {
 		deleteTextureBatch(&win->fonts.data[font].characters[i].batch);
 	}
@@ -752,72 +754,42 @@ void drawTriangle(Window* win, float x1, float y1, float x2, float y2, float x3,
 void drawRectangle(Window* win, float x, float y, float width, float height, float rotation, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	y = -y;
-	if (rotation == 0.0f || (int)rotation % 360 == 0) {
-		float passIn1[21] = {
-			x, y, win->zmod, r, g, b, a,
-			x, y - height, win->zmod, r, g, b, a,
-			x + width, y - height, win->zmod, r, g, b, a
-		};
-		float passIn2[7] = {
-			x + width, y, win->zmod, r, g, b, a
-		};
-		addTriangle(&win->shapeBatch, passIn1);
-		addVertice(&win->shapeBatch, passIn2);
-		endShape(&win->shapeBatch);
-	}
-	else {
-		rotation = -rotation * (PI / 180);
-		float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
-		float r0 = asin(((height / 2) * (sin(PI / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - PI, r4 = r2 - PI;
-		float c1 = x + width / 2, c2 = y - height / 2;
-		float passIn1[21] = {
-			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a,
-			a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a,
-			a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a
-		};
-		float passIn2[7] = {
-			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a
-		};
-		addTriangle(&win->shapeBatch, passIn1);
-		addVertice(&win->shapeBatch, passIn2);
-		endShape(&win->shapeBatch);
-	}
+	rotation = -rotation * (PI / 180);
+	float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
+	float r0 = asin(((height / 2) * (sin(PI / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - PI, r4 = r2 - PI;
+	float c1 = x + width / 2, c2 = y - height / 2;
+	float passIn1[21] = {
+		a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a,
+		a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a,
+		a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a
+	};
+	float passIn2[7] = {
+		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a
+	};
+	addTriangle(&win->shapeBatch, passIn1);
+	addVertice(&win->shapeBatch, passIn2);
+	endShape(&win->shapeBatch);
 	win->zmod -= 0.000001f;
 }
 void drawTexture(Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	y = -y;
-	if (rotation == 0.0f || (int)rotation % 360 == 0) {
-		float passIn1[27] = {
-			x, y, win->zmod, r, g, b, a, 0.0f, 0.0f,
-			x, y - height, win->zmod, r, g, b, a, 0.0f, 1.0f,
-			x + width, y - height, win->zmod, r, g, b, a, 1.0f, 1.0f
-		};
-		float passIn2[9] = {
-			x + width, y, win->zmod, r, g, b, a, 1.0f, 0.0f
-		};
-		addTextureTriangle(&win->textures.data[texture], passIn1);
-		addTextureVertice(&win->textures.data[texture], passIn2);
-		endTextureShape(&win->textures.data[texture]);
-	}
-	else {
-		float pi = 3.1415926535897932384626433;
-		rotation = -rotation * (pi / 180);
-		float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
-		float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
-		float c1 = x + width / 2, c2 = y - height / 2;
-		float passIn1[27] = {
-			a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a, 1.0f, 0.0f,
-			a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f,
-			a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a, 0.0f, 1.0f
-		};
-		float passIn2[9] = {
-			a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 0.0f, 0.0f
-		};
-		addTextureTriangle(&win->textures.data[texture], passIn1);
-		addTextureVertice(&win->textures.data[texture], passIn2);
-		endTextureShape(&win->textures.data[texture]);
-	}
+	float pi = 3.1415926535897932384626433;
+	rotation = -rotation * (pi / 180);
+	float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
+	float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
+	float c1 = x + width / 2, c2 = y - height / 2;
+	float passIn1[27] = {
+		a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a, 0.0f, 1.0f,
+		a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a, 0.0f, 0.0f,
+		a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a, 1.0f, 0.0f
+	};
+	float passIn2[9] = {
+		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f
+	};
+	addTextureTriangle(&win->textures.data[texture], passIn1);
+	addTextureVertice(&win->textures.data[texture], passIn2);
+	endTextureShape(&win->textures.data[texture]);
 	win->zmod -= 0.000001f;
 }
 
@@ -921,6 +893,8 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 	win->zmod -= 0.000001f;
 }
 void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
+	if (font == -1) { return; }
+	scale = scale / win->fonts.data[font].scale;
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; text[i] != '\0'; i++) {
 		Character c = win->fonts.data[font].characters[text[i]];
