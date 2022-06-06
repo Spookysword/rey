@@ -280,6 +280,7 @@ void textureVecClear(textureVec* vec) {
 void textureVecDelete(textureVec* vec) {
 	for (int i = 0; i < vec->size; i++) {
 		deleteTextureBatch(&vec->data[i-1]);
+		glDeleteTextures(1, &vec->data[i-1].textureID);
 	}
 	free(vec->data);
 	vec->size = 0;
@@ -396,6 +397,9 @@ void deleteWindow(Window* win) {
 	deleteBatch(&win->shapeBatch);
 	textureVecClear(&win->textures);
 	textureVecDelete(&win->textures);
+	glDeleteProgram(win->colorShader.shaderID);
+	glDeleteProgram(win->textureShader.shaderID);
+	glDeleteProgram(win->fontShader.shaderID);
 }
 boolean shouldWindowClose(Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
