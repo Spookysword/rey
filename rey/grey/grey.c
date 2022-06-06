@@ -978,7 +978,7 @@ void drawText(Window* win, const char* text, FontID font, float x, float y, floa
 		win->zmod -= 0.000001f;
 	}
 }
-void drawPolygon(Window* win, intVec xs, intVec ys, Color color) {
+void drawPolygon(Window* win, floatVec xs, floatVec ys, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	int size = xs.size;
 	if (size > ys.size) {
