@@ -580,17 +580,18 @@ FontID loadFont(Window* win, const char* filePath, float size) {
 	*/
 	Font thisFont;
 	if (FT_New_Face(FT, filePath, 0, &thisFont.face)) {
-		printf("Could load font!\n");
+		printf("Could load font at path '%s'!\n", filePath);
+		return -1;
 	}
 	FT_Set_Pixel_Sizes(thisFont.face, 0, size);
 	thisFont.scale = size;
 	if (FT_Load_Char(thisFont.face, 'A', FT_LOAD_RENDER)) {
-		printf("Couldn't load glyph!\n");
+		printf("Couldn't load glyph A!\n");
 	}
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // This line may cause problems
 	for (unsigned char c = 0; c < 128; c++) {
 		if (FT_Load_Char(thisFont.face, c, FT_LOAD_RENDER)) {
-			printf("Failed to load particular glyph!\n");
+			printf("Failed to load glyph %c!\n", c);
 		}
 		TextureBatch testBatch;
 		Character character;
@@ -638,6 +639,7 @@ FontID loadFont(Window* win, const char* filePath, float size) {
 	return win->fonts.size - 1;
 }
 void deleteFont(Window* win, FontID font) {
+	if (font == -1) { return; }
 	for (int i = 0; i < 128; i++) {
 		deleteTextureBatch(&win->fonts.data[font].characters[i].batch);
 	}
@@ -927,6 +929,7 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 	win->zmod -= 0.000001f;
 }
 void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
+	if (font == -1) { return; }
 	scale = scale / win->fonts.data[font].scale;
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; text[i] != '\0'; i++) {

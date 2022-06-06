@@ -71,8 +71,8 @@ int main() {
 		renderWindow(win);
 	}
 	
-	deleteTexture(&win, block);
 	deleteFont(&win, arial);
+	deleteTexture(&win, block);
 	deleteWindow(&win);
 
 	closeArey();
