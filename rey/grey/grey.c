@@ -978,15 +978,10 @@ void drawText(Window* win, const char* text, FontID font, float x, float y, floa
 		win->zmod -= 0.000001f;
 	}
 }
-void drawPolygon(Window* win, floatVec xs, floatVec ys, Color color) {
+void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
-	int size = xs.size;
-	if (size > ys.size) {
-		printf("Invalid polygon!\n");
-		size = ys.size;
-	}
 	for (int i = 0; i < size; i++) {
-		float passIn[7] = { xs.data[i], ys.data[i], win->zmod, r, g, b, a };
+		float passIn[7] = { xs[i], ys[i], win->zmod, r, g, b, a };
 		addVertice(&win->shapeBatch, passIn);
 	}
 	endShape(&win->shapeBatch);
