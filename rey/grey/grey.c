@@ -250,6 +250,36 @@ void fontVecDelete(fontVec* vec) {
 
 	}
 }
+CustomShaderVec CustomShaderVecCreate() {
+	CustomShaderVec vec;
+	vec.data = (CustomShader*)calloc(0, sizeof(CustomShader));
+	vec.size = 0;
+	vec.limit = 0;
+	return vec;
+}
+void CustomShaderVecCheckSize(CustomShaderVec* vec) {
+	if (vec->size + 1 > vec->limit) {
+		CustomShader* temp;
+		vec->limit = vec->size * 2;
+		temp = (CustomShader*)realloc(vec->data, vec->limit * sizeof(CustomShader));
+		if (temp) { vec->data = temp; }
+	}
+}
+void CustomShaderVecPushBack(CustomShaderVec* vec, CustomShader num) {
+	vec->size += 1;
+	CustomShaderVecCheckSize(vec);
+	vec->data[vec->size - 1] = num;
+}
+void CustomShaderVecClear(CustomShaderVec* vec) {
+	free(vec->data);
+	vec->limit /= 2;
+	vec->data = (CustomShader*)calloc(vec->limit, sizeof(CustomShader));
+	vec->size = 0;
+}
+// This dont do anything rn
+void CustomShaderVecDelete(CustomShaderVec* vec) {
+
+}
 
 textureVec textureVecCreate() {
 	textureVec vec;
@@ -376,11 +406,11 @@ Window createWindow(int width, int height, const char* title) {
 	win.priorFullscreen = FALSE;
 	win.prevWidth = width;
 	win.prevHeight = height;
-	win.textures = textureVecCreate();
+	win.shader.textures = textureVecCreate();
 	win.zmod = 0.0f;
 	win.camera.x = 0.0f, win.camera.y = 0.0f, win.camera.z = 0.0f;
 	win.framesPerSecond = 0.0f;
-	win.fonts = fontVecCreate();
+	win.shader.fonts = fontVecCreate();
 
 	/*win.colorShader = createShader(colorVertexShader, colorFragmentShader);
 	win.textureShader = createShader(textureVertexShader, textureFragmentShader);
@@ -399,8 +429,8 @@ Window createWindow(int width, int height, const char* title) {
 }
 void deleteWindow(Window* win) {
 	deleteBatch(&win->shader.shapeBatch);
-	textureVecClear(&win->textures);
-	textureVecDelete(&win->textures);
+	textureVecClear(&win->shader.textures);
+	textureVecDelete(&win->shader.textures);
 	glDeleteProgram(win->shader.colorShader.shaderID);
 	glDeleteProgram(win->shader.textureShader.shaderID);
 	glDeleteProgram(win->shader.fontShader.shaderID);
@@ -410,8 +440,8 @@ boolean shouldWindowClose(Window win) {
 }
 Texture newTexture(Window* win, const char* path, int filter) {
 	TextureBatch text = createTextureBatch(path, filter);
-	textureVecPushBack(&win->textures, text);
-	return win->textures.size-1;
+	textureVecPushBack(&win->shader.textures, text);
+	return win->shader.textures.size-1;
 }
 FontID loadFont(Window* win, const char* filePath, float size) {
 	Font thisFont;
@@ -471,28 +501,28 @@ FontID loadFont(Window* win, const char* filePath, float size) {
 		thisFont.characters[c] = character;
 	}
 	FT_Done_Face(thisFont.face);
-	fontVecPushBack(&win->fonts, thisFont);
-	return win->fonts.size - 1;
+	fontVecPushBack(&win->shader.fonts, thisFont);
+	return win->shader.fonts.size - 1;
 }
 void deleteFont(Window* win, FontID font) {
 	if (font == -1) { return; }
 	for (int i = 0; i < 128; i++) {
-		deleteTextureBatch(&win->fonts.data[font].characters[i].batch);
-		glDeleteTextures(1, &win->fonts.data[font].characters[i].ID);
+		deleteTextureBatch(&win->shader.fonts.data[font].characters[i].batch);
+		glDeleteTextures(1, &win->shader.fonts.data[font].characters[i].ID);
 	}
 }
 void deleteTexture(Window* win, Texture texture) {
-	deleteTextureBatch(&win->textures.data[texture]);
-	glDeleteTextures(1, &win->textures.data[texture].textureID);
+	deleteTextureBatch(&win->shader.textures.data[texture]);
+	glDeleteTextures(1, &win->shader.textures.data[texture].textureID);
 }
 void updateWindow(Window* win) {
 	flushBatch(&win->shader.shapeBatch);
-	for (int i = 0; i < win->textures.size; i++) {
-		flushTextureBatch(&win->textures.data[i]);
+	for (int i = 0; i < win->shader.textures.size; i++) {
+		flushTextureBatch(&win->shader.textures.data[i]);
 	}
-	for (int i = 0; i < win->fonts.size; i++) {
+	for (int i = 0; i < win->shader.fonts.size; i++) {
 		for (int z = 0; z < 128; z++) {
-			flushTextureBatch(&win->fonts.data[i].characters[z].batch);
+			flushTextureBatch(&win->shader.fonts.data[i].characters[z].batch);
 		}
 	}
 	win->framesPerSecond = 1.0f / (glfwGetTime() - win->currentFrame);
@@ -549,22 +579,22 @@ void renderWindow(Window win) {
 	glUseProgram(win.shader.textureShader.shaderID);
 	glUniform2f(glGetUniformLocation(win.shader.textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 	glUniform3f(glGetUniformLocation(win.shader.textureShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
-	for (int i = 0; i < win.textures.size; i++) {
-		bindTextureBatch(win.textures.data[i]);
-		glBindTexture(GL_TEXTURE_2D, win.textures.data[i].textureID);
-		glBindVertexArray(win.textures.data[i].VAO);
-		drawTextureBatch(win.textures.data[i], GL_TRIANGLE_FAN);
+	for (int i = 0; i < win.shader.textures.size; i++) {
+		bindTextureBatch(win.shader.textures.data[i]);
+		glBindTexture(GL_TEXTURE_2D, win.shader.textures.data[i].textureID);
+		glBindVertexArray(win.shader.textures.data[i].VAO);
+		drawTextureBatch(win.shader.textures.data[i], GL_TRIANGLE_FAN);
 	}
 	
 	glUseProgram(win.shader.fontShader.shaderID);
 	glUniform2f(glGetUniformLocation(win.shader.fontShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 	glUniform3f(glGetUniformLocation(win.shader.fontShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
-	for (int i = 0; i < win.fonts.size; i++) {
+	for (int i = 0; i < win.shader.fonts.size; i++) {
 		for (int z = 0; z < 128; z++) {
-			bindTextureBatch(win.fonts.data[i].characters[z].batch);
-			glBindTexture(GL_TEXTURE_2D, win.fonts.data[i].characters[z].batch.textureID);
-			glBindVertexArray(win.fonts.data[i].characters[z].batch.VAO);
-			drawTextureBatch(win.fonts.data[i].characters[z].batch, GL_TRIANGLE_FAN);
+			bindTextureBatch(win.shader.fonts.data[i].characters[z].batch);
+			glBindTexture(GL_TEXTURE_2D, win.shader.fonts.data[i].characters[z].batch.textureID);
+			glBindVertexArray(win.shader.fonts.data[i].characters[z].batch.VAO);
+			drawTextureBatch(win.shader.fonts.data[i].characters[z].batch, GL_TRIANGLE_FAN);
 		}
 	}
 
@@ -652,9 +682,9 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 	float passIn2[9] = {
 		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f
 	};
-	addTextureTriangle(&win->textures.data[texture], passIn1);
-	addTextureVertice(&win->textures.data[texture], passIn2);
-	endTextureShape(&win->textures.data[texture]);
+	addTextureTriangle(&win->shader.textures.data[texture], passIn1);
+	addTextureVertice(&win->shader.textures.data[texture], passIn2);
+	endTextureShape(&win->shader.textures.data[texture]);
 	win->zmod -= 0.000001f;
 }
 
@@ -759,10 +789,10 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 }
 void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
 	if (font == -1) { return; }
-	scale = scale / win->fonts.data[font].scale;
+	scale = scale / win->shader.fonts.data[font].scale;
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; text[i] != '\0'; i++) {
-		Character c = win->fonts.data[font].characters[text[i]];
+		Character c = win->shader.fonts.data[font].characters[text[i]];
 		float xpos = x + c.bearingX * scale;
 		float ypos = y + (c.sizeY - c.bearingY) * scale;
 		float w = c.sizeX * scale, h = c.sizeY * scale;
@@ -774,9 +804,9 @@ void drawText(Window* win, const char* text, FontID font, float x, float y, floa
 		float passIn2[9] = {
 			xpos + w, -(ypos), win->zmod, r, g, b, a, 1.0f, 1.0f
 		};
-		addTextureTriangle(&win->fonts.data[font].characters[text[i]].batch, passIn1);
-		addTextureVertice(&win->fonts.data[font].characters[text[i]].batch, passIn2);
-		endTextureShape(&win->fonts.data[font].characters[text[i]].batch);
+		addTextureTriangle(&win->shader.fonts.data[font].characters[text[i]].batch, passIn1);
+		addTextureVertice(&win->shader.fonts.data[font].characters[text[i]].batch, passIn2);
+		endTextureShape(&win->shader.fonts.data[font].characters[text[i]].batch);
 		x += (c.advance >> 6) * scale;
 		win->zmod -= 0.000001f;
 	}

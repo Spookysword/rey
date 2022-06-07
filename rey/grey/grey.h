@@ -257,8 +257,22 @@ Shader createShader(const char* vertexShader, const char* fragmentShader);
 struct CustomShader {
 	Shader colorShader, textureShader, fontShader;
 	Batch shapeBatch;
+	textureVec textures;
+	fontVec fonts;
 };
 typedef struct CustomShader CustomShader;
+
+struct CustomShaderVec {
+	CustomShader* data;
+	int size;
+	int limit;
+};
+typedef struct CustomShaderVec CustomShaderVec;
+CustomShaderVec CustomShaderVecCreate();
+void CustomShaderVecCheckSize(CustomShaderVec* vec);
+void CustomShaderVecPushBack(CustomShaderVec* vec, CustomShader num);
+void CustomShaderVecClear(CustomShaderVec* vec);
+void CustomShaderVecDelete(CustomShaderVec* vec);
 
 // A window struct. You can use multiple if you're wondering, by the way.
 struct Window {
@@ -290,14 +304,11 @@ struct Window {
 	boolean fullscreen;
 	// Value used to manage the "fullscreen" var and shouldn't be used or modified.
 	boolean priorFullscreen;
-	// The vector used to hold all of the textures and their respective batch info. Shouldn't be used.
-	textureVec textures;
 	// The camera used to project everything. It has modifiable x, y, & z values.
 	Camera camera;
 	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
 	
-	fontVec fonts;
 	CustomShader shader;
 };
 typedef struct Window Window;
