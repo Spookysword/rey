@@ -411,7 +411,6 @@ Window createWindow(int width, int height, const char* title) {
 	win.prevHeight = height;
 	s.textures = textureVecCreate();
 	win.zmod = 0.0f;
-	win.camera.x = 0.0f, win.camera.y = 0.0f, win.camera.z = 0.0f;
 	win.framesPerSecond = 0.0f;
 	s.fonts = fontVecCreate();
 	
@@ -609,13 +608,11 @@ void renderWindow(Window win) {
 		bindBatch(win.shaders.data[i].shapeBatch);
 		glUseProgram(win.shaders.data[i].colorShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-		glUniform3f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
 
 		draw(win.shaders.data[i].shapeBatch, GL_TRIANGLE_FAN);
 
 		glUseProgram(win.shaders.data[i].textureShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-		glUniform3f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
 		for (int z = 0; z < win.shaders.data[i].textures.size; z++) {
 			bindTextureBatch(win.shaders.data[i].textures.data[z]);
 			glBindTexture(GL_TEXTURE_2D, win.shaders.data[i].textures.data[z].textureID);
@@ -625,7 +622,6 @@ void renderWindow(Window win) {
 
 		glUseProgram(win.shaders.data[i].fontShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-		glUniform3f(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
 		for (int z = 0; z < win.shaders.data[i].fonts.size; z++) {
 			for (int y = 0; y < 128; y++) {
 				bindTextureBatch(win.shaders.data[i].fonts.data[z].characters[y].batch);

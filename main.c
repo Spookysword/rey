@@ -51,11 +51,6 @@ int main() {
 
 		drawCircle(&win, 200, 200, 50, COLOR_RED);
 		drawRoundedRect(&win, 400, 400, 30, 50, 10, rot, COLOR_SOFT_CYAN);
-
-		if (isKeyDown(win, KEY_W)) { win.camera.y -= moveSpeed * win.deltaTime; }
-		if (isKeyDown(win, KEY_S)) { win.camera.y += moveSpeed * win.deltaTime; }
-		if (isKeyDown(win, KEY_A)) { win.camera.x -= moveSpeed * win.deltaTime; }
-		if (isKeyDown(win, KEY_D)) { win.camera.x += moveSpeed * win.deltaTime; }
 		
 		drawTexture(&win, block, 0, 0, 100, 100, rot, COLOR_WHITE);
 

@@ -214,11 +214,6 @@ void textureVecPushBack(textureVec* vec, TextureBatch num);
 void textureVecClear(textureVec* vec);
 void textureVecDelete(textureVec* vec);
 
-struct Camera {
-	float x, y, z;
-};
-typedef struct Camera Camera;
-
 FT_Library FT;
 
 struct Character {
@@ -304,8 +299,6 @@ struct Window {
 	boolean fullscreen;
 	// Value used to manage the "fullscreen" var and shouldn't be used or modified.
 	boolean priorFullscreen;
-	// The camera used to project everything. It has modifiable x, y, & z values.
-	Camera camera;
 	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
 	
