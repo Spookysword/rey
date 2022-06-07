@@ -428,19 +428,30 @@ Window createWindow(int width, int height, const char* title) {
 	return win;
 }
 void deleteWindow(Window* win) {
-	deleteBatch(&win->shaders.data[win->currentShader].shapeBatch);
+	/*deleteBatch(&win->shaders.data[win->currentShader].shapeBatch);
 	textureVecClear(&win->shaders.data[win->currentShader].textures);
 	textureVecDelete(&win->shaders.data[win->currentShader].textures);
 	glDeleteProgram(win->shaders.data[win->currentShader].colorShader.shaderID);
 	glDeleteProgram(win->shaders.data[win->currentShader].textureShader.shaderID);
-	glDeleteProgram(win->shaders.data[win->currentShader].fontShader.shaderID);
+	glDeleteProgram(win->shaders.data[win->currentShader].fontShader.shaderID);*/
+	for (int i = 0; i < win->shaders.size; i++) {
+		deleteBatch(&win->shaders.data[i].shapeBatch);
+		textureVecClear(&win->shaders.data[i].textures);
+		textureVecDelete(&win->shaders.data[i].textures);
+		glDeleteProgram(win->shaders.data[i].colorShader.shaderID);
+		glDeleteProgram(win->shaders.data[i].textureShader.shaderID);
+		glDeleteProgram(win->shaders.data[i].fontShader.shaderID);
+	}
 }
 boolean shouldWindowClose(Window win) {
 	return glfwWindowShouldClose(win.windowHandle);
 }
 Texture newTexture(Window* win, const char* path, int filter) {
 	TextureBatch text = createTextureBatch(path, filter);
-	textureVecPushBack(&win->shaders.data[win->currentShader].textures, text);
+	//textureVecPushBack(&win->shaders.data[win->currentShader].textures, text);
+	for (int i = 0; i < win->shaders.size; i++) {
+		textureVecPushBack(&win->shaders.data[i].textures, text);
+	}
 	return win->shaders.data[win->currentShader].textures.size-1;
 }
 FontID loadFont(Window* win, const char* filePath, float size) {
@@ -501,28 +512,53 @@ FontID loadFont(Window* win, const char* filePath, float size) {
 		thisFont.characters[c] = character;
 	}
 	FT_Done_Face(thisFont.face);
-	fontVecPushBack(&win->shaders.data[win->currentShader].fonts, thisFont);
+	//fontVecPushBack(&win->shaders.data[win->currentShader].fonts, thisFont);
+	for (int i = 0; i < win->shaders.size; i++) {
+		fontVecPushBack(&win->shaders.data[i].fonts, thisFont);
+	}
 	return win->shaders.data[win->currentShader].fonts.size - 1;
 }
 void deleteFont(Window* win, FontID font) {
 	if (font == -1) { return; }
-	for (int i = 0; i < 128; i++) {
+	/*for (int i = 0; i < 128; i++) {
 		deleteTextureBatch(&win->shaders.data[win->currentShader].fonts.data[font].characters[i].batch);
+		glDeleteTextures(1, &win->shaders.data[win->currentShader].fonts.data[font].characters[i].ID);
+	}*/
+	for (int i = 0; i < win->shaders.size; i++) {
+		for (int z = 0; z < 128; z++) {
+			deleteTextureBatch(&win->shaders.data[i].fonts.data[font].characters[z].batch);
+		}
+	}
+	for (int i = 0; i < 128; i++) {
 		glDeleteTextures(1, &win->shaders.data[win->currentShader].fonts.data[font].characters[i].ID);
 	}
 }
 void deleteTexture(Window* win, Texture texture) {
-	deleteTextureBatch(&win->shaders.data[win->currentShader].textures.data[texture]);
+	//deleteTextureBatch(&win->shaders.data[win->currentShader].textures.data[texture]);
+	for (int i = 0; i < win->shaders.size; i++) {
+		deleteTextureBatch(&win->shaders.data[i].textures.data[texture]);
+	}
 	glDeleteTextures(1, &win->shaders.data[win->currentShader].textures.data[texture].textureID);
 }
 void updateWindow(Window* win) {
-	flushBatch(&win->shaders.data[win->currentShader].shapeBatch);
+	/*flushBatch(&win->shaders.data[win->currentShader].shapeBatch);
 	for (int i = 0; i < win->shaders.data[win->currentShader].textures.size; i++) {
 		flushTextureBatch(&win->shaders.data[win->currentShader].textures.data[i]);
 	}
 	for (int i = 0; i < win->shaders.data[win->currentShader].fonts.size; i++) {
 		for (int z = 0; z < 128; z++) {
 			flushTextureBatch(&win->shaders.data[win->currentShader].fonts.data[i].characters[z].batch);
+		}
+	}*/
+	for (int i = 0; i < win->shaders.size; i++) {
+		flushBatch(&win->shaders.data[i].shapeBatch);
+		for (int z = 0; z < win->shaders.data[i].textures.size; z++) {
+			flushTextureBatch(&win->shaders.data[i].textures.data[z]);
+		}
+		for (int z = 0; z < win->shaders.data[i].fonts.size; z++) {
+			for (int y = 0; y < 128; y++) {
+				flushTextureBatch(&win->shaders.data[i].fonts.data[z].characters[y].batch);
+			}
 		}
 	}
 	win->framesPerSecond = 1.0f / (glfwGetTime() - win->currentFrame);
@@ -569,32 +605,34 @@ void renderWindow(Window win) {
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
 	
-	bindBatch(win.shaders.data[win.currentShader].shapeBatch);
-	glUseProgram(win.shaders.data[win.currentShader].colorShader.shaderID);
-	glUniform2f(glGetUniformLocation(win.shaders.data[win.currentShader].colorShader.shaderID, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
-	glUniform3f(glGetUniformLocation(win.shaders.data[win.currentShader].colorShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
-	
-	draw(win.shaders.data[win.currentShader].shapeBatch, GL_TRIANGLE_FAN);
-	
-	glUseProgram(win.shaders.data[win.currentShader].textureShader.shaderID);
-	glUniform2f(glGetUniformLocation(win.shaders.data[win.currentShader].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-	glUniform3f(glGetUniformLocation(win.shaders.data[win.currentShader].textureShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
-	for (int i = 0; i < win.shaders.data[win.currentShader].textures.size; i++) {
-		bindTextureBatch(win.shaders.data[win.currentShader].textures.data[i]);
-		glBindTexture(GL_TEXTURE_2D, win.shaders.data[win.currentShader].textures.data[i].textureID);
-		glBindVertexArray(win.shaders.data[win.currentShader].textures.data[i].VAO);
-		drawTextureBatch(win.shaders.data[win.currentShader].textures.data[i], GL_TRIANGLE_FAN);
-	}
-	
-	glUseProgram(win.shaders.data[win.currentShader].fontShader.shaderID);
-	glUniform2f(glGetUniformLocation(win.shaders.data[win.currentShader].fontShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-	glUniform3f(glGetUniformLocation(win.shaders.data[win.currentShader].fontShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
-	for (int i = 0; i < win.shaders.data[win.currentShader].fonts.size; i++) {
-		for (int z = 0; z < 128; z++) {
-			bindTextureBatch(win.shaders.data[win.currentShader].fonts.data[i].characters[z].batch);
-			glBindTexture(GL_TEXTURE_2D, win.shaders.data[win.currentShader].fonts.data[i].characters[z].batch.textureID);
-			glBindVertexArray(win.shaders.data[win.currentShader].fonts.data[i].characters[z].batch.VAO);
-			drawTextureBatch(win.shaders.data[win.currentShader].fonts.data[i].characters[z].batch, GL_TRIANGLE_FAN);
+	for (int i = 0; i < win.shaders.size; i++) {
+		bindBatch(win.shaders.data[i].shapeBatch);
+		glUseProgram(win.shaders.data[i].colorShader.shaderID);
+		glUniform2f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
+
+		draw(win.shaders.data[i].shapeBatch, GL_TRIANGLE_FAN);
+
+		glUseProgram(win.shaders.data[i].textureShader.shaderID);
+		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
+		for (int z = 0; z < win.shaders.data[i].textures.size; z++) {
+			bindTextureBatch(win.shaders.data[i].textures.data[z]);
+			glBindTexture(GL_TEXTURE_2D, win.shaders.data[i].textures.data[z].textureID);
+			glBindVertexArray(win.shaders.data[i].textures.data[z].VAO);
+			drawTextureBatch(win.shaders.data[i].textures.data[z], GL_TRIANGLE_FAN);
+		}
+
+		glUseProgram(win.shaders.data[i].fontShader.shaderID);
+		glUniform2f(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
+		for (int z = 0; z < win.shaders.data[i].fonts.size; z++) {
+			for (int y = 0; y < 128; y++) {
+				bindTextureBatch(win.shaders.data[i].fonts.data[z].characters[y].batch);
+				glBindTexture(GL_TEXTURE_2D, win.shaders.data[i].fonts.data[z].characters[y].batch.textureID);
+				glBindVertexArray(win.shaders.data[i].fonts.data[z].characters[y].batch.VAO);
+				drawTextureBatch(win.shaders.data[i].fonts.data[z].characters[y].batch, GL_TRIANGLE_FAN);
+			}
 		}
 	}
 
