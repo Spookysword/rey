@@ -309,7 +309,8 @@ struct Window {
 	// The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
 	float framesPerSecond;
 	
-	CustomShader shader;
+	int currentShader;
+	CustomShaderVec shaders;
 };
 typedef struct Window Window;
 
