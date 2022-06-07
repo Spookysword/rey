@@ -11,6 +11,10 @@ extern "C" {
 #include "mrey.h"
 #ifdef _WIN32
 #include <Windows.h>
+#else
+#define boolean unsigned int
+#define TRUE 1
+#define FALSE 0
 #endif
 #ifndef CIRCLE_ACCURACY
 #define CIRCLE_ACCURACY 360

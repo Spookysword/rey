@@ -14,7 +14,7 @@ extern "C" {
 
 ma_engine engine;
 
-inline void initArey() {
+void initArey() {
 	ma_result res;
 
 	res = ma_engine_init(NULL, &engine);
@@ -24,7 +24,7 @@ inline void initArey() {
 	}
 }
 
-inline void playSound(const char* sound) {
+void playSound(const char* sound) {
 
 
 	ma_result res = ma_engine_play_sound(&engine, sound, NULL);
@@ -33,7 +33,7 @@ inline void playSound(const char* sound) {
 	}
 }
 
-inline void closeArey() {
+void closeArey() {
 	ma_engine_uninit(&engine);
 }
 
