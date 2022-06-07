@@ -256,6 +256,7 @@ Shader createShader(const char* vertexShader, const char* fragmentShader);
 
 struct CustomShader {
 	Shader colorShader, textureShader, fontShader;
+	Batch shapeBatch;
 };
 typedef struct CustomShader CustomShader;
 
@@ -275,8 +276,6 @@ struct Window {
 	unsigned int width;
 	// The window's height. You can use this to change the window's height or get it with no functions needed (pretty cool amiright)
 	unsigned int height;
-	// The batch that's used to draw all basic shapes. Shouldn't be used unless directly using openGL functions.
-	Batch shapeBatch;
 	// The time since the last frame happened. Multiplying values by this makes the value frame independent, meaning that it moves at the same rate of change regardless of the FPS.
 	float deltaTime;
 	// Value used to calculate deltaTime and shouldn't be used or modified.

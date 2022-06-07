@@ -368,7 +368,7 @@ Window createWindow(int width, int height, const char* title) {
 	glfwSetFramebufferSizeCallback(win.windowHandle, framebufferCallback);
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 	win.title = title;
-	win.shapeBatch = createBatch();
+	win.shader.shapeBatch = createBatch();
 	win.deltaTime = 0.001f;
 	win.width = width;
 	win.height = height;
@@ -398,7 +398,7 @@ Window createWindow(int width, int height, const char* title) {
 	return win;
 }
 void deleteWindow(Window* win) {
-	deleteBatch(&win->shapeBatch);
+	deleteBatch(&win->shader.shapeBatch);
 	textureVecClear(&win->textures);
 	textureVecDelete(&win->textures);
 	glDeleteProgram(win->shader.colorShader.shaderID);
@@ -486,7 +486,7 @@ void deleteTexture(Window* win, Texture texture) {
 	glDeleteTextures(1, &win->textures.data[texture].textureID);
 }
 void updateWindow(Window* win) {
-	flushBatch(&win->shapeBatch);
+	flushBatch(&win->shader.shapeBatch);
 	for (int i = 0; i < win->textures.size; i++) {
 		flushTextureBatch(&win->textures.data[i]);
 	}
@@ -539,12 +539,12 @@ void renderWindow(Window win) {
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
 	
-	bindBatch(win.shapeBatch);
+	bindBatch(win.shader.shapeBatch);
 	glUseProgram(win.shader.colorShader.shaderID);
 	glUniform2f(glGetUniformLocation(win.shader.colorShader.shaderID, "viewport"), (GLfloat)win.width/2, (GLfloat)win.height/2);
 	glUniform3f(glGetUniformLocation(win.shader.colorShader.shaderID, "offset"), win.camera.x, win.camera.y, win.camera.z);
 	
-	draw(win.shapeBatch, GL_TRIANGLE_FAN);
+	draw(win.shader.shapeBatch, GL_TRIANGLE_FAN);
 	
 	glUseProgram(win.shader.textureShader.shaderID);
 	glUniform2f(glGetUniformLocation(win.shader.textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
@@ -612,8 +612,8 @@ void drawTriangle(Window* win, float x1, float y1, float x2, float y2, float x3,
 		x2, -y2, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255,
 		x3, -y3, win->zmod, (float)color[0]/255, (float)color[1]/255, (float)color[2]/255, (float)color[3]/255
 	};
-	addTriangle(&win->shapeBatch, passIn1);
-	endShape(&win->shapeBatch);
+	addTriangle(&win->shader.shapeBatch, passIn1);
+	endShape(&win->shader.shapeBatch);
 	win->zmod -= 0.000001f;
 }
 void drawRectangle(Window* win, float x, float y, float width, float height, float rotation, Color color) {
@@ -631,9 +631,9 @@ void drawRectangle(Window* win, float x, float y, float width, float height, flo
 	float passIn2[7] = {
 		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a
 	};
-	addTriangle(&win->shapeBatch, passIn1);
-	addVertice(&win->shapeBatch, passIn2);
-	endShape(&win->shapeBatch);
+	addTriangle(&win->shader.shapeBatch, passIn1);
+	addVertice(&win->shader.shapeBatch, passIn2);
+	endShape(&win->shader.shapeBatch);
 	win->zmod -= 0.000001f;
 }
 void drawTexture(Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color) {
@@ -664,12 +664,12 @@ void drawCircle(Window* win, float x, float y, float radius, Color color) {
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
-	addVertice(&win->shapeBatch, passIn);
+	addVertice(&win->shader.shapeBatch, passIn);
 	for (int i = 0; i <= amount; i++) {
 		float passIn2[7] = { x + (radius * cos(i * pi2 / amount)), y + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		addVertice(&win->shapeBatch, passIn2);
+		addVertice(&win->shader.shapeBatch, passIn2);
 	}
-	endShape(&win->shapeBatch);
+	endShape(&win->shader.shapeBatch);
 
 	win->zmod -= 0.000001f;
 }
@@ -690,9 +690,9 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 	float d = y1 + height;
 	float passIn0[21] = { rotateX(a,b,c1,c2,rot),rotateY(a,b,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(a,d,c1,c2,rot),rotateY(a,d,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(c,d,c1,c2,rot),rotateY(c,d,c1,c2,rot),win->zmod,cR,cG,cB,cA };
 	float passIn1[7] = { rotateX(c,b,c1,c2,rot),rotateY(c,b,c1,c2,rot),win->zmod,cR,cG,cB,cA };
-	addTriangle(&win->shapeBatch, passIn0);
-	addVertice(&win->shapeBatch, passIn1);
-	endShape(&win->shapeBatch);
+	addTriangle(&win->shader.shapeBatch, passIn0);
+	addVertice(&win->shader.shapeBatch, passIn1);
+	endShape(&win->shader.shapeBatch);
 
 	a = x1;
 	b = y1 + radius;
@@ -700,9 +700,9 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 	d = y1 + height - radius;
 	float passIn2[21] = { rotateX(a,b,c1,c2,rot),rotateY(a,b,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(a,d,c1,c2,rot),rotateY(a,d,c1,c2,rot),win->zmod,cR,cG,cB,cA, rotateX(c,d,c1,c2,rot),rotateY(c,d,c1,c2,rot),win->zmod,cR,cG,cB,cA };
 	float passIn3[7] = { rotateX(c,b,c1,c2,rot),rotateY(c,b,c1,c2,rot),win->zmod,cR,cG,cB,cA };
-	addTriangle(&win->shapeBatch, passIn2);
-	addVertice(&win->shapeBatch, passIn3);
-	endShape(&win->shapeBatch);
+	addTriangle(&win->shader.shapeBatch, passIn2);
+	addVertice(&win->shader.shapeBatch, passIn3);
+	endShape(&win->shader.shapeBatch);
 
 
 	float xii = x1 + radius;
@@ -712,48 +712,48 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn4[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	addVertice(&win->shapeBatch, passIn4);
+	addVertice(&win->shader.shapeBatch, passIn4);
 	for (int i = 0; i <= amount; i++) {
 		float passIn5[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		addVertice(&win->shapeBatch, passIn5);
+		addVertice(&win->shader.shapeBatch, passIn5);
 	}
-	endShape(&win->shapeBatch);
+	endShape(&win->shader.shapeBatch);
 
 	xii = x1 + width - radius;
 	yii = y1 + radius;
 	xi = rotateX(xii, yii, c1, c2, rot);
 	yi = rotateY(xii, yii, c1, c2, rot);
 	float passIn6[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	addVertice(&win->shapeBatch, passIn6);
+	addVertice(&win->shader.shapeBatch, passIn6);
 	for (int i = 0; i <= amount; i++) {
 		float passIn7[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		addVertice(&win->shapeBatch, passIn7);
+		addVertice(&win->shader.shapeBatch, passIn7);
 	}
-	endShape(&win->shapeBatch);
+	endShape(&win->shader.shapeBatch);
 
 	xii = x1 + width - radius;
 	yii = y1 + height - radius;
 	xi = rotateX(xii, yii, c1, c2, rot);
 	yi = rotateY(xii, yii, c1, c2, rot);
 	float passIn8[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	addVertice(&win->shapeBatch, passIn8);
+	addVertice(&win->shader.shapeBatch, passIn8);
 	for (int i = 0; i <= amount; i++) {
 		float passIn9[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		addVertice(&win->shapeBatch, passIn9);
+		addVertice(&win->shader.shapeBatch, passIn9);
 	}
-	endShape(&win->shapeBatch);
+	endShape(&win->shader.shapeBatch);
 
 	xii = x1 + radius;
 	yii = y1 + height - radius;
 	xi = rotateX(xii, yii, c1, c2, rot);
 	yi = rotateY(xii, yii, c1, c2, rot);
 	float passIn10[7] = { xi, yi, win->zmod, cR, cG, cB, cA };
-	addVertice(&win->shapeBatch, passIn10);
+	addVertice(&win->shader.shapeBatch, passIn10);
 	for (int i = 0; i <= amount; i++) {
 		float passIn11[7] = { xi + (radius * cos(i * pi2 / amount)), yi + (radius * sin(i * pi2 / amount)), win->zmod, cR, cG, cB, cA };
-		addVertice(&win->shapeBatch, passIn11);
+		addVertice(&win->shader.shapeBatch, passIn11);
 	}
-	endShape(&win->shapeBatch);
+	endShape(&win->shader.shapeBatch);
 
 	win->zmod -= 0.000001f;
 }
@@ -785,9 +785,9 @@ void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; i < points; i++) {
 		float passIn[7] = { xs[i], -ys[i], win->zmod, r, g, b, a };
-		addVertice(&win->shapeBatch, passIn);
+		addVertice(&win->shader.shapeBatch, passIn);
 	}
-	endShape(&win->shapeBatch);
+	endShape(&win->shader.shapeBatch);
 }
 void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color color1, Color color2, Color color3, Color color4) {
 	float cr1 = (float)color1[0] / 255, cg1 = (float)color1[1] / 255, cb1 = (float)color1[2] / 255, ca1 = (float)color1[3] / 255;
@@ -808,9 +808,9 @@ void drawAdvancedRect(Window* win, float x, float y, float width, float height, 
 	float passIn2[7] = {
 		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, cr4, cg4, cb4, ca4
 	};
-	addTriangle(&win->shapeBatch, passIn1);
-	addVertice(&win->shapeBatch, passIn2);
-	endShape(&win->shapeBatch);
+	addTriangle(&win->shader.shapeBatch, passIn1);
+	addVertice(&win->shader.shapeBatch, passIn2);
+	endShape(&win->shader.shapeBatch);
 
 	win->zmod -= 0.000001f;
 }
@@ -820,7 +820,7 @@ void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, f
 		x2, -y2, win->zmod, (float)color2[0] / 255, (float)color2[1] / 255, (float)color2[2] / 255, (float)color2[3] / 255,
 		x3, -y3, win->zmod, (float)color3[0] / 255, (float)color3[1] / 255, (float)color3[2] / 255, (float)color3[3] / 255
 	};
-	addTriangle(&win->shapeBatch, passIn1);
-	endShape(&win->shapeBatch);
+	addTriangle(&win->shader.shapeBatch, passIn1);
+	endShape(&win->shader.shapeBatch);
 	win->zmod -= 0.000001f;
 }
