@@ -91,7 +91,7 @@ struct Transform {
     Vector3f scale;
 }; typedef struct Transform Transform;
 
-Transform Transform_create();
+Transform Transform_create(float fov, float width, float height, float zNear, float zFar);
 Matrix4f Transform_getTransformation(Transform a);
 Matrix4f Transform_getProjectedTransformation(Transform a);
 

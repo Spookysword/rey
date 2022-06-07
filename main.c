@@ -5,6 +5,7 @@
 int main() {
 	initGrey(4);
 	initArey();
+	float temp = 0.0f;
 
 	Window win = createWindow(720, 720, "grey");
 	playSound("resources/aeh.wav");
@@ -62,6 +63,10 @@ int main() {
 		drawAdvancedRect(&win, 10, 600, 100, 100, 1, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW);
 
 		drawAdvancedTriangle(&win, 720 / 2 - 50, 300-50, 300 - 50, 720 - 300 - 50, 720 - 300 - 50, 720 - 300 - 50, COLOR_RED, COLOR_GREEN, COLOR_BLUE);
+
+		temp += win.deltaTime;
+		win.transform.rotation = Vector3f_init(0.0f, sin(temp), 0.0f);
+
 
 		renderWindow(win);
 	}

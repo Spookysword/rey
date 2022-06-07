@@ -9,9 +9,9 @@ const char* colorVertexShader = "#version 330 core\n"
 "layout (location = 1) in vec4 aColor;\n"
 "out vec4 color;\n"
 "uniform vec2 viewport;\n"
-"uniform vec3 offset;\n"
+"uniform mat4 transform;\n"
 "void main() {\n"
-"   gl_Position = vec4((aPos.x - viewport.x) / viewport.x - (offset.x / viewport.x), (aPos.y + viewport.y) / viewport.y + (offset.y / viewport.y), aPos.z, 1.0);\n"
+"   gl_Position = transform * vec4((aPos.x - viewport.x) / viewport.x, (aPos.y + viewport.y) / viewport.y, aPos.z, 1.0);\n"
 "	color = aColor;\n"
 "}\0";
 const char* colorFragmentShader = "#version 330 core\n"
@@ -27,10 +27,10 @@ const char* textureVertexShader = "#version 330 core\n"
 "out vec4 color;\n"
 "out vec2 TexCoord;\n"
 "uniform vec2 viewport;\n"
-"uniform vec3 offset;\n"
+"uniform mat4 transform;\n"
 "void main()\n"
 "{\n"
-"	gl_Position = vec4((aPos.x - viewport.x) / viewport.x - (offset.x / viewport.x), (aPos.y + viewport.y) / viewport.y + (offset.y / viewport.y), aPos.z, 1.0);\n"
+"	gl_Position = transform * vec4((aPos.x - viewport.x) / viewport.x, (aPos.y + viewport.y) / viewport.y, aPos.z, 1.0);\n"
 "	color = aColor;\n"
 "	TexCoord = aTexCoord;\n"
 "}\0";
@@ -49,10 +49,10 @@ const char* fontVertexShader = "#version 330 core\n"
 "out vec4 color;\n"
 "out vec2 TexCoord;\n"
 "uniform vec2 viewport;\n"
-"uniform vec3 offset;\n"
+"uniform mat4 transform;\n"
 "void main()\n"
 "{\n"
-"	gl_Position = vec4((aPos.x - viewport.x) / viewport.x - (offset.x / viewport.x), (aPos.y + viewport.y) / viewport.y + (offset.y / viewport.y), aPos.z, 1.0);\n"
+"	gl_Position = transform * vec4((aPos.x - viewport.x) / viewport.x, (aPos.y + viewport.y) / viewport.y, aPos.z, 1.0);\n"
 "	color = aColor;\n"
 "	TexCoord = aTexCoord;\n"
 "}\0";
@@ -418,6 +418,13 @@ Window createWindow(int width, int height, const char* title) {
 	s.textureShader = createShader(textureVertexShader, textureFragmentShader);
 	s.fontShader = createShader(fontVertexShader, fontFragmentShader);
 
+	win.camera = Camera_create();
+
+	win.transform = Transform_create(70.0f, width, height, 0.1f, 1000.0f);
+	win.transform.camera = win.camera;
+	printf("Test\n");
+
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
@@ -549,6 +556,7 @@ void updateWindow(Window* win) {
 			flushTextureBatch(&win->shaders.data[win->currentShader].fonts.data[i].characters[z].batch);
 		}
 	}*/
+	win->transform.camera = win->camera;
 	for (int i = 0; i < win->shaders.size; i++) {
 		flushBatch(&win->shaders.data[i].shapeBatch);
 		for (int z = 0; z < win->shaders.data[i].textures.size; z++) {
@@ -607,11 +615,13 @@ void renderWindow(Window win) {
 	for (int i = 0; i < win.shaders.size; i++) {
 		bindBatch(win.shaders.data[i].shapeBatch);
 		glUseProgram(win.shaders.data[i].colorShader.shaderID);
+		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "transform"), 1, GL_FALSE, Matrix4f_createFloatArray(Transform_getProjectedTransformation(win.transform)));
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 
 		draw(win.shaders.data[i].shapeBatch, GL_TRIANGLE_FAN);
 
 		glUseProgram(win.shaders.data[i].textureShader.shaderID);
+		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "transform"), 1, GL_FALSE, Matrix4f_createFloatArray(Transform_getProjectedTransformation(win.transform)));
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 		for (int z = 0; z < win.shaders.data[i].textures.size; z++) {
 			bindTextureBatch(win.shaders.data[i].textures.data[z]);
@@ -621,6 +631,7 @@ void renderWindow(Window win) {
 		}
 
 		glUseProgram(win.shaders.data[i].fontShader.shaderID);
+		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "transform"), 1, GL_FALSE, Matrix4f_createFloatArray(Transform_getProjectedTransformation(win.transform)));
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 		for (int z = 0; z < win.shaders.data[i].fonts.size; z++) {
 			for (int y = 0; y < 128; y++) {

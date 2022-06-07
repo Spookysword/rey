@@ -123,9 +123,9 @@ Vector3f Vector3f_init(float x, float y, float z)
 }
 Vector3f Vector3f_create() {
     Vector3f v;
-    v.x = 0;
-    v.y = 0;
-    v.z = 0;
+    v.x = 0.0f;
+    v.y = 0.0f;
+    v.z = 0.0f;
     return v;
 }
 Vector3f Vector3f_cross(Vector3f a, Vector3f b) {
@@ -270,6 +270,7 @@ float* Matrix4f_createFloatArray(Matrix4f a) {
             buffer[i * 4 + j] = a.m[i][j];
         }
     }
+    return buffer;
 }
 
 Camera Camera_init(Vector3f pos, Vector3f forward, Vector3f up) {
@@ -281,7 +282,7 @@ Camera Camera_init(Vector3f pos, Vector3f forward, Vector3f up) {
     return camera;
 }
 Camera Camera_create() {
-    Camera_init(Vector3f_init(0, 0, 0), Vector3f_init(0, 0, 1), Vector3f_init(0, 1, 0));
+    Camera_init(Vector3f_init(0.0f, 0.0f, 0.0f), Vector3f_init(0.0f, 0.0f, 1.0f), Vector3f_init(0.0f, 1.0f, 0.0f));
 }
 void Camera_move(Camera* cam, Vector3f dir, float amt) {
     cam->pos = Vector3f_add(cam->pos, Vector3f_init(dir.x * amt, dir.y * amt, dir.z * amt));
@@ -302,11 +303,16 @@ void Camera_rotateX(Camera* cam, float angle) {
     cam->up = Vector3f_normalized(Vector3f_cross(cam->forward, hAxis));
 }
 
-Transform Transform_create() {
+Transform Transform_create(float fov, float width, float height, float zNear, float zFar) {
     Transform transform;
     transform.translation = Vector3f_init(0, 0, 0);
     transform.rotation = Vector3f_init(0, 0, 0);
     transform.scale = Vector3f_init(1, 1, 1);
+    transform.fov = fov;
+    transform.width = width;
+    transform.height = height;
+    transform.zNear = zNear;
+    transform.zFar = zFar;
     return transform;
 }
 Matrix4f Transform_getTransformation(Transform a) {

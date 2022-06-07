@@ -304,6 +304,9 @@ struct Window {
 	
 	int currentShader;
 	CustomShaderVec shaders;
+
+	Transform transform;
+	Camera camera;
 };
 typedef struct Window Window;
 
