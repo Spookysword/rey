@@ -5,11 +5,10 @@
 int main() {
 	initGrey(4);
 	initArey();
-	float temp = 0.0f;
 
 	Window win = createWindow(720, 720, "grey");
 	playSound("resources/aeh.wav");
-	
+
 	float moveSpeed = 250.0f;
 	Texture block = newTexture(&win, "resources/block.png", FILTER_LINEAR);
 	float rot = 0.0f;
@@ -52,7 +51,7 @@ int main() {
 
 		drawCircle(&win, 200, 200, 50, COLOR_RED);
 		drawRoundedRect(&win, 400, 400, 30, 50, 10, rot, COLOR_SOFT_CYAN);
-		
+
 		drawTexture(&win, block, 0, 0, 100, 100, rot, COLOR_WHITE);
 
 		drawText(&win, "hello grey", arial, 0.0f, 100.0f, 50.0f, COLOR_GREEN);
@@ -62,15 +61,11 @@ int main() {
 		drawAdvancedRect(&win, 10, 500, 100, 100, 0, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW);
 		drawAdvancedRect(&win, 10, 600, 100, 100, 1, COLOR_RED, COLOR_GREEN, COLOR_BLUE, COLOR_YELLOW);
 
-		drawAdvancedTriangle(&win, 720 / 2 - 50, 300-50, 300 - 50, 720 - 300 - 50, 720 - 300 - 50, 720 - 300 - 50, COLOR_RED, COLOR_GREEN, COLOR_BLUE);
-
-		temp += win.deltaTime;
-		win.transform.rotation = Vector3f_init(0.0f, sin(temp), 0.0f);
-
+		drawAdvancedTriangle(&win, 720 / 2 - 50, 300 - 50, 300 - 50, 720 - 300 - 50, 720 - 300 - 50, 720 - 300 - 50, COLOR_RED, COLOR_GREEN, COLOR_BLUE);
 
 		renderWindow(win);
 	}
-	
+
 	deleteFont(&win, arial);
 	deleteTexture(&win, block);
 	deleteWindow(&win);

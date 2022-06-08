@@ -1,116 +1,116 @@
 #include "mrey.h"
 
 floatVec floatVecCreate() {
-	floatVec vec;
-	vec.data = (float*)calloc(0, sizeof(float));
-	vec.size = 0;
-	vec.limit = 0;
-	return vec;
+    floatVec vec;
+    vec.data = (float*)calloc(0, sizeof(float));
+    vec.size = 0;
+    vec.limit = 0;
+    return vec;
 }
 
 void floatVecCheckSize(floatVec* vec) {
-	if (vec->size+1 > vec->limit) {
-		float* temp;
-		vec->limit = vec->size * 2;
-		temp = (float*)realloc(vec->data, vec->limit * sizeof(float));
-		if (temp) { vec->data = temp; }
-	}
+    if (vec->size + 1 > vec->limit) {
+        float* temp;
+        vec->limit = vec->size * 2;
+        temp = (float*)realloc(vec->data, vec->limit * sizeof(float));
+        if (temp) { vec->data = temp; }
+    }
 }
 
 void floatVecPushBack(floatVec* vec, float num) {
-	vec->size += 1;
-	floatVecCheckSize(vec);
-	vec->data[vec->size-1] = num;
+    vec->size += 1;
+    floatVecCheckSize(vec);
+    vec->data[vec->size - 1] = num;
 }
 void floatVecPushBack7(floatVec* vec, float num[7]) {
-	vec->size += 7;
-	floatVecCheckSize(vec);
-	for (int i = 0; i < 7; i++) {
-		vec->data[vec->size-i-1] = num[6-i];
-	}
+    vec->size += 7;
+    floatVecCheckSize(vec);
+    for (int i = 0; i < 7; i++) {
+        vec->data[vec->size - i - 1] = num[6 - i];
+    }
 }
 void floatVecPushBack9(floatVec* vec, float num[9]) {
-	vec->size += 9;
-	floatVecCheckSize(vec);
-	for (int i = 0; i < 9; i++) {
-		vec->data[vec->size-i-1] = num[8-i];
-	}
+    vec->size += 9;
+    floatVecCheckSize(vec);
+    for (int i = 0; i < 9; i++) {
+        vec->data[vec->size - i - 1] = num[8 - i];
+    }
 }
 void floatVecPushBack21(floatVec* vec, float num[21]) {
-	vec->size += 21;
-	floatVecCheckSize(vec);
-	for (int i = 0; i < 21; i++) {
-		vec->data[vec->size-i-1] = num[20-i];
-	}
+    vec->size += 21;
+    floatVecCheckSize(vec);
+    for (int i = 0; i < 21; i++) {
+        vec->data[vec->size - i - 1] = num[20 - i];
+    }
 }
 void floatVecPushBack27(floatVec* vec, float num[27]) {
-	vec->size += 27;
-	floatVecCheckSize(vec);
-	for (int i = 0; i < 27; i++) {
-		vec->data[vec->size-i-1] = num[26-i];
-	}
+    vec->size += 27;
+    floatVecCheckSize(vec);
+    for (int i = 0; i < 27; i++) {
+        vec->data[vec->size - i - 1] = num[26 - i];
+    }
 }
 void floatVecClear(floatVec* vec) {
-	free(vec->data);
-	vec->limit /= 2;
-	vec->data = (float*)calloc(vec->limit, sizeof(float));
-	vec->size = 0;
+    free(vec->data);
+    vec->limit /= 2;
+    vec->data = (float*)calloc(vec->limit, sizeof(float));
+    vec->size = 0;
 }
 void floatVecDelete(floatVec* vec) {
-	free(vec->data);
-	vec->size = 0;
-	vec->limit = 0;
+    free(vec->data);
+    vec->size = 0;
+    vec->limit = 0;
 }
 
 intVec intVecCreate() {
-	intVec vec;
-	vec.data = (int*)calloc(0, sizeof(int));
-	vec.size = 0;
-	vec.limit = 0;
-	return vec;
+    intVec vec;
+    vec.data = (int*)calloc(0, sizeof(int));
+    vec.size = 0;
+    vec.limit = 0;
+    return vec;
 }
 
 void intVecCheckSize(intVec* vec) {
-	if (vec->size + 1 > vec->limit) {
-		int* temp;
-		vec->limit = vec->size * 2;
-		temp = (int*)realloc(vec->data, vec->limit * sizeof(int));
-		if (temp) { vec->data = temp; }
-	}
+    if (vec->size + 1 > vec->limit) {
+        int* temp;
+        vec->limit = vec->size * 2;
+        temp = (int*)realloc(vec->data, vec->limit * sizeof(int));
+        if (temp) { vec->data = temp; }
+    }
 }
 
 void intVecPushBack(intVec* vec, float num) {
-	vec->size += 1;
-	intVecCheckSize(vec);
-	vec->data[vec->size-1] = num;
+    vec->size += 1;
+    intVecCheckSize(vec);
+    vec->data[vec->size - 1] = num;
 }
 void intVecClear(intVec* vec) {
-	free(vec->data);
-	vec->limit /= 2;
-	vec->data = (int*)calloc(vec->limit, sizeof(int));
-	vec->size = 0;
+    free(vec->data);
+    vec->limit /= 2;
+    vec->data = (int*)calloc(vec->limit, sizeof(int));
+    vec->size = 0;
 }
 void intVecDelete(intVec* vec) {
-	free(vec->data);
-	vec->size = 0;
+    free(vec->data);
+    vec->size = 0;
 }
 
 float rotateX(float x, float y, float c1, float c2, float rotation) {
-	float pi = 3.1415926535897932384626433;
+    float pi = 3.1415926535897932384626433;
 
-	float cor = cos(rotation);
-	float sir = sin(rotation);
+    float cor = cos(rotation);
+    float sir = sin(rotation);
 
-	return cos(rotation) * (x - c1) + (y - c2) * sin(rotation) + c1;
+    return cos(rotation) * (x - c1) + (y - c2) * sin(rotation) + c1;
 }
 
 float rotateY(float x, float y, float c1, float c2, float rotation) {
-	float pi = 3.1415926535897932384626433;
+    float pi = 3.1415926535897932384626433;
 
-	float cor = cos(rotation);
-	float sir = sin(rotation);
+    float cor = cos(rotation);
+    float sir = sin(rotation);
 
-	return -sin(rotation) * (x - c1) + cos(rotation) * (y - c2) + c2;
+    return -sin(rotation) * (x - c1) + cos(rotation) * (y - c2) + c2;
 }
 
 Vector3f Vector3f_init(float x, float y, float z)
@@ -123,9 +123,9 @@ Vector3f Vector3f_init(float x, float y, float z)
 }
 Vector3f Vector3f_create() {
     Vector3f v;
-    v.x = 0.0f;
-    v.y = 0.0f;
-    v.z = 0.0f;
+    v.x = 0;
+    v.y = 0;
+    v.z = 0;
     return v;
 }
 Vector3f Vector3f_cross(Vector3f a, Vector3f b) {
@@ -270,7 +270,6 @@ float* Matrix4f_createFloatArray(Matrix4f a) {
             buffer[i * 4 + j] = a.m[i][j];
         }
     }
-    return buffer;
 }
 
 Camera Camera_init(Vector3f pos, Vector3f forward, Vector3f up) {
@@ -282,7 +281,7 @@ Camera Camera_init(Vector3f pos, Vector3f forward, Vector3f up) {
     return camera;
 }
 Camera Camera_create() {
-    Camera_init(Vector3f_init(0.0f, 0.0f, 0.0f), Vector3f_init(0.0f, 0.0f, 1.0f), Vector3f_init(0.0f, 1.0f, 0.0f));
+    Camera_init(Vector3f_init(0, 0, 0), Vector3f_init(0, 0, 1), Vector3f_init(0, 1, 0));
 }
 void Camera_move(Camera* cam, Vector3f dir, float amt) {
     cam->pos = Vector3f_add(cam->pos, Vector3f_init(dir.x * amt, dir.y * amt, dir.z * amt));
@@ -303,16 +302,11 @@ void Camera_rotateX(Camera* cam, float angle) {
     cam->up = Vector3f_normalized(Vector3f_cross(cam->forward, hAxis));
 }
 
-Transform Transform_create(float fov, float width, float height, float zNear, float zFar) {
+Transform Transform_create() {
     Transform transform;
     transform.translation = Vector3f_init(0, 0, 0);
     transform.rotation = Vector3f_init(0, 0, 0);
     transform.scale = Vector3f_init(1, 1, 1);
-    transform.fov = fov;
-    transform.width = width;
-    transform.height = height;
-    transform.zNear = zNear;
-    transform.zFar = zFar;
     return transform;
 }
 Matrix4f Transform_getTransformation(Transform a) {
