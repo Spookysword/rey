@@ -34,16 +34,48 @@ void changePiece(int piece[8]) {
 
 // Tetris
 float blockWidth = 539-49/10;
-int x = 0, y = 0;
+int x = 4, y = 0;
 float accurateY = 0;
 float fallSpeed = 1.0f;
 float holdSpeed = 10.0f;
-Color pieceColor1 = { 114, 132, 142, 255 };
-Color pieceColor2 = { 97, 107, 137, 255 };
+int pieceColor = 0;
+Color pieceColors[4] = {
+	{ 114, 132, 142, 255 },
+	{ 97, 107, 137, 255 }
+};
+int garbage[10][20];
+int testGarbageCollision() {
+	for (int i = 0; i < 10; i++) {
+		for (int z = 0; z < 20; z++) {
+			if (garbage[i][z] != 0) {
+				for (int j = 0; j < 4; j++) {
+					int drawX = x + (currentPieceArray[j * 2]), drawY = y + (currentPieceArray[j * 2 + 1]) - 1;
+					if (drawX == i && drawY+1 == z) {
+						return -1;
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
 int testCollision(int piece[8]) {
 	for (int i = 0; i < 4; i++) {
 		int drawX = x + (piece[i * 2]), drawY = y + (piece[i * 2 + 1]);
 		if (drawX < 0 || drawX > 9) { return -1; }
+	}
+	if (testGarbageCollision() == -1) {
+		return -1;
+	}
+	return 0;
+}
+int testCollisionY(int piece[8]) {
+	for (int i = 0; i < 4; i++) {
+		int drawX = x + (piece[i * 2]), drawY = y + (piece[i * 2 + 1]);
+		if (drawY > 19) { return -1; }
+	}
+	if (testGarbageCollision() == -1) {
+		return -1;
 	}
 	return 0;
 }
@@ -105,6 +137,18 @@ int main() {
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 		moveY(win.deltaTime, fallSpeed);
+		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { moveY(win.deltaTime, holdSpeed); }
+		if (testCollisionY(currentPieceArray) == -1) {
+			for (int i = 0; i < 4; i++) {
+				int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1])-1;
+				garbage[drawX][drawY] = pieceColor+1;
+			}
+			x = 4;
+			accurateY = 0.0f;
+			y = 0;
+			rotateCycle = 0;
+			changePiece(PIECES[currentPiece]);
+		}
 
 		if (win.width/width < win.height/height) {
 			resolutionDivider = width/win.width;
@@ -133,7 +177,6 @@ int main() {
 		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
 		if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
 		if (isKeyPressed(win, KEY_UP)) { rotate(-1); }
-		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { moveY(win.deltaTime, holdSpeed); }
 
 		// Draw UI
 		/// Borders
@@ -147,10 +190,18 @@ int main() {
 		drawRectangle(&win, fX(589), fX(343), fX(833-589), fX(588-343), 0, tetrisBackgroundColor);
 		drawRectangle(&win, fX(589), fX(932), fX(833-589), fX(1029-932), 0, tetrisBackgroundColor);
 
+		// Draw garbage
+		for (int i = 0; i < 10; i++) {
+			for (int z = 0; z < 20; z++) {
+				if (garbage[i][z] != 0) {
+					drawRectangle(&win, fX(49+(i*blockWidth)), fX(49+(z*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[garbage[i][z]-1]);
+				}
+			}
+		}
 		// Draw piece
 		for (int i = 0; i < 4; i++) {
 			int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1]);
-			drawRectangle(&win, fX(49+(drawX *blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColor1);
+			drawRectangle(&win, fX(49+(drawX*blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[pieceColor]);
 		}
 
 		renderWindow(win);
