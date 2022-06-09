@@ -25,13 +25,7 @@ int main() {
 			win.fullscreen = !win.fullscreen;
 		}
 
-		if (isKeyDown(win, KEY_SPACE)) {
-			setWireframeMode(win, TRUE);
-		}
-
-		else {
-			setWireframeMode(win, FALSE);
-		}
+		setWireframeMode(win, isKeyDown(win, KEY_SPACE));
 
 		renderWindow(win);
 	}
