@@ -852,6 +852,150 @@ void drawText(Window* win, const char* text, FontID font, float x, float y, floa
 		win->zmod -= 0.000001f;
 	}
 }
+void drawBorderedText(Window* win, const char* text, FontID font, float x, float y, float scale, float borderSize, Color color, Color borderColor) {
+	if (font == -1) { return; }
+	y += scale;
+	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
+	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	float br = (float)borderColor[0] / 255, bg = (float)borderColor[1] / 255, bb = (float)borderColor[2] / 255, ba = (float)borderColor[3] / 255;
+	float borderSize2 = borderSize*2;
+	// This process is not only kinda slow, but it can be probably done with a different shader...
+	for (int i = 0; text[i] != '\0'; i++) {
+		Character c = win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]];
+		float xpos = x + c.bearingX * scale;
+		float ypos = y + (c.sizeY - c.bearingY) * scale;
+		float w = c.sizeX * scale, h = c.sizeY * scale;
+		// U
+		float passIn1[27] = {
+			xpos, -(ypos), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos, -(ypos-h-borderSize2), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos + w, -(ypos-h-borderSize2), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn2[9] = {
+			xpos + w, -(ypos), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn1);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn2);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		// D
+		float passIn3[27] = {
+			xpos, -(ypos+borderSize2), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos, -(ypos-h), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos + w, -(ypos-h), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn4[9] = {
+			xpos + w, -(ypos+borderSize2), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn3);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn4);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		// L
+		float passIn5[27] = {
+			xpos-borderSize2, -(ypos), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos-borderSize2, -(ypos-h), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos + w, -(ypos-h), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn6[9] = {
+			xpos + w, -(ypos), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn5);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn6);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		// R
+		float passIn7[27] = {
+			xpos, -(ypos), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos, -(ypos-h), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos+borderSize2 + w, -(ypos-h), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn8[9] = {
+			xpos+borderSize2 + w, -(ypos), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn7);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn8);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		// UL
+		float passIn9[27] = {
+			xpos-borderSize2, -(ypos), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos-borderSize2, -(ypos-h-borderSize2), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos + w, -(ypos-h-borderSize2), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn10[9] = {
+			xpos + w, -(ypos), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn9);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn10);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		// UR
+		float passIn11[27] = {
+			xpos, -(ypos), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos, -(ypos-h-borderSize2), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos + w+borderSize2, -(ypos-h-borderSize2), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn12[9] = {
+			xpos + w+borderSize2, -(ypos), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn11);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn12);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		// DL
+		float passIn13[27] = {
+			xpos-borderSize2, -(ypos+borderSize2), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos-borderSize2, -(ypos-h), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos + w, -(ypos-h), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn14[9] = {
+			xpos + w, -(ypos+borderSize2), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn13);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn14);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		// DR
+		float passIn15[27] = {
+			xpos, -(ypos+borderSize2), win->zmod, br, bg, bb, ba, 0.0f, 1.0f,
+			xpos, -(ypos-h), win->zmod, br, bg, bb, ba, 0.0f, 0.0f,
+			xpos + w+borderSize2, -(ypos-h), win->zmod, br, bg, bb, ba, 1.0f, 0.0f
+		};
+		float passIn16[9] = {
+			xpos + w+borderSize2, -(ypos+borderSize2), win->zmod, br, bg, bb, ba, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn15);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn16);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		win->zmod -= 0.000001f;
+		float passIn9999[27] = {
+			xpos, -(ypos), win->zmod, r, g, b, a, 0.0f, 1.0f,
+			xpos, -(ypos - h), win->zmod, r, g, b, a, 0.0f, 0.0f,
+			xpos + w, -(ypos - h), win->zmod, r, g, b, a, 1.0f, 0.0f
+		};
+		float passIn999[9] = {
+			xpos + w, -(ypos), win->zmod, r, g, b, a, 1.0f, 1.0f
+		};
+		addTextureTriangle(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn9999);
+		addTextureVertice(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch, passIn999);
+		endTextureShape(&win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]].batch);
+		x += (c.advance >> 6) * scale;
+		win->zmod -= 0.000001f;
+	}
+}
+float getWidthOfText(Window* win, const char* text, FontID font, float scale) {
+	float x = 0;
+	if (font == -1) { return; }
+	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
+	for (int i = 0; text[i] != '\0'; i++) {
+		Character c = win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]];
+		float xpos = x + c.bearingX * scale;
+		float w = c.sizeX * scale, h = c.sizeY * scale;
+		x += (c.advance >> 6) * scale;
+	}
+	return x;
+}
 void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; i < points; i++) {

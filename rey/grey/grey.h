@@ -369,6 +369,10 @@ extern "C" {
 
 	void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
 
+	void drawBorderedText(Window* win, const char* text, FontID font, float x, float y, float scale, float borderSize, Color color, Color borderColor);
+
+	float getWidthOfText(Window* win, const char* text, FontID font, float scale);
+
 	void drawPolygon(Window* win, float* xs, float* ys, int points, Color color);
 
 	void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color color1, Color color2, Color color3, Color color4);

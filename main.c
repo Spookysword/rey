@@ -207,6 +207,7 @@ int main() {
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
+
 		srand(win.time*1000);
 		checkLines();
 		moveY(win.deltaTime, fallSpeed);
@@ -279,8 +280,16 @@ int main() {
 			int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1]);
 			drawRectangle(&win, offsetX+fX(49+(drawX*blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
 		}
-
-		drawText(&win, "test", eightBitDragon, 0, 0, 10.0f, COLOR_WHITE);
+		
+		float scale = 153-113;
+		while (813-(607+getWidthOfText(&win, "Score: 0", eightBitDragon, scale)) > 0) {
+			scale += 1;
+		}
+		while (813-(607+getWidthOfText(&win, "Score: 0", eightBitDragon, scale)) < 0) {
+			scale -= 1;
+		}
+		
+		drawBorderedText(&win, "Score: 0", eightBitDragon, offsetX + fX(611), fX(112), fX(scale), fX(2), borderColor, backgroundColor);
 
 		renderWindow(win);
 	}
