@@ -304,6 +304,8 @@ extern "C" {
 
 		int currentShader;
 		CustomShaderVec shaders;
+		float startTime;
+		float time;
 	};
 	typedef struct Window Window;
 

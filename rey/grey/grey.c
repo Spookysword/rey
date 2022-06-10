@@ -414,6 +414,8 @@ Window createWindow(int width, int height, const char* title) {
 	win.zmod = 0.0f;
 	win.framesPerSecond = 0.0f;
 	s.fonts = fontVecCreate();
+	win.startTime = glfwGetTime();
+	win.time = 0.0f;
 
 	s.colorShader = createShader(colorVertexShader, colorFragmentShader);
 	s.textureShader = createShader(textureVertexShader, textureFragmentShader);
@@ -566,6 +568,7 @@ void updateWindow(Window* win) {
 	win->deltaTime = win->currentFrame - win->lastFrame;
 	win->lastFrame = win->currentFrame;
 	win->zmod = 0.0f;
+	win->time = glfwGetTime() - win->startTime;
 	if (win->deltaTime > 0.05f) { win->deltaTime = 0.05f; }
 	glfwSetWindowTitle(win->windowHandle, win->title);
 	glfwPollEvents();

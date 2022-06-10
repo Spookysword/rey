@@ -174,14 +174,14 @@ int main() {
 	initArey();
 
 	Window win = createWindow(width/resolutionDivider, height/resolutionDivider, "grey");
-	srand(glfwGetTime()*1000);
+	srand(win.startTime * 1000);
 	
 	currentPiece = rand()%7;
 	changePiece(PIECES[currentPiece]);
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
-		srand(glfwGetTime()*1000);
+		srand(win.time*1000);
 		moveY(win.deltaTime, fallSpeed);
 		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { moveY(win.deltaTime, holdSpeed); }
 		if (testCollisionY(currentPieceArray) == -1) {
