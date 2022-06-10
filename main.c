@@ -14,15 +14,54 @@ float fX(float x) {
 
 // Pieces
 int currentPiece = 0;
-int PIECES[7][8] = { 
+int PIECES[7][8] = {
+	{ // I
+		0, 0, 1, 0, 2, 0, 3, 0
+	},
 	{ // L
+		1, 0, 1, 1, 1, 2, 0, 2
+	},
+	{ // J
 		0, 0, 0, 1, 0, 2, 1, 2
+	},
+	{ // S
+		0, 0, 1, 0, 0, 1, 1, 1
+	},
+	{ // Q
+		1, 0, 2, 0, 0, 1, 1, 1
+	},
+	{ // T
+		1, 0, 0, 1, 1, 1, 2, 1
+	},
+	{ // Z
+		0, 0, 1, 0, 1, 1, 2, 1
 	}
 };
 int PIECE_ROTATIONS[7][8] = {
+	{ // I
+		2, -1, 1, 1, -1, 2, -2, -2
+	},
 	{ // L
+		1, 1, -1, 1, -1, -1, 1, -1
+	},
+	{ // J
 		2, 0, 0, 2, -2, 0, 0, -2
+	},
+	{ // S
+		1, 0, 0, 1, -1, 0, 0, -1
+	},
+	{ // Q
+		1, -1, 1, 2, -2, 0, 0, -1
+	},
+	{ // T
+		2, 0, 0, 2, -2, 0, 0, -2
+	},
+	{ // Z
+		2, -1, 0, 2, -1, 0, -1, -1
 	}
+};
+int PIECE_COLORS[7] = {
+	0, 0, 1, 1, 2, 2, 2
 };
 int currentPieceArray[8];
 int rotateCycle = 0;
@@ -39,18 +78,19 @@ float accurateY = 0;
 float fallSpeed = 1.0f;
 float holdSpeed = 10.0f;
 int pieceColor = 0;
-Color pieceColors[4] = {
+Color pieceColors[3] = {
 	{ 114, 132, 142, 255 },
-	{ 97, 107, 137, 255 }
+	{ 97, 107, 137, 255 },
+	{ 19, 142, 99, 255 }
 };
 int garbage[10][20];
-int testGarbageCollision() {
+int testGarbageCollisionManual(int piece[8]) {
 	for (int i = 0; i < 10; i++) {
 		for (int z = 0; z < 20; z++) {
 			if (garbage[i][z] != 0) {
 				for (int j = 0; j < 4; j++) {
-					int drawX = x + (currentPieceArray[j * 2]), drawY = y + (currentPieceArray[j * 2 + 1]) - 1;
-					if (drawX == i && drawY+1 == z) {
+					int drawX = x + (piece[j * 2]), drawY = y + (piece[j * 2 + 1]) - 1;
+					if (drawX == i && drawY + 1 == z) {
 						return -1;
 					}
 				}
@@ -59,12 +99,15 @@ int testGarbageCollision() {
 	}
 	return 0;
 }
+int testGarbageCollision() {
+	return testGarbageCollisionManual(currentPieceArray);
+}
 int testCollision(int piece[8]) {
 	for (int i = 0; i < 4; i++) {
 		int drawX = x + (piece[i * 2]), drawY = y + (piece[i * 2 + 1]);
 		if (drawX < 0 || drawX > 9) { return -1; }
 	}
-	if (testGarbageCollision() == -1) {
+	if (testGarbageCollisionManual(piece) == -1) {
 		return -1;
 	}
 	return 0;
@@ -129,24 +172,28 @@ int rotate(int direction) {
 int main() {
 	initGrey(4);
 	initArey();
-	
+
 	Window win = createWindow(width/resolutionDivider, height/resolutionDivider, "grey");
+	srand(glfwGetTime()*1000);
 	
+	currentPiece = rand()%7;
 	changePiece(PIECES[currentPiece]);
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
+		srand(glfwGetTime()*1000);
 		moveY(win.deltaTime, fallSpeed);
 		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { moveY(win.deltaTime, holdSpeed); }
 		if (testCollisionY(currentPieceArray) == -1) {
 			for (int i = 0; i < 4; i++) {
 				int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1])-1;
-				garbage[drawX][drawY] = pieceColor+1;
+				garbage[drawX][drawY] = PIECE_COLORS[currentPiece]+1;
 			}
 			x = 4;
 			accurateY = 0.0f;
 			y = 0;
 			rotateCycle = 0;
+			currentPiece = rand()%7;
 			changePiece(PIECES[currentPiece]);
 		}
 
@@ -176,7 +223,7 @@ int main() {
 		// Input
 		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
 		if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
-		if (isKeyPressed(win, KEY_UP)) { rotate(-1); }
+		if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
 
 		// Draw UI
 		/// Borders
@@ -201,7 +248,7 @@ int main() {
 		// Draw piece
 		for (int i = 0; i < 4; i++) {
 			int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1]);
-			drawRectangle(&win, fX(49+(drawX*blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[pieceColor]);
+			drawRectangle(&win, fX(49+(drawX*blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
 		}
 
 		renderWindow(win);
