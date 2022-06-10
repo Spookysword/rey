@@ -168,13 +168,39 @@ int rotate(int direction) {
 		return 0;
 	}
 }
+void checkLines() {
+	int lineCounts[20] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	for (int i = 0; i < 10; i++) {
+		for (int z = 0; z < 20; z++) {
+			if (garbage[i][z] != 0) {
+				lineCounts[z]++;
+			}
+		}
+	}
+	for (int i = 0; i < 20; i++) {
+		if (lineCounts[i] >= 10) {
+			for (int z = 0; z < 10; z++) {
+				garbage[i][z] = 0;
+			}
+			for (int z = i-1; z >= 0; z--) {
+				for (int p = 0; p < 10; p++) {
+					garbage[p][z+1] = garbage[p][z];
+				}
+			}
+		}
+	}
+}
 
 int main() {
 	initGrey(4);
 	initArey();
 
+	float offsetX = 0.0f, offsetY = 0.0f;
+
 	Window win = createWindow(width/resolutionDivider, height/resolutionDivider, "grey");
 	srand(win.startTime * 1000);
+
+	FontID eightBitDragon = loadFont(&win, "resources/EightBitDragon.ttf", 50);
 	
 	currentPiece = rand()%7;
 	changePiece(PIECES[currentPiece]);
@@ -182,6 +208,7 @@ int main() {
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 		srand(win.time*1000);
+		checkLines();
 		moveY(win.deltaTime, fallSpeed);
 		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { moveY(win.deltaTime, holdSpeed); }
 		if (testCollisionY(currentPieceArray) == -1) {
@@ -199,8 +226,10 @@ int main() {
 
 		if (win.width/width < win.height/height) {
 			resolutionDivider = width/win.width;
+			offsetX = 0.0f;
 		} else {
 			resolutionDivider = height/win.height;
+			offsetX = -((width/resolutionDivider)-win.width)/2;
 		}
 		blockWidth = (539-49)/10;
 
@@ -227,29 +256,31 @@ int main() {
 
 		// Draw UI
 		/// Borders
-		drawRectangle(&win, fX(36), fX(36), fX(552-36), fX(1042-36), 0, borderColor);
-		drawRectangle(&win, fX(576), fX(85), fX(846-576), fX(230-85), 0, borderColor);
-		drawRectangle(&win, fX(576), fX(330), fX(846-576), fX(601-330), 0, borderColor);
-		drawRectangle(&win, fX(576), fX(919), fX(846-576), fX(1042-919), 0, borderColor);
+		drawRectangle(&win, offsetX+fX(36), fX(36), fX(552-36), fX(1042-36), 0, borderColor);
+		drawRectangle(&win, offsetX+fX(576), fX(85), fX(846-576), fX(230-85), 0, borderColor);
+		drawRectangle(&win, offsetX+fX(576), fX(330), fX(846-576), fX(601-330), 0, borderColor);
+		drawRectangle(&win, offsetX+fX(576), fX(919), fX(846-576), fX(1042-919), 0, borderColor);
 		/// Tetris background
-		drawRectangle(&win, fX(49), fX(49), fX(539-49), fX(1029-49), 0, tetrisBackgroundColor);
-		drawRectangle(&win, fX(589), fX(98), fX(833-589), fX(217-98), 0, tetrisBackgroundColor);
-		drawRectangle(&win, fX(589), fX(343), fX(833-589), fX(588-343), 0, tetrisBackgroundColor);
-		drawRectangle(&win, fX(589), fX(932), fX(833-589), fX(1029-932), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX+fX(49), fX(49), fX(539-49), fX(1029-49), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX+fX(589), fX(98), fX(833-589), fX(217-98), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX+fX(589), fX(343), fX(833-589), fX(588-343), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX+fX(589), fX(932), fX(833-589), fX(1029-932), 0, tetrisBackgroundColor);
 
 		// Draw garbage
 		for (int i = 0; i < 10; i++) {
 			for (int z = 0; z < 20; z++) {
 				if (garbage[i][z] != 0) {
-					drawRectangle(&win, fX(49+(i*blockWidth)), fX(49+(z*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[garbage[i][z]-1]);
+					drawRectangle(&win, offsetX+fX(49+(i*blockWidth)), fX(49+(z*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[garbage[i][z]-1]);
 				}
 			}
 		}
 		// Draw piece
 		for (int i = 0; i < 4; i++) {
 			int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1]);
-			drawRectangle(&win, fX(49+(drawX*blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
+			drawRectangle(&win, offsetX+fX(49+(drawX*blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
 		}
+
+		drawText(&win, "test", eightBitDragon, 0, 0, 10.0f, COLOR_WHITE);
 
 		renderWindow(win);
 	}

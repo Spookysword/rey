@@ -829,6 +829,7 @@ void drawRoundedRect(Window* win, float x, float y, float width, float height, f
 }
 void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color) {
 	if (font == -1) { return; }
+	y += scale;
 	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; text[i] != '\0'; i++) {
