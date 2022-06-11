@@ -416,6 +416,7 @@ Window createWindow(int width, int height, const char* title) {
 	s.fonts = fontVecCreate();
 	win.startTime = glfwGetTime();
 	win.time = 0.0f;
+	win.backgroundColor[0] = 0; win.backgroundColor[1] = 0; win.backgroundColor[2] = 0; win.backgroundColor[3] = 255;
 
 	s.colorShader = createShader(colorVertexShader, colorFragmentShader);
 	s.textureShader = createShader(textureVertexShader, textureFragmentShader);
@@ -607,6 +608,8 @@ void updateWindow(Window* win) {
 void renderWindow(Window win) {
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
+	glClearColor((float)win.backgroundColor[0] / 255, (float)win.backgroundColor[1] / 255, (float)win.backgroundColor[2] / 255, (float)win.backgroundColor[3] / 255);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < win.shaders.size; i++) {
 		bindBatch(win.shaders.data[i].shapeBatch);
@@ -660,10 +663,12 @@ boolean isKeyPressed(Window win, int key) {
 }
 
 // Draw funcs
-void clearWindowBackground(Window win, Color color) {
-	glfwMakeContextCurrent(win.windowHandle);
-	glClearColor((float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void clearWindowBackground(Window* win, Color color) {
+	// I really wish there was a better way of doing this
+	win->backgroundColor[0] = color[0];
+	win->backgroundColor[1] = color[1];
+	win->backgroundColor[2] = color[2];
+	win->backgroundColor[3] = color[3];
 }
 void setWireframeMode(Window win, boolean state) {
 	glfwMakeContextCurrent(win.windowHandle);

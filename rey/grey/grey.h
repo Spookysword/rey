@@ -306,6 +306,7 @@ extern "C" {
 		CustomShaderVec shaders;
 		float startTime;
 		float time;
+		Color backgroundColor;
 	};
 	typedef struct Window Window;
 
@@ -353,7 +354,7 @@ extern "C" {
 	*/
 	boolean isKeyPressed(Window win, int key);
 	// Clears the background with a color. Generally should be called each frame before drawing anything else.
-	void clearWindowBackground(Window win, Color color);
+	void clearWindowBackground(Window* win, Color color);
 	// Enables or disables wireframe mode, which draws everything as lines.
 	void setWireframeMode(Window win, boolean state);
 	// Draws a triangle with three given points and a color.
