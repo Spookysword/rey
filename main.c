@@ -66,15 +66,44 @@ int PIECE_ROTATIONS[7][8] = {
 		2, -1, 0, 2, -1, 0, -1, -1
 	}
 };
+float PIECE_NEXT_OFFSET[7][2] = {
+	{ // I
+		0.5f, 2
+	},
+	{ // L
+		1.5f, 1
+	},
+	{ // J
+		1.5f, 1
+	},
+	{ // S
+		1.5f, 1.5f
+	},
+	{ // Q
+		1, 1.5f
+	},
+	{ // T
+		1, 1.5f
+	},
+	{ // Z
+		1, 1.5f
+	}
+};
 int PIECE_COLORS[7] = {
 	0, 0, 1, 1, 2, 2, 2
 };
 int currentPieceArray[8];
+int nextPiece;
 int nextPieceArray[8];
 int rotateCycle = 0;
 void changePiece(int piece[8]) {
 	for (int i = 0; i < 8; i++) {
 		currentPieceArray[i] = piece[i];
+	}
+}
+void changeNextPiece(int piece[8]) {
+	for (int i = 0; i < 8; i++) {
+		nextPieceArray[i] = piece[i];
 	}
 }
 
@@ -222,6 +251,9 @@ int main() {
 	currentPiece = rand() % 7;
 	changePiece(PIECES[currentPiece]);
 
+	nextPiece = rand() % 7;
+	changeNextPiece(PIECES[nextPiece]);
+
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 
@@ -251,7 +283,7 @@ int main() {
 		lineCountTracker += lineCheck;
 		if (lineCountTracker >= 10) {
 			level += 1;
-			fallSpeed += 0.25f;
+			fallSpeed += 0.40f;
 			lineCountTracker -= 10;
 		}
 		moveY(win.deltaTime, fallSpeed);
@@ -268,8 +300,10 @@ int main() {
 			accurateY = 0.0f;
 			y = 0;
 			rotateCycle = 0;
-			currentPiece = rand() % 7;
-			changePiece(PIECES[currentPiece]);
+			changePiece(PIECES[nextPiece]);
+			currentPiece = nextPiece;
+			nextPiece = rand() % 7;
+			changeNextPiece(PIECES[nextPiece]);
 		}
 
 		if (win.width / width < win.height / height) {
@@ -327,6 +361,11 @@ int main() {
 		for (int i = 0; i < 4; i++) {
 			int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]);
 			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
+		}
+		// Draw next piece
+		for (int i = 0; i < 4; i++) {
+			float drawX = 0 + (nextPieceArray[i*2]+PIECE_NEXT_OFFSET[nextPiece][0]), drawY = 0 + (nextPieceArray[i*2+1]+PIECE_NEXT_OFFSET[nextPiece][1]);
+			drawRectangle(&win, offsetX + fX(589 + (drawX * blockWidth)), fX(343 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[nextPiece]]);
 		}
 
 		int length = snprintf(NULL, 0, "Score: %i", (int)score);
