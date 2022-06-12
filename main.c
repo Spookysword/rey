@@ -202,7 +202,10 @@ int checkLines() {
 	return lines;
 }
 float score = 0;
+int lineCount = 0;
+int lineCountTracker = 0;
 int scoreFallMultiplier = 5;
+int level = 0;
 
 int main() {
 	initGrey(4);
@@ -222,7 +225,33 @@ int main() {
 		updateWindow(&win);
 
 		srand(win.time * 1000);
-		score += (checkLines()*100);
+		int lineCheck = checkLines();
+		switch (lineCheck) {
+		case 0:
+			// do nuting
+			break;
+		case 1:
+			score += 100;
+			break;
+		case 2:
+			score += 250;
+			break;
+		case 3:
+			score += 500;
+			break;
+		case 4:
+			score += 1000;
+			break;
+		default:
+			// what
+			break;
+		}
+		lineCount += lineCheck;
+		lineCountTracker += lineCheck;
+		if (lineCountTracker >= 10) {
+			level += 1;
+			lineCountTracker -= 10;
+		}
 		moveY(win.deltaTime, fallSpeed);
 		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { 
 			moveY(win.deltaTime, holdSpeed);
@@ -310,8 +339,36 @@ int main() {
 			scale -= 1;
 		}
 
-		drawBorderedText(&win, scoreText, eightBitDragon, offsetX + fX(611), fX(112), fX(scale), fX(2), borderColor, backgroundColor);
+		int linesLength = snprintf(NULL, 0, "Lines: %i", lineCount);
+		char* linesText = malloc(linesLength+1);
+		snprintf(linesText, linesLength+1, "Lines: %i", lineCount);
+
+		float linesTextScale = 153 - 113;
+		while (813 - (607 + getWidthOfText(&win, linesText, eightBitDragon, linesTextScale)) > 0) {
+			linesTextScale += 1;
+		}
+		while (813 - (607 + getWidthOfText(&win, linesText, eightBitDragon, linesTextScale)) < 0) {
+			linesTextScale -= 1;
+		}
+
+		int levelLength = snprintf(NULL, 0, "Level: %i", level);
+		char* levelText = malloc(levelLength+1);
+		snprintf(levelText, levelLength+1, "Level: %i", level);
+
+		float levelTextScale = 153 - 113;
+		while (813-(607+getWidthOfText(&win, levelText, eightBitDragon, levelTextScale)) > 0) {
+			levelTextScale += 1;
+		}
+		while (813-(607+getWidthOfText(&win, levelText, eightBitDragon, levelTextScale)) < 0) {
+			levelTextScale -= 1;
+		}
+
+		drawBorderedText(&win, scoreText, eightBitDragon, offsetX + fX(611), fX(107), fX(scale), fX(2), borderColor, backgroundColor);
+		drawBorderedText(&win, linesText, eightBitDragon, offsetX + fX(611), fX(954), fX(linesTextScale), fX(2), borderColor, backgroundColor);
+		drawBorderedText(&win, levelText, eightBitDragon, offsetX + fX(611), fX(152), fX(levelTextScale), fX(2), borderColor, backgroundColor);
 		free(scoreText);
+		free(linesText);
+		free(levelText);
 
 		renderWindow(win);
 	}
