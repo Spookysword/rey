@@ -243,7 +243,7 @@ int main() {
 		}
 		blockWidth = (539 - 49) / 10;
 
-		clearWindowBackground(win, backgroundColor);
+		clearWindowBackground(&win, backgroundColor);
 
 		if (isKeyDown(win, KEY_ESCAPE)) {
 			closeWindow(win);
