@@ -176,8 +176,9 @@ int rotate(int direction) {
 		return 0;
 	}
 }
-void checkLines() {
+int checkLines() {
 	int lineCounts[20] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	int lines = 0;
 	for (int i = 0; i < 10; i++) {
 		for (int z = 0; z < 20; z++) {
 			if (garbage[i][z] != 0) {
@@ -187,6 +188,7 @@ void checkLines() {
 	}
 	for (int i = 0; i < 20; i++) {
 		if (lineCounts[i] >= 10) {
+			lines++;
 			for (int z = 0; z < 10; z++) {
 				garbage[i][z] = 0;
 			}
@@ -197,7 +199,10 @@ void checkLines() {
 			}
 		}
 	}
+	return lines;
 }
+float score = 0;
+int scoreFallMultiplier = 5;
 
 int main() {
 	initGrey(4);
@@ -217,9 +222,12 @@ int main() {
 		updateWindow(&win);
 
 		srand(win.time * 1000);
-		checkLines();
+		score += (checkLines()*100);
 		moveY(win.deltaTime, fallSpeed);
-		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { moveY(win.deltaTime, holdSpeed); }
+		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { 
+			moveY(win.deltaTime, holdSpeed);
+			score += (scoreFallMultiplier * fallSpeed * win.deltaTime);
+		}
 		if (testCollisionY(currentPieceArray) == -1) {
 			for (int i = 0; i < 4; i++) {
 				int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]) - 1;
@@ -290,15 +298,20 @@ int main() {
 			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
 		}
 
+		int length = snprintf(NULL, 0, "Score: %i", (int)score);
+		char* scoreText = malloc(length+1);
+		snprintf(scoreText, length+1, "Score: %i", (int)score);
+
 		float scale = 153 - 113;
-		while (813 - (607 + getWidthOfText(&win, "Score: 0", eightBitDragon, scale)) > 0) {
+		while (813 - (607 + getWidthOfText(&win, scoreText, eightBitDragon, scale)) > 0) {
 			scale += 1;
 		}
-		while (813 - (607 + getWidthOfText(&win, "Score: 0", eightBitDragon, scale)) < 0) {
+		while (813 - (607 + getWidthOfText(&win, scoreText, eightBitDragon, scale)) < 0) {
 			scale -= 1;
 		}
 
-		drawBorderedText(&win, "Score: 0", eightBitDragon, offsetX + fX(611), fX(112), fX(scale), fX(2), borderColor, backgroundColor);
+		drawBorderedText(&win, scoreText, eightBitDragon, offsetX + fX(611), fX(112), fX(scale), fX(2), borderColor, backgroundColor);
+		free(scoreText);
 
 		renderWindow(win);
 	}
