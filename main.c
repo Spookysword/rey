@@ -70,6 +70,7 @@ int PIECE_COLORS[7] = {
 	0, 0, 1, 1, 2, 2, 2
 };
 int currentPieceArray[8];
+int nextPieceArray[8];
 int rotateCycle = 0;
 void changePiece(int piece[8]) {
 	for (int i = 0; i < 8; i++) {
@@ -250,6 +251,7 @@ int main() {
 		lineCountTracker += lineCheck;
 		if (lineCountTracker >= 10) {
 			level += 1;
+			fallSpeed += 0.25f;
 			lineCountTracker -= 10;
 		}
 		moveY(win.deltaTime, fallSpeed);
