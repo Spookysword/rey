@@ -294,7 +294,7 @@ int main() {
 			win.fullscreen = !win.fullscreen;
 		}
 
-		//setWireframeMode(win, isKeyDown(win, KEY_SPACE));
+		setWireframeMode(win, isKeyDown(win, KEY_SPACE));
 
 		// Input
 		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
@@ -328,8 +328,8 @@ int main() {
 		}
 
 		int length = snprintf(NULL, 0, "Score: %i", (int)score);
-		char* scoreText = malloc(length+1);
-		snprintf(scoreText, length+1, "Score: %i", (int)score);
+		char* scoreText = malloc((double)length+1);
+		snprintf(scoreText, (double)length+1, "Score: %i", (int)score);
 
 		float scale = 153 - 113;
 		while (813 - (607 + getWidthOfText(&win, scoreText, eightBitDragon, scale)) > 0) {
@@ -340,8 +340,8 @@ int main() {
 		}
 
 		int linesLength = snprintf(NULL, 0, "Lines: %i", lineCount);
-		char* linesText = malloc(linesLength+1);
-		snprintf(linesText, linesLength+1, "Lines: %i", lineCount);
+		char* linesText = malloc((double)linesLength+1);
+		snprintf(linesText, (double)linesLength+1, "Lines: %i", lineCount);
 
 		float linesTextScale = 153 - 113;
 		while (813 - (607 + getWidthOfText(&win, linesText, eightBitDragon, linesTextScale)) > 0) {
@@ -352,8 +352,8 @@ int main() {
 		}
 
 		int levelLength = snprintf(NULL, 0, "Level: %i", level);
-		char* levelText = malloc(levelLength+1);
-		snprintf(levelText, levelLength+1, "Level: %i", level);
+		char* levelText = malloc((double)levelLength+1);
+		snprintf(levelText, (double)levelLength+1, "Level: %i", level);
 
 		float levelTextScale = 153 - 113;
 		while (813-(607+getWidthOfText(&win, levelText, eightBitDragon, levelTextScale)) > 0) {
