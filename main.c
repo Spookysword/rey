@@ -259,7 +259,7 @@ int main() {
 
 		srand(win.time * 1000);
 		int lineCheck = checkLines();
-		float addAmount = fallSpeed - 1.0f;
+		float addAmount = fallSpeed - 0.5f;
 		addAmount *= 0.5f;
 		switch (lineCheck) {
 		case 0:
@@ -285,7 +285,7 @@ int main() {
 		lineCountTracker += lineCheck;
 		if (lineCountTracker >= 10) {
 			level += 1;
-			fallSpeed += 0.5f;
+			fallSpeed += 0.4f;
 			lineCountTracker -= 10;
 		}
 		moveY(win.deltaTime, fallSpeed);
@@ -340,19 +340,25 @@ int main() {
 		if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
 		if (isKeyPressed(win, KEY_SPACE)) {
 			int origY = y;
+			int pointAdd = 0;
 			while (testCollisionY(currentPieceArray) != -1) {
 				y += 1;
+				pointAdd += 1;
 			}
 			y -= 1;
 			accurateY = (float)y+1;
+			score += pointAdd * fallSpeed;
 		}
 		if (isKeyPressed(win, KEY_LEFT_SHIFT) || isKeyPressed(win, KEY_RIGHT_SHIFT)) {
 			int origY = y;
+			int pointAdd = 0;
 			while (testCollisionY(currentPieceArray) != -1) {
 				y += 1;
+				pointAdd += 1;
 			}
 			y -= 1;
 			accurateY = (float)y;
+			score += pointAdd * fallSpeed;
 		}
 
 		// Draw UI

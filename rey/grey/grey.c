@@ -691,8 +691,6 @@ void drawTriangle(Window* win, float x1, float y1, float x2, float y2, float x3,
 }
 void drawRectangle(Window* win, float x, float y, float width, float height, float rotation, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
-	x;width;
-	y;height;
 	y = -y;
 	rotation = -rotation * (PI / 180);
 	float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
