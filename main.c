@@ -259,21 +259,23 @@ int main() {
 
 		srand(win.time * 1000);
 		int lineCheck = checkLines();
+		float addAmount = fallSpeed - 1.0f;
+		addAmount *= 0.5f;
 		switch (lineCheck) {
 		case 0:
 			// do nuting
 			break;
 		case 1:
-			score += 100;
+			score += 100*addAmount;
 			break;
 		case 2:
-			score += 250;
+			score += 250*addAmount;
 			break;
 		case 3:
-			score += 500;
+			score += 500*addAmount;
 			break;
 		case 4:
-			score += 1000;
+			score += 1000*addAmount;
 			break;
 		default:
 			// what
@@ -330,12 +332,28 @@ int main() {
 			win.fullscreen = !win.fullscreen;
 		}
 
-		setWireframeMode(win, isKeyDown(win, KEY_SPACE));
+		//setWireframeMode(win, isKeyDown(win, KEY_SPACE));
 
 		// Input
 		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
 		if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
 		if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
+		if (isKeyPressed(win, KEY_SPACE)) {
+			int origY = y;
+			while (testCollisionY(currentPieceArray) != -1) {
+				y += 1;
+			}
+			y -= 1;
+			accurateY = (float)y+1;
+		}
+		if (isKeyPressed(win, KEY_LEFT_SHIFT) || isKeyPressed(win, KEY_RIGHT_SHIFT)) {
+			int origY = y;
+			while (testCollisionY(currentPieceArray) != -1) {
+				y += 1;
+			}
+			y -= 1;
+			accurateY = (float)y;
+		}
 
 		// Draw UI
 		/// Borders
