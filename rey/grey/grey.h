@@ -380,6 +380,8 @@ extern "C" {
 
 	void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color1, Color color2, Color color3);
 
+	void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color);
+
 #ifdef __cplusplus
 	// Chromakey
 #define COLOR_BLACK Color{ 0, 0, 0, 255 }

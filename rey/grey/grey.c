@@ -1044,3 +1044,13 @@ void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, f
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
 	win->zmod -= 0.000001f;
 }
+void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color) {
+	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
+	y1 = -y1;
+	y2 = -y2;
+	float passIn1[21] = { x1 - (thickness / 2), y1 - (thickness / 2), win->zmod, cR, cG, cB, cA, x1 - (thickness / 2), y1 + (thickness / 2), win->zmod, cR, cG, cB, cA, x2 + (thickness / 2), y2 + (thickness / 2), win->zmod, cR, cG, cB, cA };
+	float passIn2[7] = { x2 + (thickness / 2), y2 - (thickness / 2), win->zmod, cR, cG, cB, cA };
+	addTriangle(&win->shaders.data[win->currentShader].shapeBatch, passIn1);
+	addVertice(&win->shaders.data[win->currentShader].shapeBatch, passIn2);
+	endShape(&win->shaders.data[win->currentShader].shapeBatch);
+}
