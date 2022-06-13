@@ -119,10 +119,10 @@ Color pieceColors[3] = {
 	{ 97, 107, 137, 255 },
 	{ 19, 142, 99, 255 }
 };
-int garbage[10][20];
+int garbage[10][21];
 int testGarbageCollisionManual(int piece[8]) {
 	for (int i = 0; i < 10; i++) {
-		for (int z = 0; z < 20; z++) {
+		for (int z = 0; z < 21; z++) {
 			if (garbage[i][z] != 0) {
 				for (int j = 0; j < 4; j++) {
 					int drawX = x + (piece[j * 2]), drawY = y + (piece[j * 2 + 1]) - 1;
@@ -207,16 +207,16 @@ int rotate(int direction) {
 	}
 }
 int checkLines() {
-	int lineCounts[20] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	int lineCounts[21] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	int lines = 0;
 	for (int i = 0; i < 10; i++) {
-		for (int z = 0; z < 20; z++) {
+		for (int z = 0; z < 21; z++) {
 			if (garbage[i][z] != 0) {
 				lineCounts[z]++;
 			}
 		}
 	}
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 21; i++) {
 		if (lineCounts[i] >= 10) {
 			lines++;
 			for (int z = 0; z < 10; z++) {
@@ -236,6 +236,124 @@ int lineCount = 0;
 int lineCountTracker = 0;
 int scoreFallMultiplier = 5;
 int level = 0;
+void clearGarbage() {
+	for (int i = 0; i < 10; i++) {
+		for (int z = 0; z < 21; z++) {
+			garbage[i][z] = 0;
+		}
+	}
+}
+void changeLevel(int newLevel) {
+	switch (newLevel) {
+	default:
+		backgroundColor[0] = 0; backgroundColor[1] = 0; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 0; tetrisBackgroundColor[1] = 0; tetrisBackgroundColor[2] = 0; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 255; borderColor[1] = 255; borderColor[2] = 255; borderColor[3] = 255;
+		pieceColors[0][0] = 255; pieceColors[0][1] = 255; pieceColors[0][2] = 255; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 255; pieceColors[1][1] = 255; pieceColors[1][2] = 255; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 255; pieceColors[2][1] = 255; pieceColors[2][2] = 255; pieceColors[2][3] = 255;
+		break;
+	case 0:
+		backgroundColor[0] = 40; backgroundColor[1] = 47; backgroundColor[2] = 51; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 30; tetrisBackgroundColor[1] = 35; tetrisBackgroundColor[2] = 38; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 54; borderColor[1] = 68; borderColor[2] = 76; borderColor[3] = 255;
+		pieceColors[0][0] = 114; pieceColors[0][1] = 132; pieceColors[0][2] = 142; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 97; pieceColors[1][1] = 107; pieceColors[1][2] = 137; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 19; pieceColors[2][1] = 142; pieceColors[2][2] = 99; pieceColors[2][3] = 255;
+		break;
+	case 1:
+		backgroundColor[0] = 73; backgroundColor[1] = 218; backgroundColor[2] = 170; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 182; tetrisBackgroundColor[1] = 239; tetrisBackgroundColor[2] = 206; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 58; borderColor[1] = 174; borderColor[2] = 139; borderColor[3] = 255;
+		pieceColors[0][0] = 66; pieceColors[0][1] = 197; pieceColors[0][2] = 155; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 71; pieceColors[1][1] = 217; pieceColors[1][2] = 152; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 55; pieceColors[2][1] = 125; pieceColors[2][2] = 101; pieceColors[2][3] = 255;
+		break;
+	case 2:
+		backgroundColor[0] = 182; backgroundColor[1] = 37; backgroundColor[2] = 85; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 73; tetrisBackgroundColor[1] = 16; tetrisBackgroundColor[2] = 49; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 197; borderColor[1] = 81; borderColor[2] = 116; borderColor[3] = 255;
+		pieceColors[0][0] = 198; pieceColors[0][1] = 58; pieceColors[0][2] = 89; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 142; pieceColors[1][1] = 29; pieceColors[1][2] = 80; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 200; pieceColors[2][1] = 130; pieceColors[2][2] = 154; pieceColors[2][3] = 255;
+		break;
+	case 3: // piiiink
+		backgroundColor[0] = 255; backgroundColor[1] = 159; backgroundColor[2] = 201; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 255; tetrisBackgroundColor[1] = 170; tetrisBackgroundColor[2] = 194; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 250; borderColor[1] = 211; borderColor[2] = 212; borderColor[3] = 255;
+		pieceColors[0][0] = 252; pieceColors[0][1] = 183; pieceColors[0][2] = 128; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 162; pieceColors[1][1] = 124; pieceColors[1][2] = 155; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 217; pieceColors[2][1] = 255; pieceColors[2][2] = 255; pieceColors[2][3] = 255;
+		break;
+	case 4: // strawberry
+		backgroundColor[0] = 91; backgroundColor[1] = 16; backgroundColor[2] = 30; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 175; tetrisBackgroundColor[1] = 87; tetrisBackgroundColor[2] = 105; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 225; borderColor[1] = 212; borderColor[2] = 199; borderColor[3] = 255;
+		pieceColors[0][0] = 188; pieceColors[0][1] = 74; pieceColors[0][2] = 151; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 188; pieceColors[1][1] = 213; pieceColors[1][2] = 151; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 255; pieceColors[2][1] = 213; pieceColors[2][2] = 151; pieceColors[2][3] = 255;
+		break;
+	case 5: // dark mode
+		backgroundColor[0] = 38; backgroundColor[1] = 38; backgroundColor[2] = 38; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 76; tetrisBackgroundColor[1] = 76; tetrisBackgroundColor[2] = 76; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 63; borderColor[1] = 63; borderColor[2] = 63; borderColor[3] = 255;
+		pieceColors[0][0] = 0; pieceColors[0][1] = 0; pieceColors[0][2] = 255; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 25; pieceColors[1][1] = 25; pieceColors[1][2] = 25; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 127; pieceColors[2][1] = 127; pieceColors[2][2] = 127; pieceColors[2][3] = 255;
+		break;
+	case 6: // burnt
+		backgroundColor[0] = 100; backgroundColor[1] = 0; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 62; tetrisBackgroundColor[1] = 14; tetrisBackgroundColor[2] = 0; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 145; borderColor[1] = 35; borderColor[2] = 0; borderColor[3] = 255;
+		pieceColors[0][0] = 40; pieceColors[0][1] = 17; pieceColors[0][2] = 17; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 181; pieceColors[1][1] = 62; pieceColors[1][2] = 23; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 210; pieceColors[2][1] = 0; pieceColors[2][2] = 0; pieceColors[2][3] = 255;
+		break;
+	case 7: // LED
+		backgroundColor[0] = 0; backgroundColor[1] = 0; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 127; tetrisBackgroundColor[1] = 127; tetrisBackgroundColor[2] = 127; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 255; borderColor[1] = 255; borderColor[2] = 255; borderColor[3] = 255;
+		pieceColors[0][0] = 0; pieceColors[0][1] = 0; pieceColors[0][2] = 255; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 0; pieceColors[1][1] = 255; pieceColors[1][2] = 0; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 255; pieceColors[2][1] = 0; pieceColors[2][2] = 0; pieceColors[2][3] = 255;
+		break;
+	case 8: // 50's
+		backgroundColor[0] = 84; backgroundColor[1] = 84; backgroundColor[2] = 84; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 36; tetrisBackgroundColor[1] = 36; tetrisBackgroundColor[2] = 36; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 118; borderColor[1] = 118; borderColor[2] = 118; borderColor[3] = 255;
+		pieceColors[0][0] = 102; pieceColors[0][1] = 102; pieceColors[0][2] = 102; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 67; pieceColors[1][1] = 67; pieceColors[1][2] = 67; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 151; pieceColors[2][1] = 151; pieceColors[2][2] = 151; pieceColors[2][3] = 255;
+		break;
+	case 9: // YIELD "it's time to slow down."
+		backgroundColor[0] = 255; backgroundColor[1] = 255; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 255; tetrisBackgroundColor[1] = 255; tetrisBackgroundColor[2] = 0; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 0; borderColor[1] = 0; borderColor[2] = 0; borderColor[3] = 255;
+		pieceColors[0][0] = 0; pieceColors[0][1] = 0; pieceColors[0][2] = 0; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 0; pieceColors[1][1] = 0; pieceColors[1][2] = 0; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 0; pieceColors[2][1] = 0; pieceColors[2][2] = 0; pieceColors[2][3] = 255;
+		break;
+	}
+}
+void reset() {
+	clearGarbage();
+	changeLevel(0);
+	currentPiece = rand() % 7;
+	changePiece(PIECES[currentPiece]);
+	nextPiece = rand() % 7;
+	changeNextPiece(PIECES[nextPiece]);
+	score = 0;
+	lineCount = 0;
+	lineCountTracker = 0;
+	scoreFallMultiplier = 5;
+	level = 0;
+	x = 4, y = 0;
+	accurateY = 0;
+	fallSpeed = 1.0f;
+	holdSpeed = 10.0f;
+	pieceColor = 0;
+	rotateCycle = 0;
+}
 
 int main() {
 	initGrey(4);
@@ -287,6 +405,7 @@ int main() {
 			level += 1;
 			fallSpeed += 0.4f;
 			lineCountTracker -= 10;
+			changeLevel(level);
 		}
 		moveY(win.deltaTime, fallSpeed);
 		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) {
@@ -296,7 +415,7 @@ int main() {
 		if (testCollisionY(currentPieceArray) == -1) {
 			for (int i = 0; i < 4; i++) {
 				int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]) - 1;
-				garbage[drawX][drawY] = PIECE_COLORS[currentPiece] + 1;
+				garbage[drawX][drawY] = PIECE_COLORS[currentPiece]+1;
 			}
 			x = 4;
 			accurateY = 0.0f;
@@ -306,6 +425,9 @@ int main() {
 			currentPiece = nextPiece;
 			nextPiece = rand() % 7;
 			changeNextPiece(PIECES[nextPiece]);
+			if (testCollisionY(currentPieceArray) == -1 || testGarbageCollision() == -1) {
+				reset();
+			}
 		}
 
 		if (win.width / width < win.height / height) {
