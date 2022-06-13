@@ -13,6 +13,7 @@ float circleX, circleY, circleR = 5;
 int reys = 250;
 float fov = 90 + 45;
 int limit = 10000;
+float reyspeed = 5; // a lower the value will be more accurate (but laggy)
 
 
 boolean AABB(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
@@ -93,8 +94,8 @@ int main() {
 
 			int i = 0;
 			while (!inWall(x, y, w, h, curX, curY)) {
-				curX += (1 * cos(theta)) * win.deltaTime;
-				curY += (1 * sin(theta)) * win.deltaTime;
+				curX += (reyspeed * cos(theta)) * win.deltaTime;
+				curY += (reyspeed * sin(theta)) * win.deltaTime;
 				i++;
 				if (i > limit) break;
 			}
