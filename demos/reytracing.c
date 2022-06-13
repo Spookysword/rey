@@ -16,10 +16,10 @@ This demo is NOT finished, so do not expect much from it.
 
 float playerX = 1280 / 2, playerY = 720 / 2, playerWidth = 25, playerHeight = 25, playerRotation = 0, rotationSpeed = 100, moveSpeed = 100;
 float circleX, circleY, circleR = 5;
-int reys = 250;
+int reys = 500;
 float fov = 90 + 45;
 int limit = 10000;
-float reyspeed = 50; // a lower the value will be more accurate (but laggy)
+float reyspeed = 100; // a lower the value will be more accurate (but laggy)
 
 
 boolean AABB(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
