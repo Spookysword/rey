@@ -1060,3 +1060,15 @@ void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickne
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);
 	endShape(&win->shaders.data[win->currentShader].lineBatch);
 }
+
+void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2) {
+	
+	y1 = -y1;
+	y2 = -y2;
+	float passIn1[7] = { x1, y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255 };
+	float passIn2[7] = { x2, y2, win->zmod, (float)color2[0] / 255, (float)color2[1] / 255, (float)color2[2] / 255, (float)color2[3] / 255 };
+	glLineWidth(thickness);
+	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn1);
+	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);
+	endShape(&win->shaders.data[win->currentShader].lineBatch);
+}

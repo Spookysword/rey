@@ -383,6 +383,8 @@ extern "C" {
 
 	void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color);
 
+	void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
+
 #ifdef __cplusplus
 	// Chromakey
 #define COLOR_BLACK Color{ 0, 0, 0, 255 }
