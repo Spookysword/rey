@@ -16,10 +16,14 @@ This demo is NOT finished, so do not expect much from it.
 
 float playerX = 1280 / 2, playerY = 720 / 2, playerWidth = 25, playerHeight = 25, playerRotation = 0, rotationSpeed = 100, moveSpeed = 100;
 float circleX, circleY, circleR = 5;
-int reys = 500;
+int reys = 1000;
 float fov = 90 + 45;
-int limit = 10000;
-float reyspeed = 100; // a lower the value will be more accurate (but laggy)
+int limit = 200;
+float reyspeed = 50; // a lower the value will be more accurate (but laggy)
+
+float distance(float x1, float y1, float x2, float y2) {
+	return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
+}
 
 
 boolean AABB(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
@@ -56,7 +60,7 @@ int main() {
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 
-		clearWindowBackground(&win, COLOR_WHITE);
+		clearWindowBackground(&win, COLOR_BLACK);
 
 		for (int i = 0; i < size; i++) {
 			drawRectangle(&win, x[i], y[i], w[i], h[i], 0, COLOR_BLACK);
@@ -98,19 +102,17 @@ int main() {
 
 			float theta = rotation * (3.14159265359 / 180);
 
-			int i = 0;
 			while (!inWall(x, y, w, h, curX, curY)) {
 				curX += (reyspeed * cos(theta)) * win.deltaTime;
 				curY += (reyspeed * sin(theta)) * win.deltaTime;
-				i++;
-				if (i > limit) break;
+				if (distance(xStart, yStart, curX, curY) > limit) break;
 			}
 			rotation += rotationInc;
 			float lengthX = xStart - curX;
 			float lengthY = yStart - curY;
 			if (lengthX < 0) { lengthX = -lengthX; }
 			if (lengthY < 0) { lengthY = -lengthY; }
-			drawLine(&win, xStart, yStart, curX, curY, 1, COLOR_RED);
+			drawLine(&win, xStart, yStart, curX, curY, 1, COLOR_WHITE);
 		}
 
 		renderWindow(win);
