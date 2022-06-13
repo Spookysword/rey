@@ -101,18 +101,27 @@ int main() {
 			float curX = xStart, curY = yStart;
 
 			float theta = rotation * (3.14159265359 / 180);
-
+			boolean hit = TRUE;
 			while (!inWall(x, y, w, h, curX, curY)) {
 				curX += (reyspeed * cos(theta)) * win.deltaTime;
 				curY += (reyspeed * sin(theta)) * win.deltaTime;
-				if (distance(xStart, yStart, curX, curY) > limit) break;
+				if (distance(xStart, yStart, curX, curY) > limit) {
+					hit = FALSE;
+					break;
+				}
 			}
 			rotation += rotationInc;
 			float lengthX = xStart - curX;
 			float lengthY = yStart - curY;
 			if (lengthX < 0) { lengthX = -lengthX; }
 			if (lengthY < 0) { lengthY = -lengthY; }
-			drawLine(&win, xStart, yStart, curX, curY, 1, COLOR_WHITE);
+			if (!hit) {
+				drawLine(&win, xStart, yStart, curX, curY, 1, grey);
+			}
+			else {
+				drawLine(&win, xStart, yStart, curX, curY, 1, grey);
+				drawRectangle(&win, curX - 1, curY - 1, 2, 2, 0, COLOR_WHITE);
+			}
 		}
 
 		renderWindow(win);
