@@ -403,6 +403,7 @@ Window createWindow(int width, int height, const char* title) {
 	win.shaders = CustomShaderVecCreate();
 	CustomShader s;
 	s.shapeBatch = createBatch();
+	s.lineBatch = createBatch();
 	win.deltaTime = 0.001f;
 	win.width = width;
 	win.height = height;
@@ -439,6 +440,7 @@ void deleteWindow(Window* win) {
 	glDeleteProgram(win->shaders.data[win->currentShader].fontShader.shaderID);*/
 	for (int i = 0; i < win->shaders.size; i++) {
 		deleteBatch(&win->shaders.data[i].shapeBatch);
+		deleteBatch(&win->shaders.data[i].lineBatch);
 		textureVecClear(&win->shaders.data[i].textures);
 		textureVecDelete(&win->shaders.data[i].textures);
 		glDeleteProgram(win->shaders.data[i].colorShader.shaderID);
@@ -555,6 +557,7 @@ void updateWindow(Window* win) {
 	}*/
 	for (int i = 0; i < win->shaders.size; i++) {
 		flushBatch(&win->shaders.data[i].shapeBatch);
+		flushBatch(&win->shaders.data[i].lineBatch);
 		for (int z = 0; z < win->shaders.data[i].textures.size; z++) {
 			flushTextureBatch(&win->shaders.data[i].textures.data[z]);
 		}
@@ -617,6 +620,10 @@ void renderWindow(Window win) {
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 
 		draw(win.shaders.data[i].shapeBatch, GL_TRIANGLE_FAN);
+
+		bindBatch(win.shaders.data[i].lineBatch);
+
+		draw(win.shaders.data[i].lineBatch, GL_LINE_STRIP);
 
 		glUseProgram(win.shaders.data[i].textureShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
@@ -1046,9 +1053,10 @@ void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickne
 	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
 	y1 = -y1;
 	y2 = -y2;
-	float passIn1[21] = { x1 - (thickness / 2), y1 - (thickness / 2), win->zmod, cR, cG, cB, cA, x1 - (thickness / 2), y1 + (thickness / 2), win->zmod, cR, cG, cB, cA, x2 + (thickness / 2), y2 + (thickness / 2), win->zmod, cR, cG, cB, cA };
-	float passIn2[7] = { x2 + (thickness / 2), y2 - (thickness / 2), win->zmod, cR, cG, cB, cA };
-	addTriangle(&win->shaders.data[win->currentShader].shapeBatch, passIn1);
-	addVertice(&win->shaders.data[win->currentShader].shapeBatch, passIn2);
-	endShape(&win->shaders.data[win->currentShader].shapeBatch);
+	float passIn1[7] = { x1, y1, win->zmod, cR, cG, cB, cA };
+	float passIn2[7] = { x2, y2, win->zmod, cR, cG, cB, cA };
+	glLineWidth(thickness);
+	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn1);
+	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);
+	endShape(&win->shaders.data[win->currentShader].lineBatch);
 }

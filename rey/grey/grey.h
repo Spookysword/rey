@@ -252,6 +252,7 @@ extern "C" {
 	struct CustomShader {
 		Shader colorShader, textureShader, fontShader;
 		Batch shapeBatch;
+		Batch lineBatch;
 		textureVec textures;
 		fontVec fonts;
 	};
