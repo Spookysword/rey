@@ -16,11 +16,11 @@ This demo is NOT finished, so do not expect much from it.
 
 float playerX = 1280 / 2, playerY = 720 / 2, playerWidth = 25, playerHeight = 25, playerRotation = 0, rotationSpeed = 100, moveSpeed = 100;
 float circleX, circleY, circleR = 5;
-int reys = 25;
+int reys = 10;
 float fov = 90 + 45;
 int limit = 200;
 float reyspeed = 10; // a lower the value will be more accurate (but laggy)
-float thickness = 2.5f; // size of reys and of the walls
+float thickness = 10; // size of reys and of the walls
 
 float distance(float x1, float y1, float x2, float y2) {
 	return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
