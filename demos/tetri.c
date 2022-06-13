@@ -4,6 +4,12 @@ FAIR WARNING
 This demo is NOT finished, so do not expect much from it.
 
 */
+/*
+
+FAIR WARNING
+This demo is NOT finished, so do not expect much from it.
+
+*/
 #include <grey.h>
 #include <stdio.h>
 #include <arey.h>
@@ -66,19 +72,49 @@ int PIECE_ROTATIONS[7][8] = {
 		2, -1, 0, 2, -1, 0, -1, -1
 	}
 };
+float PIECE_NEXT_OFFSET[7][2] = {
+	{ // I
+		0.5f, 2
+	},
+	{ // L
+		1.5f, 1
+	},
+	{ // J
+		1.5f, 1
+	},
+	{ // S
+		1.5f, 1.5f
+	},
+	{ // Q
+		1, 1.5f
+	},
+	{ // T
+		1, 1.5f
+	},
+	{ // Z
+		1, 1.5f
+	}
+};
 int PIECE_COLORS[7] = {
 	0, 0, 1, 1, 2, 2, 2
 };
 int currentPieceArray[8];
+int nextPiece;
+int nextPieceArray[8];
 int rotateCycle = 0;
 void changePiece(int piece[8]) {
 	for (int i = 0; i < 8; i++) {
 		currentPieceArray[i] = piece[i];
 	}
 }
+void changeNextPiece(int piece[8]) {
+	for (int i = 0; i < 8; i++) {
+		nextPieceArray[i] = piece[i];
+	}
+}
 
 // Tetris
-float blockWidth = 539-49/10;
+float blockWidth = 539 - 49 / 10;
 int x = 4, y = 0;
 float accurateY = 0;
 float fallSpeed = 1.0f;
@@ -136,24 +172,25 @@ int moveX(int direction) {
 	return 0;
 }
 int moveY(float deltaTime, float _fallSpeed) {
-	accurateY += (_fallSpeed) * deltaTime;
+	accurateY += (_fallSpeed)*deltaTime;
 	y = (int)accurateY;
 	return 0;
 }
 int rotate(int direction) {
-	x += PIECE_ROTATIONS[currentPiece][rotateCycle*2];
-	accurateY += PIECE_ROTATIONS[currentPiece][rotateCycle*2+1];
+	x += PIECE_ROTATIONS[currentPiece][rotateCycle * 2];
+	accurateY += PIECE_ROTATIONS[currentPiece][rotateCycle * 2 + 1];
 	y = (int)accurateY;
 	int duplicateArray[8];
 	if (direction > 0) {
 		for (int i = 0; i < 4; i++) {
-			duplicateArray[i*2] = currentPieceArray[i*2+1];
-			duplicateArray[i*2+1] = -currentPieceArray[i*2];
+			duplicateArray[i * 2] = currentPieceArray[i * 2 + 1];
+			duplicateArray[i * 2 + 1] = -currentPieceArray[i * 2];
 		}
-	} else {
+	}
+	else {
 		for (int i = 0; i < 4; i++) {
-			duplicateArray[i*2] = -currentPieceArray[i*2+1];
-			duplicateArray[i*2+1] = currentPieceArray[i*2];
+			duplicateArray[i * 2] = -currentPieceArray[i * 2 + 1];
+			duplicateArray[i * 2 + 1] = currentPieceArray[i * 2];
 		}
 	}
 	if (testCollision(duplicateArray) == -1) {
@@ -166,16 +203,18 @@ int rotate(int direction) {
 		for (int i = 0; i < 8; i++) {
 			currentPieceArray[i] = duplicateArray[i];
 		}
-		if (rotateCycle+1 < 4) {
+		if (rotateCycle + 1 < 4) {
 			rotateCycle += 1;
-		} else {
+		}
+		else {
 			rotateCycle = 0;
 		}
 		return 0;
 	}
 }
-void checkLines() {
+int checkLines() {
 	int lineCounts[20] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	int lines = 0;
 	for (int i = 0; i < 10; i++) {
 		for (int z = 0; z < 20; z++) {
 			if (garbage[i][z] != 0) {
@@ -185,17 +224,24 @@ void checkLines() {
 	}
 	for (int i = 0; i < 20; i++) {
 		if (lineCounts[i] >= 10) {
+			lines++;
 			for (int z = 0; z < 10; z++) {
 				garbage[i][z] = 0;
 			}
-			for (int z = i-1; z >= 0; z--) {
+			for (int z = i - 1; z >= 0; z--) {
 				for (int p = 0; p < 10; p++) {
-					garbage[p][z+1] = garbage[p][z];
+					garbage[p][z + 1] = garbage[p][z];
 				}
 			}
 		}
 	}
+	return lines;
 }
+float score = 0;
+int lineCount = 0;
+int lineCountTracker = 0;
+int scoreFallMultiplier = 5;
+int level = 0;
 
 int main() {
 	initGrey(4);
@@ -203,44 +249,82 @@ int main() {
 
 	float offsetX = 0.0f, offsetY = 0.0f;
 
-	Window win = createWindow(width/resolutionDivider, height/resolutionDivider, "grey");
+	Window win = createWindow(width / resolutionDivider, height / resolutionDivider, "grey");
 	srand(win.startTime * 1000);
 
 	FontID eightBitDragon = loadFont(&win, "resources/EightBitDragon.ttf", 50);
-	
-	currentPiece = rand()%7;
+
+	currentPiece = rand() % 7;
 	changePiece(PIECES[currentPiece]);
+
+	nextPiece = rand() % 7;
+	changeNextPiece(PIECES[nextPiece]);
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 
-		srand(win.time*1000);
-		checkLines();
+		srand(win.time * 1000);
+		int lineCheck = checkLines();
+		float addAmount = fallSpeed - 0.5f;
+		addAmount *= 0.5f;
+		switch (lineCheck) {
+		case 0:
+			// do nuting
+			break;
+		case 1:
+			score += 100 * addAmount;
+			break;
+		case 2:
+			score += 250 * addAmount;
+			break;
+		case 3:
+			score += 500 * addAmount;
+			break;
+		case 4:
+			score += 1000 * addAmount;
+			break;
+		default:
+			// what
+			break;
+		}
+		lineCount += lineCheck;
+		lineCountTracker += lineCheck;
+		if (lineCountTracker >= 10) {
+			level += 1;
+			fallSpeed += 0.4f;
+			lineCountTracker -= 10;
+		}
 		moveY(win.deltaTime, fallSpeed);
-		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) { moveY(win.deltaTime, holdSpeed); }
+		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) {
+			moveY(win.deltaTime, holdSpeed);
+			score += (scoreFallMultiplier * fallSpeed * win.deltaTime);
+		}
 		if (testCollisionY(currentPieceArray) == -1) {
 			for (int i = 0; i < 4; i++) {
-				int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1])-1;
-				garbage[drawX][drawY] = PIECE_COLORS[currentPiece]+1;
+				int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]) - 1;
+				garbage[drawX][drawY] = PIECE_COLORS[currentPiece] + 1;
 			}
 			x = 4;
 			accurateY = 0.0f;
 			y = 0;
 			rotateCycle = 0;
-			currentPiece = rand()%7;
-			changePiece(PIECES[currentPiece]);
+			changePiece(PIECES[nextPiece]);
+			currentPiece = nextPiece;
+			nextPiece = rand() % 7;
+			changeNextPiece(PIECES[nextPiece]);
 		}
 
-		if (win.width/width < win.height/height) {
-			resolutionDivider = width/win.width;
+		if (win.width / width < win.height / height) {
+			resolutionDivider = width / win.width;
 			offsetX = 0.0f;
-		} else {
-			resolutionDivider = height/win.height;
-			offsetX = -((width/resolutionDivider)-win.width)/2;
 		}
-		blockWidth = (539-49)/10;
+		else {
+			resolutionDivider = height / win.height;
+			offsetX = -((width / resolutionDivider) - win.width) / 2;
+		}
+		blockWidth = (539 - 49) / 10;
 
-		clearWindowBackground(win, backgroundColor);
+		clearWindowBackground(&win, backgroundColor);
 
 		if (isKeyDown(win, KEY_ESCAPE)) {
 			closeWindow(win);
@@ -260,42 +344,119 @@ int main() {
 		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
 		if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
 		if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
+		if (isKeyPressed(win, KEY_SPACE)) {
+			int origY = y;
+			int pointAdd = 0;
+			while (testCollisionY(currentPieceArray) != -1) {
+				y += 1;
+				pointAdd += 1;
+			}
+			y -= 1;
+			accurateY = (float)y + 1;
+			score += pointAdd * fallSpeed;
+		}
+		if (isKeyPressed(win, KEY_LEFT_SHIFT) || isKeyPressed(win, KEY_RIGHT_SHIFT)) {
+			int origY = y;
+			int pointAdd = 0;
+			while (testCollisionY(currentPieceArray) != -1) {
+				y += 1;
+				pointAdd += 1;
+			}
+			y -= 1;
+			accurateY = (float)y;
+			score += pointAdd * fallSpeed;
+		}
 
 		// Draw UI
 		/// Borders
-		drawRectangle(&win, offsetX+fX(36), fX(36), fX(552-36), fX(1042-36), 0, borderColor);
-		drawRectangle(&win, offsetX+fX(576), fX(85), fX(846-576), fX(230-85), 0, borderColor);
-		drawRectangle(&win, offsetX+fX(576), fX(330), fX(846-576), fX(601-330), 0, borderColor);
-		drawRectangle(&win, offsetX+fX(576), fX(919), fX(846-576), fX(1042-919), 0, borderColor);
+		drawRectangle(&win, offsetX + fX(36), fX(36), fX(552 - 36), fX(1042 - 36), 0, borderColor);
+		drawRectangle(&win, offsetX + fX(576), fX(85), fX(846 - 576), fX(230 - 85), 0, borderColor);
+		drawRectangle(&win, offsetX + fX(576), fX(330), fX(846 - 576), fX(601 - 330), 0, borderColor);
+		drawRectangle(&win, offsetX + fX(576), fX(919), fX(846 - 576), fX(1042 - 919), 0, borderColor);
 		/// Tetris background
-		drawRectangle(&win, offsetX+fX(49), fX(49), fX(539-49), fX(1029-49), 0, tetrisBackgroundColor);
-		drawRectangle(&win, offsetX+fX(589), fX(98), fX(833-589), fX(217-98), 0, tetrisBackgroundColor);
-		drawRectangle(&win, offsetX+fX(589), fX(343), fX(833-589), fX(588-343), 0, tetrisBackgroundColor);
-		drawRectangle(&win, offsetX+fX(589), fX(932), fX(833-589), fX(1029-932), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX + fX(49), fX(49), fX(539 - 49), fX(1029 - 49), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX + fX(589), fX(98), fX(833 - 589), fX(217 - 98), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX + fX(589), fX(343), fX(833 - 589), fX(588 - 343), 0, tetrisBackgroundColor);
+		drawRectangle(&win, offsetX + fX(589), fX(932), fX(833 - 589), fX(1029 - 932), 0, tetrisBackgroundColor);
 
 		// Draw garbage
 		for (int i = 0; i < 10; i++) {
 			for (int z = 0; z < 20; z++) {
 				if (garbage[i][z] != 0) {
-					drawRectangle(&win, offsetX+fX(49+(i*blockWidth)), fX(49+(z*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[garbage[i][z]-1]);
+					drawRectangle(&win, offsetX + fX(49 + (i * blockWidth)), fX(49 + (z * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[garbage[i][z] - 1]);
 				}
 			}
 		}
 		// Draw piece
 		for (int i = 0; i < 4; i++) {
-			int drawX = x+(currentPieceArray[i*2]), drawY = y+(currentPieceArray[i*2+1]);
-			drawRectangle(&win, offsetX+fX(49+(drawX*blockWidth)), fX(49+(drawY*blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
+			int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]);
+			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
 		}
-		
-		float scale = 153-113;
-		while (813-(607+getWidthOfText(&win, "Score: 0", eightBitDragon, scale)) > 0) {
+		// Draw drop piece
+		int origY = y;
+		int dropY = y;
+		while (testCollisionY(currentPieceArray) != -1) {
+			y += 1;
+		}
+		dropY = y - 1;
+		y = origY;
+		for (int i = 0; i < 4; i++) {
+			int drawX = x + (currentPieceArray[i * 2]), drawY = dropY + (currentPieceArray[i * 2 + 1]);
+			Color drawColor;
+			for (int z = 0; z < 4; z++) {
+				drawColor[z] = pieceColors[PIECE_COLORS[currentPiece]][z];
+			}
+			drawColor[3] = 100;
+			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, drawColor);
+		}
+		// Draw next piece
+		for (int i = 0; i < 4; i++) {
+			float drawX = 0 + (nextPieceArray[i * 2] + PIECE_NEXT_OFFSET[nextPiece][0]), drawY = 0 + (nextPieceArray[i * 2 + 1] + PIECE_NEXT_OFFSET[nextPiece][1]);
+			drawRectangle(&win, offsetX + fX(589 + (drawX * blockWidth)), fX(343 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[nextPiece]]);
+		}
+
+		int length = snprintf(NULL, 0, "Score: %i", (int)score);
+		char* scoreText = malloc((double)length + 1);
+		snprintf(scoreText, (double)length + 1, "Score: %i", (int)score);
+
+		float scale = 153 - 113;
+		while (813 - (607 + getWidthOfText(&win, scoreText, eightBitDragon, scale)) > 0) {
 			scale += 1;
 		}
-		while (813-(607+getWidthOfText(&win, "Score: 0", eightBitDragon, scale)) < 0) {
+		while (813 - (607 + getWidthOfText(&win, scoreText, eightBitDragon, scale)) < 0) {
 			scale -= 1;
 		}
-		
-		drawBorderedText(&win, "Score: 0", eightBitDragon, offsetX + fX(611), fX(112), fX(scale), fX(2), borderColor, backgroundColor);
+
+		int linesLength = snprintf(NULL, 0, "Lines: %i", lineCount);
+		char* linesText = malloc((double)linesLength + 1);
+		snprintf(linesText, (double)linesLength + 1, "Lines: %i", lineCount);
+
+		float linesTextScale = 153 - 113;
+		while (813 - (607 + getWidthOfText(&win, linesText, eightBitDragon, linesTextScale)) > 0) {
+			linesTextScale += 1;
+		}
+		while (813 - (607 + getWidthOfText(&win, linesText, eightBitDragon, linesTextScale)) < 0) {
+			linesTextScale -= 1;
+		}
+
+		int levelLength = snprintf(NULL, 0, "Level: %i", level);
+		char* levelText = malloc((double)levelLength + 1);
+		snprintf(levelText, (double)levelLength + 1, "Level: %i", level);
+
+		float levelTextScale = 153 - 113;
+		while (813 - (607 + getWidthOfText(&win, levelText, eightBitDragon, levelTextScale)) > 0) {
+			levelTextScale += 1;
+		}
+		while (813 - (607 + getWidthOfText(&win, levelText, eightBitDragon, levelTextScale)) < 0) {
+			levelTextScale -= 1;
+		}
+
+		drawBorderedText(&win, scoreText, eightBitDragon, offsetX + fX(611), fX(107), fX(scale), fX(2), borderColor, backgroundColor);
+		drawBorderedText(&win, linesText, eightBitDragon, offsetX + fX(611), fX(954), fX(linesTextScale), fX(2), borderColor, backgroundColor);
+		drawBorderedText(&win, levelText, eightBitDragon, offsetX + fX(611), fX(152), fX(levelTextScale), fX(2), borderColor, backgroundColor);
+		free(scoreText);
+		free(linesText);
+		free(levelText);
 
 		renderWindow(win);
 	}
