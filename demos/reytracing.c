@@ -16,10 +16,11 @@ This demo is NOT finished, so do not expect much from it.
 
 float playerX = 1280 / 2, playerY = 720 / 2, playerWidth = 25, playerHeight = 25, playerRotation = 0, rotationSpeed = 100, moveSpeed = 100;
 float circleX, circleY, circleR = 5;
-int reys = 500;
+int reys = 25;
 float fov = 90 + 45;
 int limit = 200;
 float reyspeed = 10; // a lower the value will be more accurate (but laggy)
+float thickness = 2.5f; // size of reys and of the walls
 
 float distance(float x1, float y1, float x2, float y2) {
 	return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2));
@@ -110,19 +111,17 @@ int main() {
 					break;
 				}
 			}
-			rotation += rotationInc;
 			float lengthX = xStart - curX;
 			float lengthY = yStart - curY;
 			if (lengthX < 0) { lengthX = -lengthX; }
 			if (lengthY < 0) { lengthY = -lengthY; }
 
-			drawAdvancedLine(&win, xStart, yStart, curX, curY, 1, COLOR_LIGHT_GREY, COLOR_BLACK);
+			drawAdvancedLine(&win, xStart, yStart, curX, curY, thickness, COLOR_LIGHT_GREY, COLOR_BLACK);
 
 			if (hit) {
-				drawRectangle(&win, curX - 0.5f, curY - 0.5f, 1, 1, 0, COLOR_WHITE);
+				drawRectangle(&win, curX - thickness / 2, curY - thickness / 2, thickness, thickness, rotation, COLOR_WHITE);
 			}
-			else {
-			}
+			rotation += rotationInc;
 		}
 
 		renderWindow(win);
