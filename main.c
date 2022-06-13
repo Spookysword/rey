@@ -283,7 +283,7 @@ int main() {
 		lineCountTracker += lineCheck;
 		if (lineCountTracker >= 10) {
 			level += 1;
-			fallSpeed += 0.40f;
+			fallSpeed += 0.5f;
 			lineCountTracker -= 10;
 		}
 		moveY(win.deltaTime, fallSpeed);
@@ -361,6 +361,23 @@ int main() {
 		for (int i = 0; i < 4; i++) {
 			int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]);
 			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
+		}
+		// Draw drop piece
+		int origY = y;
+		int dropY = y;
+		while (testCollisionY(currentPieceArray) != -1) {
+			y += 1;
+		}
+		dropY = y-1;
+		y = origY;
+		for (int i = 0; i < 4; i++) {
+			int drawX = x + (currentPieceArray[i * 2]), drawY = dropY + (currentPieceArray[i * 2 + 1]);
+			Color drawColor;
+			for (int z = 0; z < 4; z++) {
+				drawColor[z] = pieceColors[PIECE_COLORS[currentPiece]][z];
+			}
+			drawColor[3] = 100;
+			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, drawColor);
 		}
 		// Draw next piece
 		for (int i = 0; i < 4; i++) {
