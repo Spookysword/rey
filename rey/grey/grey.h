@@ -391,7 +391,7 @@ extern "C" {
 #define COLOR_WHITE Color{ 255, 255, 255, 255 }
 #define COLOR_LIGHT_GREY Color{ 128, 128, 128, 255 }
 #define COLOR_DARK_GREY Color{ 63, 63, 63, 255 }
-#define grey Color{ 14, 14, 14, 255 }
+#define grey Color{ 15, 15, 15, 255 }
 // Primary
 #define COLOR_RED Color{ 255, 0, 0, 255 }
 #define COLOR_GREEN Color{ 0, 255, 0, 255 }
@@ -437,7 +437,7 @@ extern "C" {
 #define COLOR_WHITE (unsigned int [4]){ 255, 255, 255, 255 }
 #define COLOR_LIGHT_GREY (unsigned int [4]){ 128, 128, 128, 255 }
 #define COLOR_DARK_GREY (unsigned int [4]){ 63, 63, 63, 255 }
-#define grey (unsigned int [4]){ 14, 14, 14, 255 }
+#define grey (unsigned int [4]){ 15, 15, 15, 255 }
 // Primary
 #define COLOR_RED (unsigned int [4]){ 255, 0, 0, 255 }
 #define COLOR_GREEN (unsigned int [4]){ 0, 255, 0, 255 }
