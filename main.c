@@ -375,6 +375,38 @@ int main() {
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 
+		// Input
+		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
+		if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
+		if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
+		if (isKeyPressed(win, KEY_SPACE)) {
+			int origY = y;
+			int pointAdd = 0;
+			while (testCollisionY(currentPieceArray) != -1) {
+				y += 1;
+				pointAdd += 1;
+			}
+			y -= 1;
+			accurateY = (float)y + 1;
+			score += pointAdd * fallSpeed;
+		}
+		if (isKeyPressed(win, KEY_LEFT_SHIFT) || isKeyPressed(win, KEY_RIGHT_SHIFT)) {
+			int origY = y;
+			int pointAdd = 0;
+			while (testCollisionY(currentPieceArray) != -1) {
+				y += 1;
+				pointAdd += 1;
+			}
+			y -= 1;
+			accurateY = (float)y;
+			score += pointAdd * fallSpeed;
+		}
+		moveY(win.deltaTime, fallSpeed);
+		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) {
+			moveY(win.deltaTime, holdSpeed);
+			score += (scoreFallMultiplier * fallSpeed * win.deltaTime);
+		}
+
 		srand(win.time * 1000);
 		int lineCheck = checkLines();
 		float addAmount = fallSpeed - 0.5f;
@@ -406,11 +438,6 @@ int main() {
 			fallSpeed += 0.4f;
 			lineCountTracker -= 10;
 			changeLevel(level);
-		}
-		moveY(win.deltaTime, fallSpeed);
-		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) {
-			moveY(win.deltaTime, holdSpeed);
-			score += (scoreFallMultiplier * fallSpeed * win.deltaTime);
 		}
 		if (testCollisionY(currentPieceArray) == -1) {
 			for (int i = 0; i < 4; i++) {
@@ -455,33 +482,6 @@ int main() {
 		}
 
 		//setWireframeMode(win, isKeyDown(win, KEY_SPACE));
-
-		// Input
-		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
-		if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
-		if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
-		if (isKeyPressed(win, KEY_SPACE)) {
-			int origY = y;
-			int pointAdd = 0;
-			while (testCollisionY(currentPieceArray) != -1) {
-				y += 1;
-				pointAdd += 1;
-			}
-			y -= 1;
-			accurateY = (float)y + 1;
-			score += pointAdd * fallSpeed;
-		}
-		if (isKeyPressed(win, KEY_LEFT_SHIFT) || isKeyPressed(win, KEY_RIGHT_SHIFT)) {
-			int origY = y;
-			int pointAdd = 0;
-			while (testCollisionY(currentPieceArray) != -1) {
-				y += 1;
-				pointAdd += 1;
-			}
-			y -= 1;
-			accurateY = (float)y;
-			score += pointAdd * fallSpeed;
-		}
 
 		// Draw UI
 		/// Borders
