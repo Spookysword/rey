@@ -72,7 +72,7 @@ int sendRey(int* x, int* y, int* w, int* h, Window* win, float fov, int reys, in
 int main() {
 	initGrey(4);
 
-	Window win = createWindow(1280, 720, "greytracing");
+	Window win = createWindow(1280, 720, "greycollision");
 
 	int x[size] = {
 		0, 0, 1280 - 50, 0, 200, 200, 200, 400, 400, 600, 600, 800
@@ -113,7 +113,10 @@ int main() {
 		float Rreys = 50;
 		float Rlimit = 1;
 		float Rspeed = 10;
-		int spacing = 25; // Collision looks most natural when this value is ~half of Rreys
+		int spacing = Rreys / 1.5f; // Collision looks most natural when this value is between Rreys/2 and Rreys 
+		//SPACING = 1-Rreys: the collision will only respond if it is fully colliding
+		//SPACING = 0: Collision will happen even when they are Rlimit pixels away from each other
+		//SPACING = Rreys/1.5f: the most consistent and realistic value for Rreys
 
 		int backleft = sendRey(x, y, w, h, &win, 360, Rreys, Rlimit, Rspeed, 1, 0,
 			rotateX(playerX, playerY, c1, c2, rot), rotateY(playerX, playerY, c1, c2, rot));
