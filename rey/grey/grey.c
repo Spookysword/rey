@@ -622,7 +622,6 @@ void renderWindow(Window win) {
 		draw(win.shaders.data[i].shapeBatch, GL_TRIANGLE_FAN);
 
 		bindBatch(win.shaders.data[i].lineBatch);
-
 		draw(win.shaders.data[i].lineBatch, GL_LINE_STRIP);
 
 		glUseProgram(win.shaders.data[i].textureShader.shaderID);
@@ -1049,20 +1048,19 @@ void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, f
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
 	win->zmod -= 0.000001f;
 }
-void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color) {
-	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
+void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1) {
 	y1 = -y1;
 	y2 = -y2;
-	float passIn1[7] = { x1, y1, win->zmod, cR, cG, cB, cA };
-	float passIn2[7] = { x2, y2, win->zmod, cR, cG, cB, cA };
+	float passIn1[7] = { x1, y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255 };
+	float passIn2[7] = { x2, y2, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255 };
 	glLineWidth(thickness);
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn1);
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);
 	endShape(&win->shaders.data[win->currentShader].lineBatch);
+	win->zmod -= 0.000001f;
 }
 
 void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2) {
-	
 	y1 = -y1;
 	y2 = -y2;
 	float passIn1[7] = { x1, y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255 };
@@ -1071,4 +1069,5 @@ void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn1);
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);
 	endShape(&win->shaders.data[win->currentShader].lineBatch);
+	win->zmod -= 0.000001f;
 }
