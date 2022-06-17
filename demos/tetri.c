@@ -4,12 +4,6 @@ FAIR WARNING
 This demo is NOT finished, so do not expect much from it.
 
 */
-/*
-
-FAIR WARNING
-This demo is NOT finished, so do not expect much from it.
-
-*/
 #include <grey.h>
 #include <stdio.h>
 #include <arey.h>
@@ -125,10 +119,10 @@ Color pieceColors[3] = {
 	{ 97, 107, 137, 255 },
 	{ 19, 142, 99, 255 }
 };
-int garbage[10][20];
+int garbage[10][21];
 int testGarbageCollisionManual(int piece[8]) {
 	for (int i = 0; i < 10; i++) {
-		for (int z = 0; z < 20; z++) {
+		for (int z = 0; z < 21; z++) {
 			if (garbage[i][z] != 0) {
 				for (int j = 0; j < 4; j++) {
 					int drawX = x + (piece[j * 2]), drawY = y + (piece[j * 2 + 1]) - 1;
@@ -213,16 +207,16 @@ int rotate(int direction) {
 	}
 }
 int checkLines() {
-	int lineCounts[20] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	int lineCounts[21] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 	int lines = 0;
 	for (int i = 0; i < 10; i++) {
-		for (int z = 0; z < 20; z++) {
+		for (int z = 0; z < 21; z++) {
 			if (garbage[i][z] != 0) {
 				lineCounts[z]++;
 			}
 		}
 	}
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < 21; i++) {
 		if (lineCounts[i] >= 10) {
 			lines++;
 			for (int z = 0; z < 10; z++) {
@@ -242,6 +236,125 @@ int lineCount = 0;
 int lineCountTracker = 0;
 int scoreFallMultiplier = 5;
 int level = 0;
+void clearGarbage() {
+	for (int i = 0; i < 10; i++) {
+		for (int z = 0; z < 21; z++) {
+			garbage[i][z] = 0;
+		}
+	}
+}
+void changeLevel(int newLevel) {
+	switch (newLevel) {
+	default:
+		backgroundColor[0] = 0; backgroundColor[1] = 0; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 0; tetrisBackgroundColor[1] = 0; tetrisBackgroundColor[2] = 0; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 255; borderColor[1] = 255; borderColor[2] = 255; borderColor[3] = 255;
+		pieceColors[0][0] = 255; pieceColors[0][1] = 255; pieceColors[0][2] = 255; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 255; pieceColors[1][1] = 255; pieceColors[1][2] = 255; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 255; pieceColors[2][1] = 255; pieceColors[2][2] = 255; pieceColors[2][3] = 255;
+		break;
+	case 0:
+		backgroundColor[0] = 40; backgroundColor[1] = 47; backgroundColor[2] = 51; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 30; tetrisBackgroundColor[1] = 35; tetrisBackgroundColor[2] = 38; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 54; borderColor[1] = 68; borderColor[2] = 76; borderColor[3] = 255;
+		pieceColors[0][0] = 114; pieceColors[0][1] = 132; pieceColors[0][2] = 142; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 97; pieceColors[1][1] = 107; pieceColors[1][2] = 137; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 19; pieceColors[2][1] = 142; pieceColors[2][2] = 99; pieceColors[2][3] = 255;
+		break;
+	case 1:
+		backgroundColor[0] = 73; backgroundColor[1] = 218; backgroundColor[2] = 170; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 182; tetrisBackgroundColor[1] = 239; tetrisBackgroundColor[2] = 206; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 58; borderColor[1] = 174; borderColor[2] = 139; borderColor[3] = 255;
+		pieceColors[0][0] = 66; pieceColors[0][1] = 197; pieceColors[0][2] = 155; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 71; pieceColors[1][1] = 217; pieceColors[1][2] = 152; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 55; pieceColors[2][1] = 125; pieceColors[2][2] = 101; pieceColors[2][3] = 255;
+		break;
+	case 2:
+		backgroundColor[0] = 182; backgroundColor[1] = 37; backgroundColor[2] = 85; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 73; tetrisBackgroundColor[1] = 16; tetrisBackgroundColor[2] = 49; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 197; borderColor[1] = 81; borderColor[2] = 116; borderColor[3] = 255;
+		pieceColors[0][0] = 198; pieceColors[0][1] = 58; pieceColors[0][2] = 89; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 142; pieceColors[1][1] = 29; pieceColors[1][2] = 80; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 200; pieceColors[2][1] = 130; pieceColors[2][2] = 154; pieceColors[2][3] = 255;
+		break;
+	case 3: // piiiink
+		backgroundColor[0] = 255; backgroundColor[1] = 159; backgroundColor[2] = 201; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 255; tetrisBackgroundColor[1] = 170; tetrisBackgroundColor[2] = 194; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 250; borderColor[1] = 211; borderColor[2] = 212; borderColor[3] = 255;
+		pieceColors[0][0] = 252; pieceColors[0][1] = 183; pieceColors[0][2] = 128; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 162; pieceColors[1][1] = 124; pieceColors[1][2] = 155; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 217; pieceColors[2][1] = 255; pieceColors[2][2] = 255; pieceColors[2][3] = 255;
+		break;
+	case 4: // strawberry
+		backgroundColor[0] = 91; backgroundColor[1] = 16; backgroundColor[2] = 30; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 175; tetrisBackgroundColor[1] = 87; tetrisBackgroundColor[2] = 105; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 225; borderColor[1] = 212; borderColor[2] = 199; borderColor[3] = 255;
+		pieceColors[0][0] = 188; pieceColors[0][1] = 74; pieceColors[0][2] = 151; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 188; pieceColors[1][1] = 213; pieceColors[1][2] = 151; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 255; pieceColors[2][1] = 213; pieceColors[2][2] = 151; pieceColors[2][3] = 255;
+		break;
+	case 5: // dark mode
+		backgroundColor[0] = 38; backgroundColor[1] = 38; backgroundColor[2] = 38; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 76; tetrisBackgroundColor[1] = 76; tetrisBackgroundColor[2] = 76; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 63; borderColor[1] = 63; borderColor[2] = 63; borderColor[3] = 255;
+		pieceColors[0][0] = 0; pieceColors[0][1] = 0; pieceColors[0][2] = 255; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 25; pieceColors[1][1] = 25; pieceColors[1][2] = 25; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 127; pieceColors[2][1] = 127; pieceColors[2][2] = 127; pieceColors[2][3] = 255;
+		break;
+	case 6: // burnt
+		backgroundColor[0] = 100; backgroundColor[1] = 0; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 62; tetrisBackgroundColor[1] = 14; tetrisBackgroundColor[2] = 0; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 145; borderColor[1] = 35; borderColor[2] = 0; borderColor[3] = 255;
+		pieceColors[0][0] = 40; pieceColors[0][1] = 17; pieceColors[0][2] = 17; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 181; pieceColors[1][1] = 62; pieceColors[1][2] = 23; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 210; pieceColors[2][1] = 0; pieceColors[2][2] = 0; pieceColors[2][3] = 255;
+		break;
+	case 7: // LED
+		backgroundColor[0] = 0; backgroundColor[1] = 0; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 127; tetrisBackgroundColor[1] = 127; tetrisBackgroundColor[2] = 127; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 255; borderColor[1] = 255; borderColor[2] = 255; borderColor[3] = 255;
+		pieceColors[0][0] = 0; pieceColors[0][1] = 0; pieceColors[0][2] = 255; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 0; pieceColors[1][1] = 255; pieceColors[1][2] = 0; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 255; pieceColors[2][1] = 0; pieceColors[2][2] = 0; pieceColors[2][3] = 255;
+		break;
+	case 8: // 50's
+		backgroundColor[0] = 84; backgroundColor[1] = 84; backgroundColor[2] = 84; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 36; tetrisBackgroundColor[1] = 36; tetrisBackgroundColor[2] = 36; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 118; borderColor[1] = 118; borderColor[2] = 118; borderColor[3] = 255;
+		pieceColors[0][0] = 102; pieceColors[0][1] = 102; pieceColors[0][2] = 102; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 67; pieceColors[1][1] = 67; pieceColors[1][2] = 67; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 151; pieceColors[2][1] = 151; pieceColors[2][2] = 151; pieceColors[2][3] = 255;
+		break;
+	case 9: // YIELD "it's time to slow down."
+		backgroundColor[0] = 255; backgroundColor[1] = 255; backgroundColor[2] = 0; backgroundColor[3] = 255;
+		tetrisBackgroundColor[0] = 255; tetrisBackgroundColor[1] = 255; tetrisBackgroundColor[2] = 0; tetrisBackgroundColor[3] = 255;
+		borderColor[0] = 0; borderColor[1] = 0; borderColor[2] = 0; borderColor[3] = 255;
+		pieceColors[0][0] = 0; pieceColors[0][1] = 0; pieceColors[0][2] = 0; pieceColors[0][3] = 255;
+		pieceColors[1][0] = 0; pieceColors[1][1] = 0; pieceColors[1][2] = 0; pieceColors[1][3] = 255;
+		pieceColors[2][0] = 0; pieceColors[2][1] = 0; pieceColors[2][2] = 0; pieceColors[2][3] = 255;
+		break;
+	}
+}
+void reset() {
+	clearGarbage();
+	changeLevel(0);
+	currentPiece = rand() % 7;
+	changePiece(PIECES[currentPiece]);
+	nextPiece = rand() % 7;
+	changeNextPiece(PIECES[nextPiece]);
+	score = 0;
+	lineCount = 0;
+	lineCountTracker = 0;
+	scoreFallMultiplier = 5;
+	level = 0;
+	x = 4, y = 0;
+	accurateY = 0;
+	fallSpeed = 1.0f;
+	holdSpeed = 10.0f;
+	pieceColor = 0;
+	rotateCycle = 0;
+}
+boolean isPaused = FALSE;
 
 int main() {
 	initGrey(4);
@@ -263,110 +376,6 @@ int main() {
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 
-		srand(win.time * 1000);
-		int lineCheck = checkLines();
-		float addAmount = fallSpeed - 0.5f;
-		addAmount *= 0.5f;
-		switch (lineCheck) {
-		case 0:
-			// do nuting
-			break;
-		case 1:
-			score += 100 * addAmount;
-			break;
-		case 2:
-			score += 250 * addAmount;
-			break;
-		case 3:
-			score += 500 * addAmount;
-			break;
-		case 4:
-			score += 1000 * addAmount;
-			break;
-		default:
-			// what
-			break;
-		}
-		lineCount += lineCheck;
-		lineCountTracker += lineCheck;
-		if (lineCountTracker >= 10) {
-			level += 1;
-			fallSpeed += 0.4f;
-			lineCountTracker -= 10;
-		}
-		moveY(win.deltaTime, fallSpeed);
-		if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) {
-			moveY(win.deltaTime, holdSpeed);
-			score += (scoreFallMultiplier * fallSpeed * win.deltaTime);
-		}
-		if (testCollisionY(currentPieceArray) == -1) {
-			for (int i = 0; i < 4; i++) {
-				int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]) - 1;
-				garbage[drawX][drawY] = PIECE_COLORS[currentPiece] + 1;
-			}
-			x = 4;
-			accurateY = 0.0f;
-			y = 0;
-			rotateCycle = 0;
-			changePiece(PIECES[nextPiece]);
-			currentPiece = nextPiece;
-			nextPiece = rand() % 7;
-			changeNextPiece(PIECES[nextPiece]);
-		}
-
-		if (win.width / width < win.height / height) {
-			resolutionDivider = width / win.width;
-			offsetX = 0.0f;
-		}
-		else {
-			resolutionDivider = height / win.height;
-			offsetX = -((width / resolutionDivider) - win.width) / 2;
-		}
-		blockWidth = (539 - 49) / 10;
-
-		clearWindowBackground(&win, backgroundColor);
-
-		if (isKeyDown(win, KEY_ESCAPE)) {
-			closeWindow(win);
-		}
-
-		if (isKeyPressed(win, KEY_F)) {
-			printf("%f\n", win.framesPerSecond);
-		}
-
-		if (isKeyPressed(win, KEY_F11)) {
-			win.fullscreen = !win.fullscreen;
-		}
-
-		//setWireframeMode(win, isKeyDown(win, KEY_SPACE));
-
-		// Input
-		if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
-		if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
-		if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
-		if (isKeyPressed(win, KEY_SPACE)) {
-			int origY = y;
-			int pointAdd = 0;
-			while (testCollisionY(currentPieceArray) != -1) {
-				y += 1;
-				pointAdd += 1;
-			}
-			y -= 1;
-			accurateY = (float)y + 1;
-			score += pointAdd * fallSpeed;
-		}
-		if (isKeyPressed(win, KEY_LEFT_SHIFT) || isKeyPressed(win, KEY_RIGHT_SHIFT)) {
-			int origY = y;
-			int pointAdd = 0;
-			while (testCollisionY(currentPieceArray) != -1) {
-				y += 1;
-				pointAdd += 1;
-			}
-			y -= 1;
-			accurateY = (float)y;
-			score += pointAdd * fallSpeed;
-		}
-
 		// Draw UI
 		/// Borders
 		drawRectangle(&win, offsetX + fX(36), fX(36), fX(552 - 36), fX(1042 - 36), 0, borderColor);
@@ -379,40 +388,151 @@ int main() {
 		drawRectangle(&win, offsetX + fX(589), fX(343), fX(833 - 589), fX(588 - 343), 0, tetrisBackgroundColor);
 		drawRectangle(&win, offsetX + fX(589), fX(932), fX(833 - 589), fX(1029 - 932), 0, tetrisBackgroundColor);
 
-		// Draw garbage
-		for (int i = 0; i < 10; i++) {
-			for (int z = 0; z < 20; z++) {
-				if (garbage[i][z] != 0) {
-					drawRectangle(&win, offsetX + fX(49 + (i * blockWidth)), fX(49 + (z * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[garbage[i][z] - 1]);
+		if (isKeyPressed(win, KEY_ESCAPE) || isKeyPressed(win, KEY_P)) {
+			isPaused = !isPaused;
+		}
+
+		if (isKeyPressed(win, KEY_F)) {
+			printf("%f\n", win.framesPerSecond);
+		}
+
+		if (isKeyPressed(win, KEY_F11)) {
+			win.fullscreen = !win.fullscreen;
+		}
+
+		if (win.width / width < win.height / height) {
+			resolutionDivider = width / win.width;
+			offsetX = 0.0f;
+		}
+		else {
+			resolutionDivider = height / win.height;
+			offsetX = -((width / resolutionDivider) - win.width) / 2;
+		}
+
+		if (isPaused == FALSE) {
+			// Input
+			if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
+			if (isKeyPressed(win, KEY_D) || isKeyPressed(win, KEY_RIGHT)) { moveX(1); }
+			if (isKeyPressed(win, KEY_W) || isKeyPressed(win, KEY_UP)) { rotate(-1); }
+			if (isKeyPressed(win, KEY_SPACE)) {
+				int origY = y;
+				int pointAdd = 0;
+				while (testCollisionY(currentPieceArray) != -1) {
+					y += 1;
+					pointAdd += 1;
+				}
+				y -= 1;
+				accurateY = (float)y + 1;
+				score += pointAdd * fallSpeed;
+			}
+			if (isKeyPressed(win, KEY_LEFT_SHIFT) || isKeyPressed(win, KEY_RIGHT_SHIFT)) {
+				int origY = y;
+				int pointAdd = 0;
+				while (testCollisionY(currentPieceArray) != -1) {
+					y += 1;
+					pointAdd += 1;
+				}
+				y -= 1;
+				accurateY = (float)y;
+				score += pointAdd * fallSpeed;
+			}
+			moveY(win.deltaTime, fallSpeed);
+			if (isKeyDown(win, KEY_S) || isKeyDown(win, KEY_DOWN)) {
+				moveY(win.deltaTime, holdSpeed);
+				score += (scoreFallMultiplier * fallSpeed * win.deltaTime);
+			}
+
+			srand(win.time * 1000);
+			int lineCheck = checkLines();
+			float addAmount = fallSpeed - 0.5f;
+			addAmount *= 0.5f;
+			switch (lineCheck) {
+			case 0:
+				// do nuting
+				break;
+			case 1:
+				score += 100 * addAmount;
+				break;
+			case 2:
+				score += 250 * addAmount;
+				break;
+			case 3:
+				score += 500 * addAmount;
+				break;
+			case 4:
+				score += 1000 * addAmount;
+				break;
+			default:
+				// what
+				break;
+			}
+			lineCount += lineCheck;
+			lineCountTracker += lineCheck;
+			if (lineCountTracker >= 10) {
+				level += 1;
+				fallSpeed += 0.25f;
+				lineCountTracker -= 10;
+				changeLevel(level);
+			}
+			if (testCollisionY(currentPieceArray) == -1) {
+				for (int i = 0; i < 4; i++) {
+					int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]) - 1;
+					garbage[drawX][drawY] = PIECE_COLORS[currentPiece]+1;
+				}
+				x = 4;
+				accurateY = 0.0f;
+				y = 0;
+				rotateCycle = 0;
+				changePiece(PIECES[nextPiece]);
+				currentPiece = nextPiece;
+				nextPiece = rand() % 7;
+				changeNextPiece(PIECES[nextPiece]);
+				if (testCollisionY(currentPieceArray) == -1 || testGarbageCollision() == -1) {
+					reset();
 				}
 			}
-		}
-		// Draw piece
-		for (int i = 0; i < 4; i++) {
-			int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]);
-			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
-		}
-		// Draw drop piece
-		int origY = y;
-		int dropY = y;
-		while (testCollisionY(currentPieceArray) != -1) {
-			y += 1;
-		}
-		dropY = y - 1;
-		y = origY;
-		for (int i = 0; i < 4; i++) {
-			int drawX = x + (currentPieceArray[i * 2]), drawY = dropY + (currentPieceArray[i * 2 + 1]);
-			Color drawColor;
-			for (int z = 0; z < 4; z++) {
-				drawColor[z] = pieceColors[PIECE_COLORS[currentPiece]][z];
+			
+			blockWidth = (539 - 49) / 10;
+
+			clearWindowBackground(&win, backgroundColor);
+
+			//setWireframeMode(win, isKeyDown(win, KEY_SPACE));
+
+			// Draw garbage
+			for (int i = 0; i < 10; i++) {
+				for (int z = 0; z < 20; z++) {
+					if (garbage[i][z] != 0) {
+						drawRectangle(&win, offsetX + fX(49 + (i * blockWidth)), fX(49 + (z * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[garbage[i][z] - 1]);
+					}
+				}
 			}
-			drawColor[3] = 100;
-			drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, drawColor);
-		}
-		// Draw next piece
-		for (int i = 0; i < 4; i++) {
-			float drawX = 0 + (nextPieceArray[i * 2] + PIECE_NEXT_OFFSET[nextPiece][0]), drawY = 0 + (nextPieceArray[i * 2 + 1] + PIECE_NEXT_OFFSET[nextPiece][1]);
-			drawRectangle(&win, offsetX + fX(589 + (drawX * blockWidth)), fX(343 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[nextPiece]]);
+			// Draw piece
+			for (int i = 0; i < 4; i++) {
+				int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]);
+				drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[currentPiece]]);
+			}
+			// Draw drop piece
+			int origY = y;
+			int dropY = y;
+			while (testCollisionY(currentPieceArray) != -1) {
+				y += 1;
+			}
+			dropY = y - 1;
+			y = origY;
+			for (int i = 0; i < 4; i++) {
+				int drawX = x + (currentPieceArray[i * 2]), drawY = dropY + (currentPieceArray[i * 2 + 1]);
+				Color drawColor;
+				for (int z = 0; z < 4; z++) {
+					drawColor[z] = pieceColors[PIECE_COLORS[currentPiece]][z];
+				}
+				drawColor[3] = 100;
+				drawRectangle(&win, offsetX + fX(49 + (drawX * blockWidth)), fX(49 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, drawColor);
+			}
+			// Draw next piece
+			for (int i = 0; i < 4; i++) {
+				float drawX = 0 + (nextPieceArray[i * 2] + PIECE_NEXT_OFFSET[nextPiece][0]), drawY = 0 + (nextPieceArray[i * 2 + 1] + PIECE_NEXT_OFFSET[nextPiece][1]);
+				drawRectangle(&win, offsetX + fX(589 + (drawX * blockWidth)), fX(343 + (drawY * blockWidth)), fX(blockWidth), fX(blockWidth), 0, pieceColors[PIECE_COLORS[nextPiece]]);
+			}
 		}
 
 		int length = snprintf(NULL, 0, "Score: %i", (int)score);
@@ -457,6 +577,11 @@ int main() {
 		free(scoreText);
 		free(linesText);
 		free(levelText);
+
+		if (isPaused == TRUE) {
+			drawRectangle(&win, offsetX + fX(49), fX(49), fX(539-49), fX(1029-49), 0, tetrisBackgroundColor);
+			drawBorderedText(&win, "PAUSED", eightBitDragon, offsetX + fX((539-49)/2-(getWidthOfText(&win, "PAUSED", eightBitDragon, 39)/5)), fX((1029-49)/2), fX(39), fX(2), borderColor, backgroundColor);
+		}
 
 		renderWindow(win);
 	}
