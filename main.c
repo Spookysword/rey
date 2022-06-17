@@ -453,7 +453,7 @@ int main() {
 			lineCountTracker += lineCheck;
 			if (lineCountTracker >= 10) {
 				level += 1;
-				fallSpeed += 0.4f;
+				fallSpeed += 0.25f;
 				lineCountTracker -= 10;
 				changeLevel(level);
 			}
