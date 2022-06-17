@@ -392,6 +392,23 @@ int main() {
 			isPaused = !isPaused;
 		}
 
+		if (isKeyPressed(win, KEY_F)) {
+			printf("%f\n", win.framesPerSecond);
+		}
+
+		if (isKeyPressed(win, KEY_F11)) {
+			win.fullscreen = !win.fullscreen;
+		}
+
+		if (win.width / width < win.height / height) {
+			resolutionDivider = width / win.width;
+			offsetX = 0.0f;
+		}
+		else {
+			resolutionDivider = height / win.height;
+			offsetX = -((width / resolutionDivider) - win.width) / 2;
+		}
+
 		if (isPaused == FALSE) {
 			// Input
 			if (isKeyPressed(win, KEY_A) || isKeyPressed(win, KEY_LEFT)) { moveX(-1); }
@@ -474,26 +491,10 @@ int main() {
 					reset();
 				}
 			}
-
-			if (win.width / width < win.height / height) {
-				resolutionDivider = width / win.width;
-				offsetX = 0.0f;
-			}
-			else {
-				resolutionDivider = height / win.height;
-				offsetX = -((width / resolutionDivider) - win.width) / 2;
-			}
+			
 			blockWidth = (539 - 49) / 10;
 
 			clearWindowBackground(&win, backgroundColor);
-
-			if (isKeyPressed(win, KEY_F)) {
-				printf("%f\n", win.framesPerSecond);
-			}
-
-			if (isKeyPressed(win, KEY_F11)) {
-				win.fullscreen = !win.fullscreen;
-			}
 
 			//setWireframeMode(win, isKeyDown(win, KEY_SPACE));
 
