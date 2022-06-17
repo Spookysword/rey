@@ -269,6 +269,10 @@ extern "C" {
 	void CustomShaderVecPushBack(CustomShaderVec* vec, CustomShader num);
 	void CustomShaderVecClear(CustomShaderVec* vec);
 	void CustomShaderVecDelete(CustomShaderVec* vec);
+	struct Mouse {
+		double x, y;
+	};
+	typedef struct Mouse Mouse;
 
 	// A window struct. You can use multiple if you're wondering, by the way.
 	struct Window {
@@ -308,6 +312,7 @@ extern "C" {
 		float startTime;
 		float time;
 		Color backgroundColor;
+		Mouse mouse;
 	};
 	typedef struct Window Window;
 

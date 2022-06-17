@@ -593,6 +593,11 @@ void updateWindow(Window* win) {
 	}
 
 	glfwGetWindowSize(win->windowHandle, &win->width, &win->height);
+	int windowX, windowY;
+	glfwGetWindowPos(win->windowHandle, &windowX, &windowY);
+	glfwGetCursorPos(&win->windowHandle, &win->mouse.x, &win->mouse.y);
+	win->mouse.x -= windowX;
+	win->mouse.y -= windowY;
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
 		if (win->keys[i] == GLFW_PRESS && win->tempKeys[i] == GLFW_PRESS) {
