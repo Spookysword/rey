@@ -163,6 +163,7 @@ extern "C" {
 
 // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
 	typedef unsigned int Color[4];
+	void setColor(Color* oldColor, Color newColor);
 	// A texture, which is really just an ID of the texture.
 	typedef unsigned int Texture;
 
