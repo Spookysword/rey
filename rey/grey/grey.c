@@ -626,6 +626,20 @@ void updateWindow(Window* win) {
 		win->mouse.isSecondaryDown = FALSE;
 		win->mouse.isSecondaryPressed = FALSE;
 	}
+	state = glfwGetMouseButton(win->windowHandle, GLFW_MOUSE_BUTTON_MIDDLE);
+	if (state == GLFW_PRESS) {
+		if (win->mouse.isMiddleDown == FALSE) {
+			win->mouse.isMiddlePressed = TRUE;
+		}
+		else {
+			win->mouse.isMiddlePressed = FALSE;
+		}
+		win->mouse.isMiddleDown = TRUE;
+	}
+	else {
+		win->mouse.isMiddleDown = FALSE;
+		win->mouse.isMiddlePressed = FALSE;
+	}
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
 		if (win->keys[i] == GLFW_PRESS && win->tempKeys[i] == GLFW_PRESS) {

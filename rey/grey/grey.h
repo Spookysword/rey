@@ -273,6 +273,7 @@ extern "C" {
 		double x, y;
 		boolean isPrimaryDown, isPrimaryPressed;
 		boolean isSecondaryDown, isSecondaryPressed;
+		boolean isMiddleDown, isMiddlePressed;
 	};
 	typedef struct Mouse Mouse;
 
