@@ -271,6 +271,7 @@ extern "C" {
 	void CustomShaderVecDelete(CustomShaderVec* vec);
 	struct Mouse {
 		double x, y;
+		boolean isPrimaryDown;
 	};
 	typedef struct Mouse Mouse;
 
