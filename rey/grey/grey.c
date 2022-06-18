@@ -600,10 +600,17 @@ void updateWindow(Window* win) {
 	win->mouse.y -= windowY;
 	int state = glfwGetMouseButton(win->windowHandle, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS) {
+		if (win->mouse.isPrimaryDown == FALSE) {
+			win->mouse.isPrimaryPressed = TRUE;
+		}
+		else {
+			win->mouse.isPrimaryPressed = FALSE;
+		}
 		win->mouse.isPrimaryDown = TRUE;
 	}
 	else {
 		win->mouse.isPrimaryDown = FALSE;
+		win->mouse.isPrimaryPressed = FALSE;
 	}
 	for (int i = 0; i < sizeof(win->keys) / sizeof(win->keys[0]); i++) {
 		win->keys[i] = glfwGetKey(win->windowHandle, i);
