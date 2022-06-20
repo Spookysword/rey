@@ -4,9 +4,9 @@ FAIR WARNING
 This demo is NOT finished, so do not expect much from it.
 
 */
-#include <grey.h>
+#include <grey/grey.h>
 #include <stdio.h>
-#include <arey.h>
+#include <arey/arey.h>
 
 // Menu
 float resolutionDivider = 1.5;
