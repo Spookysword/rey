@@ -1059,6 +1059,17 @@ float getWidthOfText(Window* win, const char* text, FontID font, float scale) {
 	}
 	return x;
 }
+float getHeightOfText(Window* win, const char* text, FontID font, float scale) {
+	float finalh = 0.0f;
+	if (font == -1) { return; }
+	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
+	for (int i = 0; text[i] != '\0'; i++) {
+		Character c = win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]];
+		float h = c.sizeY * scale;
+		if (h > finalh) finalh = h;
+	}
+	return finalh;
+}
 void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
 	for (int i = 0; i < points; i++) {
