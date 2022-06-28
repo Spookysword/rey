@@ -317,6 +317,7 @@ extern "C" {
 		float time;
 		Color backgroundColor;
 		Mouse mouse;
+		Vec3 offset;
 	};
 	typedef struct Window Window;
 
