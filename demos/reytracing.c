@@ -10,7 +10,7 @@ FAIR WARNING
 This demo is NOT finished, so do not expect much from it.
 
 */
-#include <grey.h>
+#include <grey/grey.h>
 
 #define size 12
 

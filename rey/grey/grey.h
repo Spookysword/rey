@@ -8,7 +8,7 @@ extern "C" {
 #include <GLFW/glfw3.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include "mrey.h"
+#include <mrey/mrey.h>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -317,6 +317,7 @@ extern "C" {
 		float time;
 		Color backgroundColor;
 		Mouse mouse;
+		Vec3 offset;
 	};
 	typedef struct Window Window;
 

@@ -425,6 +425,7 @@ Window createWindow(int width, int height, const char* title) {
 	win.startTime = glfwGetTime();
 	win.time = 0.0f;
 	win.backgroundColor[0] = 0; win.backgroundColor[1] = 0; win.backgroundColor[2] = 0; win.backgroundColor[3] = 255;
+	win.offset = Vec3_create();
 
 	s.colorShader = createShader(colorVertexShader, colorFragmentShader);
 	s.textureShader = createShader(textureVertexShader, textureFragmentShader);
@@ -672,6 +673,7 @@ void renderWindow(Window win) {
 		bindBatch(win.shaders.data[i].shapeBatch);
 		glUseProgram(win.shaders.data[i].colorShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
 
 		draw(win.shaders.data[i].shapeBatch, GL_TRIANGLE_FAN);
 
@@ -680,6 +682,8 @@ void renderWindow(Window win) {
 
 		glUseProgram(win.shaders.data[i].textureShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
+
 		for (int z = 0; z < win.shaders.data[i].textures.size; z++) {
 			bindTextureBatch(win.shaders.data[i].textures.data[z]);
 			glBindTexture(GL_TEXTURE_2D, win.shaders.data[i].textures.data[z].textureID);
@@ -689,6 +693,8 @@ void renderWindow(Window win) {
 
 		glUseProgram(win.shaders.data[i].fontShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].fontShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
+
 		for (int z = 0; z < win.shaders.data[i].fonts.size; z++) {
 			for (int y = 0; y < 128; y++) {
 				bindTextureBatch(win.shaders.data[i].fonts.data[z].characters[y].batch);
