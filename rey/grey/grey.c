@@ -1112,11 +1112,11 @@ void drawAdvancedRect(Window* win, float x, float y, float width, float height, 
 
 	win->zmod -= 0.000001f;
 }
-void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color1, Color color2, Color color3) {
+void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color bottomLeft, Color topMiddle, Color bottomRight) {
 	float passIn1[21] = {
-		x1, -y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255,
-		x2, -y2, win->zmod, (float)color2[0] / 255, (float)color2[1] / 255, (float)color2[2] / 255, (float)color2[3] / 255,
-		x3, -y3, win->zmod, (float)color3[0] / 255, (float)color3[1] / 255, (float)color3[2] / 255, (float)color3[3] / 255
+		x1, -y1, win->zmod, (float)bottomLeft[0] / 255, (float)bottomLeft[1] / 255, (float)bottomLeft[2] / 255, (float)bottomLeft[3] / 255,
+		x2, -y2, win->zmod, (float)topMiddle[0] / 255, (float)topMiddle[1] / 255, (float)topMiddle[2] / 255, (float)topMiddle[3] / 255,
+		x3, -y3, win->zmod, (float)bottomRight[0] / 255, (float)bottomRight[1] / 255, (float)bottomRight[2] / 255, (float)bottomRight[3] / 255
 	};
 	addTriangle(&win->shaders.data[win->currentShader].shapeBatch, passIn1);
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
