@@ -1087,11 +1087,11 @@ void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
 	win->zmod -= 0.000001f;
 }
-void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color color1, Color color2, Color color3, Color color4) {
-	float cr1 = (float)color1[0] / 255, cg1 = (float)color1[1] / 255, cb1 = (float)color1[2] / 255, ca1 = (float)color1[3] / 255;
-	float cr2 = (float)color2[0] / 255, cg2 = (float)color2[1] / 255, cb2 = (float)color2[2] / 255, ca2 = (float)color2[3] / 255;
-	float cr3 = (float)color3[0] / 255, cg3 = (float)color3[1] / 255, cb3 = (float)color3[2] / 255, ca3 = (float)color3[3] / 255;
-	float cr4 = (float)color4[0] / 255, cg4 = (float)color4[1] / 255, cb4 = (float)color4[2] / 255, ca4 = (float)color4[3] / 255;
+void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight) {
+	float cr1 = (float)topRight[0] / 255, cg1 = (float)topRight[1] / 255, cb1 = (float)topRight[2] / 255, ca1 = (float)topRight[3] / 255;
+	float cr2 = (float)bottomRight[0] / 255, cg2 = (float)bottomRight[1] / 255, cb2 = (float)bottomRight[2] / 255, ca2 = (float)bottomRight[3] / 255;
+	float cr3 = (float)bottomLeft[0] / 255, cg3 = (float)bottomLeft[1] / 255, cb3 = (float)bottomLeft[2] / 255, ca3 = (float)bottomLeft[3] / 255;
+	float cr4 = (float)topLeft[0] / 255, cg4 = (float)topLeft[1] / 255, cb4 = (float)topLeft[2] / 255, ca4 = (float)topLeft[3] / 255;
 	y = -y;
 
 	rotation = -rotation * (PI / 180);

@@ -389,7 +389,7 @@ extern "C" {
 
 	void drawPolygon(Window* win, float* xs, float* ys, int points, Color color);
 
-	void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color color1, Color color2, Color color3, Color color4);
+	void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight);
 
 	void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color1, Color color2, Color color3);
 
