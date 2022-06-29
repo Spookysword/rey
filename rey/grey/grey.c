@@ -794,6 +794,8 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 void drawCircle(Window* win, float x, float y, float radius, Color color) {
 	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
 	y = -y;
+	x += (radius);
+	y -= (radius);
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
