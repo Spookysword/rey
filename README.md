@@ -287,3 +287,49 @@ void deleteTexture(Window* win, Texture texture);
 deleteTexture(&win, garfield);
 ```
 Deleting a texture is done by using the **deleteTexture()** function. Note that this doesn't *need* to be done since most operating systems automatically free image data at the end of the program, but it's useful if you plan to load or deload textures at certain intervals, like many large scale games with many assets may do. Just be careful since deleting a texture and drawing it will lead to messy results. The first parameter is the memory address of the Window that the texture was loaded in. The second, and final parameter, is the texture that you'd like to delete.
+
+# Fonts
+```
+// Loading font 'Arial' (before main loop)
+FontID arial = loadFont(&win, "resources/arial.ttf", 50);
+// Drawing text with Arial (during main loop)
+drawText(&win, "Hello text!", arial, 0, 0, 50, COLOR_WHITE);
+// Deleting font (after main loop)
+deleteFont(&win, arial);
+```
+Drawing fonts & text is, of course, essential to most apps, so grey has nice and easy support for it. Above is some sample code that goes through the whole process of using a font. More detail on what each step does is listed below.
+
+## Loading a font
+```
+// Function definition
+FontID loadFont(Window* win, const char* filePath, float size);
+// Example: Loading font 'Arial' (before main loop)
+FontID arial = loadFont(&win, "resources/arial.ttf", 50);
+```
+Loading a font is done in grey with the **loadFont()** function. Simply make a FontID object and assign it a value with loadFont(). The first parameter is the memory address of the Window that you plan to use the font with. The second parameter is the file path to the font. Be aware that it follows the same rules as texture loading, so read the "**Loading a texture**" chapter before this! The third parameter controls the size of the font, in pixels, that you plan to render it in. Drawing over this size can lead to blurriness so be aware!
+
+## Drawing a font / Drawing text
+```
+// Function definition
+void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
+// Example: Drawing text with Arial (during main loop)
+drawText(&win, "Hello text!", arial, 0, 0, 50, COLOR_WHITE);
+```
+Drawing text with a font in grey is achieved using the **drawText()** function. The first parameter is the memory address of the Window that you'd like to draw the text on. Be aware that this must be the same Window that you loaded it in with. The second parameter is the text that you'd like to render. The third parameter is the font that you'd like to render the text with. The fourth and fifth parameter control the x and y of the text, starting at the top left of the first letter. The sixth parameter controls the size of the text in pixels. It's recommended to put the same (or less) size that you loaded the font with originally. The seventh and final parameter controls the color of the text.
+
+## Deleting a font
+```
+// Function definition
+void deleteFont(Window* win, FontID font);
+// Example: Deleting font (after main loop)
+deleteFont(&win, arial);
+```
+Deleting a font is very simple with the **deleteFont()** function. The first parameter is the memory address of the Window that the font was loaded with. The second and final parameter is the font that you'd like to delete.
+
+## Width & height of text
+```
+// Function definitions
+float getWidthOfText(Window* win, const char* text, FontID font, float scale);
+float getHeightOfText(Window* win, const char* text, FontID font, float scale);
+```
+The width and height of text, when rendered, can be inconsistent. The size of certain letters can be different than one another, and the size differences can vary between fonts, so the two functions **getWidthOfText()** and **getHeightOfText()** handle it for you. You can simply pass in similar arguments to the normal drawText() function and get the result of the total width and height of the text. The parameters are the same for both functions. The first parameter is the Window that the font was loaded into with. The second parameter is the text that you plan to render. The third parameter is the font. The fourth and final parameter is the size, in pixels, that you plan to render the text with. Both of these functions return, as a float, the width or height, in pixels, of the text you plan to render.
