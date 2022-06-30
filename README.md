@@ -79,8 +79,9 @@ while (!shouldWindowClose(win)) {
 ```
 As you may know, most applications run by drawing frames over and over again. In order to do this, you need to create what is known as a **main loop**, which essentially repeats itself for the duration of the application's lifespan. In order to do this in grey, you use the **shouldWindowClose()** function, which returns whether or not the Window object passed in is ready to close or not. From there, it's very easy to make a simple while loop out of it which will run while the Window object shouldn't be closed. Inside this loop, two functions are called every frame: **updateWindow()**, which takes the memory address of the passed in Window, updates everything about it, and clears anything drawn from last frame, & **renderWindow()**, which takes any draw functions called prior to that point and renders them using the Window passed in. In between these two functions is what will be executed and drawn every frame.
 
-# Drawing basic stuff
-There are many functions that can draw different stuff in grey, such as shapes. This is a general overview of the most basic ones. Reminder that all draw functions should be called in the main loop, between **updateWindow()** and **renderWindow()**.
+# Drawing basic shapes
+There are many functions that can draw different stuff in grey, such as shapes. This is a general overview of the most basic ones. Reminder that all draw functions should be called in the main loop, between **updateWindow()** and **renderWindow()**. Also, be aware that grey can draw stuff like textures, but those are in their own respective sections since drawing it includes loading and deleting it.
+
 ## Colors
 ```
 // Defining a color (R, G, B, A)
@@ -205,3 +206,46 @@ if (player1.isAlive() && player2.isAlive()) {
 }
 ```
 **drawLine()** simply draws a line between two points with a specified thickness. Parameter one is the Window's memory address that you'd like to draw the line on, parameter two and three are the x and y coordinates of the first point, parameter four and five are the x and y coordinates of the second point, parameter six is the thickness of the line pixel wise, and parameter seven specifies the color of the line.
+
+# Drawing advanced shapes
+There are also some advanced draw functions that draw shapes in more specific detail in case you want a feature that the normal draw functions don't contain. Most advanced draw functions are just more specific about colors and points.
+
+## Drawing a polygon
+```
+// Function definition
+void drawPolygon(Window* win, float* xs, float* ys, int points, Color color);
+// Example (Draws a pentagon!)
+float xs[5] = { 50, 100, 85, 15, 0 };
+float ys[5] = { 0, 40, 100, 100, 40 };
+drawPolygon(&win, xs, ys, 5, COLOR_SOFT_ORANGE);
+```
+Unfortunately, we can't make a function for every single shape out there. However, with the **drawPolygon()** function, you can make any shape you'd like! It simply takes a list of coordinate points and connects them automatically, allowing you to make any shape you like. In the demo code above, it actually draws a pentagon which there is currently no function for in grey. The first parameter for this function takes the memory address of the Window you'd like to draw it on, the second and third parameters take a list of x and y coordinates to be connected, the fourth parameter takes the amount of coordinate points that are in each list (not combined, singularly, both lists must have the same length), and the fifth parameter takes the color that the shape should be drawn with.
+
+## Drawing gradients with advanced rectangles
+```
+// Function definition
+void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight);
+// Example
+drawAdvancedRect(&win, 0, 0, win.width, win.height, 0, COLOR_WHITE, COLOR_WHITE, COLOR_BLACK, COLOR_BLACK);
+```
+With normal shapes, drawing gradients is impossible, but the **drawAdvancedRect()** function gives you control over the color of each point of your rectangle, allowing the easy creation of gradients. The first parameter is the memory address of the Window that you'd like to draw it on, the second and third parameters are the x and y position, the fourth and fifth parameters are the width and height, the sixth parameter controls the rotation, and the seventh through tenth parameters control the color of each edge of the rectangle.
+
+## Drawing gradients with advanced triangles
+```
+// Function definition
+void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color1, Color color2, Color color3);
+// Example
+drawAdvancedTriangle(&win, 0, 100, 50, 0, 100, 100, COLOR_BLACK, COLOR_WHITE, COLOR_BLACK);
+```
+If you'd also like to draw a gradient triangle, that can be done with the **drawAdvancedTriangle()** function. The first parameter is the memory address of the Window you'd like to draw it on, the second and third parameter control the x and y position of the first point, the third & fourth and fifth & six parameters control the other x and y positions of the other two points, and the seventh, eighth, and ninth parameters control the colors of each point of the triangle.
+
+## Drawing gradients with advanced lines
+```
+// Function definition
+void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
+// Example
+if (player1.isAlive && player2.isAlive) {
+	drawAdvancedLine(&win, player1.x, player1.y, player2.x player2.y, 10, player1.color, player2.color);
+}
+```
+In case you ever want to draw a line between two points as a gradient as well, the **drawAdvancedLine()** function is for you. The first parameter is the memory address of the window you'd like to draw it in, the second and third parameter specify the x and y coordinates of the first point, the fourth and fifth parameter specify the coordinates for the second point, the sixth parameter controls the thickness of the line, and the seventh and eighth control the color of the two different points which will fade into each other as a gradient along the line.
