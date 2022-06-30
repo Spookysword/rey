@@ -249,3 +249,41 @@ if (player1.isAlive && player2.isAlive) {
 }
 ```
 In case you ever want to draw a line between two points as a gradient as well, the **drawAdvancedLine()** function is for you. The first parameter is the memory address of the window you'd like to draw it in, the second and third parameter specify the x and y coordinates of the first point, the fourth and fifth parameter specify the coordinates for the second point, the sixth parameter controls the thickness of the line, and the seventh and eighth control the color of the two different points which will fade into each other as a gradient along the line.
+
+# Textures
+```
+// Loads a Garfield texture (called before main loop)
+Texture garfield = newTexture(&win, "resources/garfield.png", FILTER_LINEAR);
+// Draws the Garfield texture (during the main loop)
+drawTexture(&win, garfield, 0, 0, 100, 100, 0, COLOR_WHITE);
+// Deletes the Garfield texture (after the main loop)
+deleteTexture(&win, garfield);
+```
+For most game makers, simple shapes won't cut it, so of course, grey has nice and easy support for textures. Above is some sample code showing simple boilerplate for textures, and the sections down below will describe each step in more detail.
+
+## Loading a texture
+```
+// Function defintion
+Texture newTexture(Window* win, const char* path, int filter);
+// Example: Loads a Garfield texture (called before main loop)
+Texture garfield = newTexture(&win, "resources/garfield.png", FILTER_LINEAR);
+```
+To load a texture in grey, simply make a Texture object and use the **newTexture()** function to fill in the information. The first parameter simply takes the memory address of the Window that you plan to draw the texture with. The second parameter is the path to the image, and ***this is extremely important***. When compiling the program using Visual Studio, the path of the image starts at the directory of the whole project (where crey.sln is). However, when running the .exe that gets compiled, it uses the path of the .exe itself to find the image. This means that before giving your compiled .exe to other people, you must put the image next to the .exe as it is in the Visual Studio directory. The third, and final parameter, takes the filtering method that will be used to upscale & downscale the image. There are two types of filters, FILTER_NEAREST and FILTER_LINEAR. FILTER_NEAREST will upscale and downscale the image pixel by pixel, which is nice for things like pixel art, but can make high quality images look pixel-y. FILTER_LINEAR will upscale and downscale the image by trying to smooth everything out, averaging the neighboring pixels to a value, which is nice for high quality images, but can make things like pixel art look blurry. If this description wasn't enough, LearnOpenGL shows the difference between the two nicely in [this image.](https://learnopengl.com/img/getting-started/texture_filtering.png)
+
+## Drawing a texture
+```
+// Function definition
+void drawTexture(Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color);
+// Example: Draws the Garfield texture (during the main loop)
+drawTexture(&win, garfield, 0, 0, 100, 100, 0, COLOR_WHITE);
+```
+After loading a texture, drawing it couldn't be easier with **drawTexture()**. It works very similarly to drawRectangle(), taking almost the same parameters. The first parameter is the memory address of the Window that you'd like to draw the texture in. Reminder that this must be the same Window that you loaded it with! The second parameter is the texture that you'd like to draw. The third and forth parameter control the x and y coordinates that the texture will draw at. The fifth and sixth parameter control the width and height of the texture. The seventh parameter controls the rotation of the texture. The eighth, and final parameter, controls the color of the texture. Note that this feature works best with greyscale images, and if you'd like to leave the texture's color unmodified, simply use COLOR_WHITE.
+
+## Deleting a texture
+```
+// Function definition
+void deleteTexture(Window* win, Texture texture);
+// Example: Deletes the Garfield texture (after the main loop)
+deleteTexture(&win, garfield);
+```
+Deleting a texture is done by using the **deleteTexture()** function. Note that this doesn't *need* to be done since most operating systems automatically free image data at the end of the program, but it's useful if you plan to load or deload textures at certain intervals, like many large scale games with many assets may do. Just be careful since deleting a texture and drawing it will lead to messy results. The first parameter is the memory address of the Window that the texture was loaded in. The second, and final parameter, is the texture that you'd like to delete.
