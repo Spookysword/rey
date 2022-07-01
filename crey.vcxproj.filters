@@ -68,7 +68,7 @@
     <ClInclude Include="rey\drey\drey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="rey\grey\irey.h">
+    <ClInclude Include="rey\grey\gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
