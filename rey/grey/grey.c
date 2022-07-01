@@ -837,6 +837,8 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 void drawCircle(Window* win, float x, float y, float radius, Color color) {
 	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
 	y = -y;
+	x += (radius);
+	y -= (radius);
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
@@ -1120,12 +1122,13 @@ void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 		addVertice(&win->shaders.data[win->currentShader].shapeBatch, passIn);
 	}
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
+	win->zmod -= 0.000001f;
 }
-void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color color1, Color color2, Color color3, Color color4) {
-	float cr1 = (float)color1[0] / 255, cg1 = (float)color1[1] / 255, cb1 = (float)color1[2] / 255, ca1 = (float)color1[3] / 255;
-	float cr2 = (float)color2[0] / 255, cg2 = (float)color2[1] / 255, cb2 = (float)color2[2] / 255, ca2 = (float)color2[3] / 255;
-	float cr3 = (float)color3[0] / 255, cg3 = (float)color3[1] / 255, cb3 = (float)color3[2] / 255, ca3 = (float)color3[3] / 255;
-	float cr4 = (float)color4[0] / 255, cg4 = (float)color4[1] / 255, cb4 = (float)color4[2] / 255, ca4 = (float)color4[3] / 255;
+void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight) {
+	float cr1 = (float)topRight[0] / 255, cg1 = (float)topRight[1] / 255, cb1 = (float)topRight[2] / 255, ca1 = (float)topRight[3] / 255;
+	float cr2 = (float)bottomRight[0] / 255, cg2 = (float)bottomRight[1] / 255, cb2 = (float)bottomRight[2] / 255, ca2 = (float)bottomRight[3] / 255;
+	float cr3 = (float)bottomLeft[0] / 255, cg3 = (float)bottomLeft[1] / 255, cb3 = (float)bottomLeft[2] / 255, ca3 = (float)bottomLeft[3] / 255;
+	float cr4 = (float)topLeft[0] / 255, cg4 = (float)topLeft[1] / 255, cb4 = (float)topLeft[2] / 255, ca4 = (float)topLeft[3] / 255;
 	y = -y;
 
 	rotation = -rotation * (PI / 180);
@@ -1146,11 +1149,11 @@ void drawAdvancedRect(Window* win, float x, float y, float width, float height, 
 
 	win->zmod -= 0.000001f;
 }
-void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color1, Color color2, Color color3) {
+void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color bottomLeft, Color topMiddle, Color bottomRight) {
 	float passIn1[21] = {
-		x1, -y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255,
-		x2, -y2, win->zmod, (float)color2[0] / 255, (float)color2[1] / 255, (float)color2[2] / 255, (float)color2[3] / 255,
-		x3, -y3, win->zmod, (float)color3[0] / 255, (float)color3[1] / 255, (float)color3[2] / 255, (float)color3[3] / 255
+		x1, -y1, win->zmod, (float)bottomLeft[0] / 255, (float)bottomLeft[1] / 255, (float)bottomLeft[2] / 255, (float)bottomLeft[3] / 255,
+		x2, -y2, win->zmod, (float)topMiddle[0] / 255, (float)topMiddle[1] / 255, (float)topMiddle[2] / 255, (float)topMiddle[3] / 255,
+		x3, -y3, win->zmod, (float)bottomRight[0] / 255, (float)bottomRight[1] / 255, (float)bottomRight[2] / 255, (float)bottomRight[3] / 255
 	};
 	addTriangle(&win->shaders.data[win->currentShader].shapeBatch, passIn1);
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
