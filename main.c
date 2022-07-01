@@ -29,6 +29,7 @@ int main() {
 		if (isKeyDown(win, KEY_LEFT_SHIFT)) {
 			win.camera = Camera_move(win.camera, win.camera.up, -0.01f);
 		}
+
 		if (isKeyPressed(win, KEY_ESCAPE)) {
 			setMouseLocked(&win, FALSE);
 		}
