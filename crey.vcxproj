@@ -183,6 +183,7 @@
     <ClInclude Include="rey\arey\arey.h" />
     <ClInclude Include="rey\drey\drey.h" />
     <ClInclude Include="rey\grey\grey.h" />
+    <ClInclude Include="rey\grey\irey.h" />
     <ClInclude Include="rey\mrey\mrey.h" />
     <ClInclude Include="rey\prey\prey.h" />
   </ItemGroup>

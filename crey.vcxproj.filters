@@ -68,5 +68,8 @@
     <ClInclude Include="rey\drey\drey.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="rey\grey\irey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
