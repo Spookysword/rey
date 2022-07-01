@@ -36,6 +36,9 @@
     <ClCompile Include="rey\drey\drey.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="rey\grey\gui.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rey\grey\grey.h">

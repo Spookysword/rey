@@ -171,6 +171,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="rey\drey\drey.c" />
     <ClCompile Include="rey\grey\grey.c" />
+    <ClCompile Include="rey\grey\gui.c" />
     <ClCompile Include="rey\mrey\mrey.c" />
     <ClCompile Include="rey\prey\prey.c" />
   </ItemGroup>
