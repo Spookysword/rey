@@ -66,6 +66,26 @@ const char* fontFragmentShader = "#version 330 core\n"
 "	gl_FragColor = color * sampled;\n"
 "}\0";
 
+const char* color3DVertexShader = "#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec4 aColor;\n"
+"out vec4 color;\n"
+"uniform vec2 viewport;\n"
+"uniform vec3 offset;\n"
+"uniform mat4 transform;\n"
+"void main() {\n"
+"	viewport;\n"
+"   gl_Position = transform*vec4(aPos.x - offset.x, aPos.y + offset.y, aPos.z, 1.0);\n"
+"	color = aColor;\n"
+"	transform;\n"
+"}\0";
+const char* color3DFragmentShader = "#version 330 core\n"
+//"out vec4 FragColor;\n"
+"in vec4 color;\n"
+"void main() {\n"
+"	gl_FragColor = color;\n"
+"}\0";
+
 Batch createBatch() {
 	Batch batch;
 	glGenVertexArrays(1, &batch.VAO);
@@ -408,9 +428,11 @@ Window createWindow(int width, int height, const char* title) {
 	win.currentShader = 0;
 	win.title = title;
 	win.shaders = CustomShaderVecCreate();
+	win.mouseLocked = FALSE;
 	CustomShader s;
 	s.shapeBatch = createBatch();
 	s.lineBatch = createBatch();
+	s.shape3DBatch = createBatch();
 	win.deltaTime = 0.001f;
 	win.width = width;
 	win.height = height;
@@ -426,7 +448,9 @@ Window createWindow(int width, int height, const char* title) {
 	win.time = 0.0f;
 	win.backgroundColor[0] = 0; win.backgroundColor[1] = 0; win.backgroundColor[2] = 0; win.backgroundColor[3] = 255;
 	win.offset = Vec3_create();
-
+	win.camera = Camera_create();
+	win.transform = Transform_create(0.1f, 1000.0f, win.width, win.height, 70.0f);
+	s.color3DShader = createShader(color3DVertexShader, color3DFragmentShader);
 	s.colorShader = createShader(colorVertexShader, colorFragmentShader);
 	s.textureShader = createShader(textureVertexShader, textureFragmentShader);
 	s.fontShader = createShader(fontVertexShader, fontFragmentShader);
@@ -449,11 +473,13 @@ void deleteWindow(Window* win) {
 	for (int i = 0; i < win->shaders.size; i++) {
 		deleteBatch(&win->shaders.data[i].shapeBatch);
 		deleteBatch(&win->shaders.data[i].lineBatch);
+		deleteBatch(&win->shaders.data[i].shape3DBatch);
 		textureVecClear(&win->shaders.data[i].textures);
 		textureVecDelete(&win->shaders.data[i].textures);
 		glDeleteProgram(win->shaders.data[i].colorShader.shaderID);
 		glDeleteProgram(win->shaders.data[i].textureShader.shaderID);
 		glDeleteProgram(win->shaders.data[i].fontShader.shaderID);
+		glDeleteProgram(win->shaders.data[i].color3DShader.shaderID);
 	}
 }
 boolean shouldWindowClose(Window win) {
@@ -554,6 +580,7 @@ void deleteTexture(Window* win, Texture texture) {
 	glDeleteTextures(1, &win->shaders.data[win->currentShader].textures.data[texture].textureID);
 }
 void updateWindow(Window* win) {
+	win->transform.camera = win->camera;
 	/*flushBatch(&win->shaders.data[win->currentShader].shapeBatch);
 	for (int i = 0; i < win->shaders.data[win->currentShader].textures.size; i++) {
 		flushTextureBatch(&win->shaders.data[win->currentShader].textures.data[i]);
@@ -566,6 +593,7 @@ void updateWindow(Window* win) {
 	for (int i = 0; i < win->shaders.size; i++) {
 		flushBatch(&win->shaders.data[i].shapeBatch);
 		flushBatch(&win->shaders.data[i].lineBatch);
+		flushBatch(&win->shaders.data[i].shape3DBatch);
 		for (int z = 0; z < win->shaders.data[i].textures.size; z++) {
 			flushTextureBatch(&win->shaders.data[i].textures.data[z]);
 		}
@@ -664,6 +692,7 @@ void updateWindow(Window* win) {
 	}
 }
 void renderWindow(Window win) {
+	win.transform.camera = win.camera;
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
 	glClearColor((float)win.backgroundColor[0] / 255, (float)win.backgroundColor[1] / 255, (float)win.backgroundColor[2] / 255, (float)win.backgroundColor[3] / 255);
@@ -683,6 +712,14 @@ void renderWindow(Window win) {
 		glUseProgram(win.shaders.data[i].textureShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
 		glUniform3f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
+
+		bindBatch(win.shaders.data[i].shape3DBatch);
+		glUseProgram(win.shaders.data[i].color3DShader.shaderID);
+		glUniform2f(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
+		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "transform"), 1, GL_TRUE, (float[16])createFloatBuffer(Transform_getProjectedTranformation(win.transform)));
+
+		draw(win.shaders.data[i].shape3DBatch, GL_TRIANGLES);
 
 		for (int z = 0; z < win.shaders.data[i].textures.size; z++) {
 			bindTextureBatch(win.shaders.data[i].textures.data[z]);
@@ -1141,4 +1178,40 @@ void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);
 	endShape(&win->shaders.data[win->currentShader].lineBatch);
 	win->zmod -= 0.000001f;
+}
+
+Vertice Vertice_new(float x, float y, float z, Color color) {
+	Vertice v;
+	v.x = x;
+	v.y = -y;
+	v.z = z;
+	v.r = (float)color[0] / 255.0f;
+	v.g = (float)color[1] / 255.0f;
+	v.b = (float)color[2] / 255.0f;
+	v.a = (float)color[3] / 255.0f;
+	return v;
+}
+
+void draw3DShape(Window* win, Vertices vertices) {
+	for (int i = 0; i < vertices.size; i++) {
+
+		float passIn1[7] = { vertices.vertices[i].x, vertices.vertices[i].y, vertices.vertices[i].z, vertices.vertices[i].r, vertices.vertices[i].g, vertices.vertices[i].b, vertices.vertices[i].a };
+		addVertice(&win->shaders.data[win->currentShader].shape3DBatch, passIn1);
+	}
+	endShape(&win->shaders.data[win->currentShader].shape3DBatch);
+	win->zmod -= 0.000001f;
+}
+
+void setMouseLocked(Window* win, boolean locked) {
+	win->mouseLocked = locked;
+	if (locked == TRUE) {
+		glfwSetInputMode(win->windowHandle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	}
+	else {
+		glfwSetInputMode(win->windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+}
+
+void setMousePos(Window* win, float x, float y) {
+	glfwSetCursorPos(win, x, y);
 }

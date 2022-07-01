@@ -251,8 +251,9 @@ extern "C" {
 	Shader createShader(const char* vertexShader, const char* fragmentShader);
 
 	struct CustomShader {
-		Shader colorShader, textureShader, fontShader;
+		Shader colorShader, textureShader, fontShader, color3DShader;
 		Batch shapeBatch;
+		Batch shape3DBatch;
 		Batch lineBatch;
 		textureVec textures;
 		fontVec fonts;
@@ -318,6 +319,11 @@ extern "C" {
 		Color backgroundColor;
 		Mouse mouse;
 		Vec3 offset;
+
+		Camera camera;
+		Transform transform;
+
+		boolean mouseLocked;
 	};
 	typedef struct Window Window;
 
@@ -396,6 +402,23 @@ extern "C" {
 	void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color);
 
 	void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
+
+	typedef struct Vertice {
+		float x, y, z, r, g, b, a;
+	} Vertice;
+
+	typedef struct Vertices {
+		Vertice* vertices;
+		int size;
+	} Vertices;
+
+	Vertice Vertice_new(float x, float y, float z, Color color);
+
+	void draw3DShape(Window* win, Vertices vertices);
+
+	void setMouseLocked(Window* win, boolean locked);
+
+	void setMousePos(Window* win, float x, float y);
 
 #ifdef __cplusplus
 	// Chromakey
