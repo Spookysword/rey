@@ -8,8 +8,8 @@ This demo is NOT finished, so do not expect much from it.
 #include <stdio.h>
 #include <arey/arey.h>
 
-// Menu
 float resolutionDivider = 1.5;
+// Menu
 float width = 884, height = 1080;
 Color backgroundColor = { 40, 47, 51, 255 };
 Color tetrisBackgroundColor = { 30, 35, 38, 255 };
@@ -477,7 +477,7 @@ int main() {
 			if (testCollisionY(currentPieceArray) == -1) {
 				for (int i = 0; i < 4; i++) {
 					int drawX = x + (currentPieceArray[i * 2]), drawY = y + (currentPieceArray[i * 2 + 1]) - 1;
-					garbage[drawX][drawY] = PIECE_COLORS[currentPiece]+1;
+					garbage[drawX][drawY] = PIECE_COLORS[currentPiece] + 1;
 				}
 				x = 4;
 				accurateY = 0.0f;
@@ -491,7 +491,7 @@ int main() {
 					reset();
 				}
 			}
-			
+
 			blockWidth = (539 - 49) / 10;
 
 			clearWindowBackground(&win, backgroundColor);
@@ -579,8 +579,8 @@ int main() {
 		free(levelText);
 
 		if (isPaused == TRUE) {
-			drawRectangle(&win, offsetX + fX(49), fX(49), fX(539-49), fX(1029-49), 0, tetrisBackgroundColor);
-			drawBorderedText(&win, "PAUSED", eightBitDragon, offsetX + fX((539-49)/2-(getWidthOfText(&win, "PAUSED", eightBitDragon, 39)/5)), fX((1029-49)/2), fX(39), fX(2), borderColor, backgroundColor);
+			drawRectangle(&win, offsetX + fX(49), fX(49), fX(539 - 49), fX(1029 - 49), 0, tetrisBackgroundColor);
+			drawBorderedText(&win, "PAUSED", eightBitDragon, offsetX + fX((539 - 49) / 2 - (getWidthOfText(&win, "PAUSED", eightBitDragon, 39) / 5)), fX((1029 - 49) / 2), fX(39), fX(2), borderColor, backgroundColor);
 		}
 
 		renderWindow(win);
