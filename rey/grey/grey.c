@@ -709,10 +709,6 @@ void renderWindow(Window win) {
 		bindBatch(win.shaders.data[i].lineBatch);
 		draw(win.shaders.data[i].lineBatch, GL_LINE_STRIP);
 
-		glUseProgram(win.shaders.data[i].textureShader.shaderID);
-		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-		glUniform3f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
-
 		bindBatch(win.shaders.data[i].shape3DBatch);
 		glUseProgram(win.shaders.data[i].color3DShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
@@ -720,6 +716,10 @@ void renderWindow(Window win) {
 		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "transform"), 1, GL_TRUE, (float[16])createFloatBuffer(Transform_getProjectedTranformation(win.transform)));
 
 		draw(win.shaders.data[i].shape3DBatch, GL_TRIANGLES);
+
+		glUseProgram(win.shaders.data[i].textureShader.shaderID);
+		glUniform2f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].textureShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
 
 		for (int z = 0; z < win.shaders.data[i].textures.size; z++) {
 			bindTextureBatch(win.shaders.data[i].textures.data[z]);
