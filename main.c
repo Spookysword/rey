@@ -1,5 +1,7 @@
 #include <grey/grey.h>
 
+#define VERT(a, b, c) Vertice_create(v##a, COLOR_WHITE, vt##b, vn0)
+
 int main() {
 	initGrey(0);
 
@@ -10,8 +12,6 @@ int main() {
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
-
-		//printMat4(Transform_getProjectedTranformation(win.transform));
 
 		if (isKeyDown(win, KEY_W)) {
 			win.camera = Camera_move(win.camera, win.camera.forward, speed);
@@ -54,22 +54,9 @@ int main() {
 		//if (isKeyDown(win, KEY_DOWN)) {
 		//	win.camera.forward.y -= 0.005f;
 		//	win.camera.up.y -= 0.005f;
-		}
+		//}
 
 		win.transform.camera = win.camera;
-
-		//Vertice a = Vertice_new(-1.0f, -1.0f, 0.5773f, COLOR_WHITE, 0.0f, 0.0f); // 0
-		//Vertice b = Vertice_new(0.0f, -1.0f, -1.15475f, COLOR_RED, 0.5f, 0.0f); // 1
-		//Vertice c = Vertice_new(1.0f, -1.0f, 0.5773f, COLOR_WHITE, 1.0f, 0.0f); // 2
-		//Vertice d = Vertice_new(0.0f, 1.0f, 0.0f, COLOR_WHITE, 0.5f, 1.0f); // 3
-
-
-		//Vertices verts;
-		//verts.size = 12;
-		//verts.vertices = (Vertice[12]){ a, d, b,
-		//								b, d, c,
-		//								c, d, a,
-		//								b, c, a};
 
 		Vec3 v1 = Vec3_new( 1.00f, -1.00f, -1.00f);
 		Vec3 v2 = Vec3_new( 1.00f, -1.00f,  1.00f);
@@ -96,67 +83,48 @@ int main() {
 		Vec2 vt14 = Vec2_new(1.000000f, 0.000000);
 
 
-		//0.000000, -1.000000, 0.000000
-		//	0.000000, -1.000000, 0.000000
-		//	0.000000, -1.000000, 0.000000
-		//	0.000000, 1.000000, 0.000000
-		//	0.000000, 1.000000, 0.000000
-		//	0.000000, 1.000000, 0.000000
-		//	1.000000, 0.000000, 0.000000
-		//	1.000000, 0.000000, 0.000000
-		//	1.000000, 0.000000, 0.000000
-		//	- 0.000000, 0.000000, 1.000000
-		//	- 0.000000, 0.000000, 1.000000
-		//	- 0.000000, 0.000000, 1.000000
-		//	- 1.000000, -0.000000, -0.000000
-		//	- 1.000000, -0.000000, -0.000000
-		//	- 1.000000, -0.000000, -0.000000
-		//	0.000000, 0.000000, -1.000000
-		//	0.000000, 0.000000, -1.000000
-		//	0.000000, 0.000000, -1.000000
-		//	0.000000, -1.000000, 0.000000
-		//	0.000000, -1.000000, 0.000000
-		//	0.000000, -1.000000, 0.000000
-		//	0.000000, 1.000000, 0.000000
-		//	0.000000, 1.000000, 0.000000
-		//	0.000000, 1.000000, 0.000000
-		//	1.000000, 0.000000, 0.000000
-		//	1.000000, 0.000000, 0.000000
-		//	1.000000, 0.000000, 0.000000
-		//	- 0.000000, 0.000000, 1.000000
-		//	- 0.000000, 0.000000, 1.000000
-		//	- 0.000000, 0.000000, 1.000000
-		//	- 1.000000, -0.000000, -0.000000
-		//	- 1.000000, -0.000000, -0.000000
-		//	- 1.000000, -0.000000, -0.000000
-		//	0.000000, 0.000000, -1.000000
-		//	0.000000, 0.000000, -1.000000
-		//	0.000000, 0.000000, -1.000000
-
-
 		Vec3 vn0 = Vec3_new(0.0, 0.0, 0.0);
-
-#define VERT(a, b, c) Vertice_create(v##a, COLOR_WHITE, vt##b, vn0)
-		// VERT(pos, uv, norm);
 
 		Vertices verts;
 		verts.size = 12*3;
-		verts.vertices = (Vertice[12 * 3]){
-			VERT(2,1,1), VERT(3,2,1), VERT(4,3,1),
-			VERT(8,1,2), VERT(7,4,2), VERT(6,5,2),
-			VERT(5,6,3), VERT(6,7,3), VERT(2,8,3),
-			VERT(6,8,4), VERT(7,5,4), VERT(3,4,4),
-			VERT(3,9,5), VERT(7,10,5), VERT(8,11,5),
-			VERT(1,12,6), VERT(4,13,6), VERT(8,11,6),
-			VERT(1,4,1), VERT(2,1,1), VERT(4,3,1),
-			VERT(5,14,2), VERT(8,1,2), VERT(6,5,2),
-			VERT(1,12,3), VERT(5,6,3), VERT(2,8,3),
-			VERT(2,12,4), VERT(6,8,4), VERT(3,4,4),
-			VERT(4,13,5), VERT(3,9,5), VERT(8,11,5),
-			VERT(5,6,6), VERT(1,12,6), VERT(8,11,6)
-		};
+		verts.vertices = (Vertice[12*3]){
+				VERT(2,1,1), VERT(3,2,1), VERT(4,3,1),
+				VERT(8,1,2), VERT(7,4,2), VERT(6,5,2),
+				VERT(5,6,3), VERT(6,7,3), VERT(2,8,3),
+				VERT(6,8,4), VERT(7,5,4), VERT(3,4,4),
+				VERT(3,9,5), VERT(7,10,5), VERT(8,11,5),
+				VERT(1,12,6), VERT(4,13,6), VERT(8,11,6),
+				VERT(1,4,1), VERT(2,1,1), VERT(4,3,1),
+				VERT(5,14,2), VERT(8,1,2), VERT(6,5,2),
+				VERT(1,12,3), VERT(5,6,3), VERT(2,8,3),
+				VERT(2,12,4), VERT(6,8,4), VERT(3,4,4),
+				VERT(4,13,5), VERT(3,9,5), VERT(8,11,5),
+				VERT(5,6,6), VERT(1,12,6), VERT(8,11,6)
+			};
 
-		//drawTexture(&win, aggg, 0, 0, 100, 100, 0, COLOR_WHITE);
+		/////////////////////////////////////////////////////////// CPP TEST \/
+
+		//verts.vertices = (Vertice*)calloc(12 * 3, sizeof(Vertice));
+		//Vertice vertst[12 * 3] = {
+		//	VERT(2,1,1), VERT(3,2,1), VERT(4,3,1),
+		//	VERT(8,1,2), VERT(7,4,2), VERT(6,5,2),
+		//	VERT(5,6,3), VERT(6,7,3), VERT(2,8,3),
+		//	VERT(6,8,4), VERT(7,5,4), VERT(3,4,4),
+		//	VERT(3,9,5), VERT(7,10,5), VERT(8,11,5),
+		//	VERT(1,12,6), VERT(4,13,6), VERT(8,11,6),
+		//	VERT(1,4,1), VERT(2,1,1), VERT(4,3,1),
+		//	VERT(5,14,2), VERT(8,1,2), VERT(6,5,2),
+		//	VERT(1,12,3), VERT(5,6,3), VERT(2,8,3),
+		//	VERT(2,12,4), VERT(6,8,4), VERT(3,4,4),
+		//	VERT(4,13,5), VERT(3,9,5), VERT(8,11,5),
+		//	VERT(5,6,6), VERT(1,12,6), VERT(8,11,6)
+		//};
+		//for (int i = 0; i < 12 * 3; i++) {
+		//	verts.vertices[i] = vertst[i];
+		//}
+
+		/////////////////////////////////////////////////////////// CPP TEST /\
+
 		draw3DShape(&win, aggg, verts);
 		renderWindow(win);
 	}
