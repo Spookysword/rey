@@ -36,6 +36,13 @@ void floatVecPushBack9(floatVec* vec, float num[9]) {
         vec->data[vec->size - i - 1] = num[8 - i];
     }
 }
+void floatVecPushBack12(floatVec* vec, float num[12]) {
+    vec->size += 12;
+    floatVecCheckSize(vec);
+    for (int i = 0; i < 12; i++) {
+        vec->data[vec->size - i - 1] = num[11 - i];
+    }
+}
 void floatVecPushBack21(floatVec* vec, float num[21]) {
     vec->size += 21;
     floatVecCheckSize(vec);
@@ -48,6 +55,13 @@ void floatVecPushBack27(floatVec* vec, float num[27]) {
     floatVecCheckSize(vec);
     for (int i = 0; i < 27; i++) {
         vec->data[vec->size - i - 1] = num[26 - i];
+    }
+}
+void floatVecPushBack36(floatVec* vec, float num[36]) {
+    vec->size += 36;
+    floatVecCheckSize(vec);
+    for (int i = 0; i < 36; i++) {
+        vec->data[vec->size - i - 1] = num[35 - i];
     }
 }
 void floatVecClear(floatVec* vec) {
@@ -198,6 +212,9 @@ Vec3 Vec3_cross(Vec3 a, Vec3 b) {
     float y = a.z * b.x - a.x * b.z;
     float z = a.x * b.y - a.y * b.x;
     return Vec3_new(x, y, z);
+}
+Vec3 Vec3_sub(Vec3 a, Vec3 b) {
+    return Vec3_new(a.x - b.x, a.y - b.y, a.z - b.z);
 }
 Vec3 Vec3_normalize(Vec3 a) {
     float length = Vec3_length(a);
@@ -373,4 +390,43 @@ Mat4 Transform_getProjectedTranformation(Transform t) {
     Mat4 cameraRotation = Mat4_initCamera(t.camera.forward, t.camera.up);
     Mat4 cameraTranslation = Mat4_initTranslation(-t.camera.pos.x, -t.camera.pos.y, -t.camera.pos.z);
     return Mat4_mul(projectionMatrix, Mat4_mul(cameraRotation, Mat4_mul(cameraTranslation, transformationMatrix)));
+}
+
+Vec2 Vec2_new(float x, float y) {
+    Vec2 v;
+    v.x = x;
+    v.y = y;
+    return v;
+}
+Vec2 Vec2_toVec(float a[2]) {
+    Vec2 v;
+    v.x = a[0];
+    v.y = a[1];
+    return v;
+}
+float* Vec2_fromVec(Vec2 a) {
+    float f[2] = {
+        a.x, a.y
+    };
+    return f;
+}
+Vec2 Vec2_create() {
+    return Vec2_new(0.0f, 0.0f);
+}
+float Vec2_length(Vec2 v) {
+    return sqrt(v.x * v.x + v.y * v.y);
+}
+float Vec2_dot(Vec2 a, Vec2 b) {
+    return a.x * b.x + a.y * b.y;
+}
+Vec2 Vec2_normalize(Vec2 v) {
+    float length = Vec2_length(v);
+    return Vec2_new(v.x / length, v.y / length);
+}
+Vec2 Vec2_rotate(Vec2 v, float a) {
+    float r = toRadians(a);
+    float c = cos(r);
+    float s = sin(r);
+
+    return Vec2_new(v.x * c - v.y * s, v.x * s + v.y * c);
 }

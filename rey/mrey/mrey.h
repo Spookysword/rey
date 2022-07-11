@@ -21,8 +21,10 @@ extern "C" {
     void floatVecPushBack(floatVec* vec, float num);
     void floatVecPushBack7(floatVec* vec, float num[7]);
     void floatVecPushBack9(floatVec* vec, float num[9]);
+    void floatVecPushBack12(floatVec* vec, float num[12]);
     void floatVecPushBack21(floatVec* vec, float num[21]);
     void floatVecPushBack27(floatVec* vec, float num[27]);
+    void floatVecPushBack36(floatVec* vec, float num[36]);
     void floatVecClear(floatVec* vec);
     void floatVecDelete(floatVec* vec);
 
@@ -55,6 +57,9 @@ extern "C" {
     Vec3 Vec3_toVec(float a[3]);
     float* Vec3_fromVec(Vec3 a);
     Vec3 Vec3_create();
+    Vec3 Vec3_cross(Vec3 a, Vec3 b);
+    Vec3 Vec3_sub(Vec3 a, Vec3 b);
+    Vec3 Vec3_normalize(Vec3 a);
 
     typedef struct Camera {
         Vec3 pos, forward, up, yAxis;
@@ -81,7 +86,16 @@ extern "C" {
     Transform Transform_create(float zNear, float zFar, float width, float height, float fov);
     Mat4 Transform_getTranformation(Transform t);
     Mat4 Transform_getProjectedTranformation(Transform t);
-    float* createFloatBuffer(Mat4 m);
+    
+    typedef struct Vec2 {
+        float x, y;
+    } Vec2;
+    Vec2 Vec2_new(float x, float y);
+    Vec2 Vec2_toVec(float a[2]);
+    float* Vec2_fromVec(Vec2 a);
+    Vec2 Vec2_create();
+
+
 #define createFloatBuffer(a) {a.m[0][0],a.m[0][1],a.m[0][2],a.m[0][3],a.m[1][0],a.m[1][1],a.m[1][2],a.m[1][3],a.m[2][0],a.m[2][1],a.m[2][2],a.m[2][3],a.m[3][0],a.m[3][1],a.m[3][2],a.m[3][3]}
 
 #define printMat4(a) for (int i = 0; i < 4; i++) {printf("%f %f %f %f\n", a.m[i][0], a.m[i][1], a.m[i][2], a.m[i][3]);} printf("\n");

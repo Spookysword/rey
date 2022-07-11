@@ -66,25 +66,53 @@ const char* fontFragmentShader = "#version 330 core\n"
 "	gl_FragColor = color * sampled;\n"
 "}\0";
 
-const char* color3DVertexShader = "#version 330 core\n"
+const char* texture3DVertexShader = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "layout (location = 1) in vec4 aColor;\n"
+"layout (location = 2) in vec2 aTexCoord;\n"
+"layout (location = 3) in vec3 aNormal;\n"
 "out vec4 color;\n"
-"uniform vec2 viewport;\n"
+"out vec2 TexCoord;\n"
+"out vec3 normal;\n"
+"out vec3 worldPos;\n"
 "uniform vec3 offset;\n"
+"uniform mat4 transformProj;\n"
 "uniform mat4 transform;\n"
 "void main() {\n"
-"	viewport;\n"
-"   gl_Position = transform*vec4(aPos.x - offset.x, aPos.y + offset.y, aPos.z, 1.0);\n"
+"   gl_Position = transformProj*vec4(aPos.x - offset.x, aPos.y + offset.y, aPos.z, 1.0);\n"
 "	color = aColor;\n"
-"	transform;\n"
+"	TexCoord = aTexCoord;\n"
+"	normal = (transform * vec4(aNormal, 0.0)).xyz;\n"
+"	worldPos = (transform * vec4(aPos, 1.0)).xyz;\n"
 "}\0";
-const char* color3DFragmentShader = "#version 330 core\n"
+const char* texture3DFragmentShader = "#version 330 core\n"
 //"out vec4 FragColor;\n"
 "in vec4 color;\n"
+"in vec2 TexCoord;\n"
+"in vec3 normal;\n"
+"in vec3 worldPos;\n"
+"uniform sampler2D currentTexture;\n"
 "void main() {\n"
-"	gl_FragColor = color;\n"
+"	vec3 viewPos = vec3(0.);\n"
+"	vec3 lightPos = vec3(2., 4., -5.);\n"
+"	vec3 lightColor = vec3(1.0, 1.0, 0.9);\n"
+"	float ambientStrength = 0.13;\n"
+"	vec3 ambient = ambientStrength * lightColor;\n"
+"	vec3 norm = normalize(normal);\n"
+"	vec3 lightDir = normalize(lightPos - worldPos);\n" // worldPos might be gl_FragPosition
+"	float diff = max(dot(norm, lightDir), -0.03);\n"
+"	vec3 diffuse = diff * lightColor;\n"
+"	float specularStrength = 1.5;\n"
+"	vec3 viewDir = normalize(viewPos - worldPos);\n" // Same Here
+"	vec3 reflectDir = reflect(-lightDir, norm);\n"
+"	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);\n"
+"	vec3 specular = specularStrength * spec * lightColor;\n"
+"	\n"
+"	\n"
+"	gl_FragColor = vec4((specular+ambient+diffuse)*(color*texture(currentTexture, TexCoord)).xyz, 1.0f);\n"
 "}\0";
+
+
 
 Batch createBatch() {
 	Batch batch;
@@ -239,6 +267,109 @@ void deleteTextureBatch(TextureBatch* batch) {
 	intVecDelete(&batch->shapeVertices);
 }
 
+
+void add3DVertice(Batch3D* batch, float verts[12]) {
+	floatVecPushBack12(&batch->triangles, verts);
+	batch->verticeCount++;
+	batch->stack++;
+}
+void add3DTriangle(Batch3D* batch, float verts[36]) {
+	floatVecPushBack36(&batch->triangles, verts);
+	batch->verticeCount += 3;
+	batch->stack += 3;
+}
+void end3DShape(Batch3D* batch) {
+	intVecPushBack(&batch->shapeVertices, batch->stack);
+	batch->stack = 0;
+}
+
+void draw3DBatch(Batch3D batch, GLenum type) {
+	glBindVertexArray(batch.VAO);
+	intVec first = intVecCreate();
+	int tempInt = 0;
+	for (int i = 0; i < batch.shapeVertices.size; i++) {
+		intVecPushBack(&first, tempInt);
+		tempInt += batch.shapeVertices.data[i];
+	}
+	//for (int i = 0; i < batch.triangles.size; i += 12) {
+	//	printf("pos: %f %f %f, color: %f %f %f %f, tex: %f %f, normal: %f %f %f\n",
+	//		batch.triangles.data[i], batch.triangles.data[i + 1], batch.triangles.data[i + 2],
+	//		batch.triangles.data[i + 3], batch.triangles.data[i + 4], batch.triangles.data[i + 5], batch.triangles.data[i + 6],
+	//		batch.triangles.data[i + 7], batch.triangles.data[i + 8],
+	//		batch.triangles.data[i + 9], batch.triangles.data[i + 10], batch.triangles.data[i + 11]);
+	//}
+	//printf("\n\n");
+	glMultiDrawArrays(type, first.data, batch.shapeVertices.data, batch.shapeVertices.size);
+	intVecDelete(&first);
+}
+Batch3D create3DBatch(const char* filePath, int filter) {
+	Batch3D batch;
+	glGenVertexArrays(1, &batch.VAO);
+	glGenBuffers(1, &batch.VBO);
+
+	glBindVertexArray(batch.VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
+	batch.stack = 0;
+	batch.verticeCount = 0;
+	batch.triangles = floatVecCreate();
+	batch.shapeVertices = intVecCreate();
+
+	// Position x y z
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// Color r g b a
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	// Texture coords u v
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	// Normal nx ny nz
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(9 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	glGenTextures(1, &batch.textureID);
+	glBindTexture(GL_TEXTURE_2D, batch.textureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+
+	int width, height, nrChannels;
+	// No clue what "desired_channels" does here
+	unsigned char* data = stbi_load(filePath, &width, &height, &nrChannels, 4);
+	
+
+	if (data) {
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		printf("Error generating texture located at '%s'\n", filePath);
+	}
+	//stbi_image_free(data);
+
+	return batch;
+}
+void bind3DBatch(Batch3D batch) {
+	glBindBuffer(GL_ARRAY_BUFFER, batch.VBO);
+	glBufferData(GL_ARRAY_BUFFER, batch.triangles.size * sizeof(float), batch.triangles.data, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+void flush3DBatch(Batch3D* batch) {
+	floatVecClear(&batch->triangles);
+	batch->verticeCount = 0;
+	batch->stack = 0;
+	intVecClear(&batch->shapeVertices);
+}
+void delete3DBatch(Batch3D* batch) {
+	floatVecDelete(&batch->triangles);
+	intVecDelete(&batch->shapeVertices);
+}
+
 fontVec fontVecCreate() {
 	fontVec vec;
 	vec.data = (Font*)calloc(0, sizeof(Font));
@@ -338,14 +469,81 @@ void textureVecDelete(textureVec* vec) {
 	vec->limit = 0;
 }
 
+texture3DVec texture3DVecCreate() {
+	texture3DVec vec;
+	vec.data = (Batch3D*)calloc(0, sizeof(Batch3D));
+	vec.size = 0;
+	vec.limit = 0;
+	return vec;
+}
+void texture3DVecCheckSize(texture3DVec* vec) {
+	if (vec->size + 1 > vec->limit) {
+		Batch3D* temp;
+		vec->limit = vec->size * 2;
+		temp = (Batch3D*)realloc(vec->data, vec->limit * sizeof(Batch3D));
+		if (temp) { vec->data = temp; }
+	}
+}
+void texture3DVecPushBack(texture3DVec* vec, Batch3D num) {
+	vec->size += 1;
+	textureVecCheckSize(vec);
+	vec->data[vec->size - 1] = num;
+}
+void texture3DVecClear(texture3DVec* vec) {
+	free(vec->data);
+	vec->limit /= 2;
+	vec->data = (Batch3D*)calloc(vec->limit, sizeof(Batch3D));
+	vec->size = 0;
+}
+void texture3DVecDelete(texture3DVec* vec) {
+	for (int i = 0; i < vec->size; i++) {
+		delete3DBatch(&vec->data[i - 1]);
+		glDeleteTextures(1, &vec->data[i - 1].textureID);
+	}
+	free(vec->data);
+	vec->size = 0;
+	vec->limit = 0;
+}
+
 Shader createShader(const char* vertexShader, const char* fragmentShader) {
 	Shader returnShader;
 	returnShader.vertexID = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(returnShader.vertexID, 1, &vertexShader, NULL);
 	glCompileShader(returnShader.vertexID);
+
+
+	GLint isCompiledv = 0;
+	glGetShaderiv(returnShader.vertexID, GL_COMPILE_STATUS, &isCompiledv);
+	if (isCompiledv == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetShaderiv(returnShader.vertexID, GL_INFO_LOG_LENGTH, &maxLength);
+
+		GLchar* errorLog = calloc(maxLength, sizeof(GLchar));
+		glGetShaderInfoLog(returnShader.vertexID, maxLength, &maxLength, &errorLog[0]);
+
+		printf("Vertex Shader Failed (What have you done...):\n%s", errorLog);
+	}
+
 	returnShader.fragmentID = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(returnShader.fragmentID, 1, &fragmentShader, NULL);
 	glCompileShader(returnShader.fragmentID);
+
+
+	GLint isCompiledf = 0;
+	glGetShaderiv(returnShader.fragmentID, GL_COMPILE_STATUS, &isCompiledf);
+	if (isCompiledf == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetShaderiv(returnShader.fragmentID, GL_INFO_LOG_LENGTH, &maxLength);
+
+		GLchar* errorLog = calloc(maxLength, sizeof(GLchar));
+		glGetShaderInfoLog(returnShader.fragmentID, maxLength, &maxLength, &errorLog[0]);
+
+		printf("Fragment Shader Failed (What have you done...):\n%s", errorLog);
+	}
+
+
 	returnShader.shaderID = glCreateProgram();
 	glAttachShader(returnShader.shaderID, returnShader.vertexID);
 	glAttachShader(returnShader.shaderID, returnShader.fragmentID);
@@ -432,7 +630,6 @@ Window createWindow(int width, int height, const char* title) {
 	CustomShader s;
 	s.shapeBatch = createBatch();
 	s.lineBatch = createBatch();
-	s.shape3DBatch = createBatch();
 	win.deltaTime = 0.001f;
 	win.width = width;
 	win.height = height;
@@ -441,6 +638,7 @@ Window createWindow(int width, int height, const char* title) {
 	win.prevWidth = width;
 	win.prevHeight = height;
 	s.textures = textureVecCreate();
+	s.textures3D = texture3DVecCreate();
 	win.zmod = 0.0f;
 	win.framesPerSecond = 0.0f;
 	s.fonts = fontVecCreate();
@@ -450,7 +648,7 @@ Window createWindow(int width, int height, const char* title) {
 	win.offset = Vec3_create();
 	win.camera = Camera_create();
 	win.transform = Transform_create(0.1f, 1000.0f, win.width, win.height, 70.0f);
-	s.color3DShader = createShader(color3DVertexShader, color3DFragmentShader);
+	s.texture3DShader = createShader(texture3DVertexShader, texture3DFragmentShader);
 	s.colorShader = createShader(colorVertexShader, colorFragmentShader);
 	s.textureShader = createShader(textureVertexShader, textureFragmentShader);
 	s.fontShader = createShader(fontVertexShader, fontFragmentShader);
@@ -473,13 +671,14 @@ void deleteWindow(Window* win) {
 	for (int i = 0; i < win->shaders.size; i++) {
 		deleteBatch(&win->shaders.data[i].shapeBatch);
 		deleteBatch(&win->shaders.data[i].lineBatch);
-		deleteBatch(&win->shaders.data[i].shape3DBatch);
 		textureVecClear(&win->shaders.data[i].textures);
 		textureVecDelete(&win->shaders.data[i].textures);
+		textureVecClear(&win->shaders.data[i].textures3D);
+		textureVecDelete(&win->shaders.data[i].textures3D);
 		glDeleteProgram(win->shaders.data[i].colorShader.shaderID);
 		glDeleteProgram(win->shaders.data[i].textureShader.shaderID);
 		glDeleteProgram(win->shaders.data[i].fontShader.shaderID);
-		glDeleteProgram(win->shaders.data[i].color3DShader.shaderID);
+		glDeleteProgram(win->shaders.data[i].texture3DShader.shaderID);
 	}
 }
 boolean shouldWindowClose(Window win) {
@@ -492,6 +691,14 @@ Texture newTexture(Window* win, const char* path, int filter) {
 		textureVecPushBack(&win->shaders.data[i].textures, text);
 	}
 	return win->shaders.data[win->currentShader].textures.size - 1;
+}
+Texture new3DTexture(Window* win, const char* path, int filter) {
+	Batch3D text = create3DBatch(path, filter);
+	//textureVecPushBack(&win->shaders.data[win->currentShader].textures, text);
+	for (int i = 0; i < win->shaders.size; i++) {
+		texture3DVecPushBack(&win->shaders.data[i].textures3D, text);
+	}
+	return win->shaders.data[win->currentShader].textures3D.size - 1;
 }
 FontID loadFont(Window* win, const char* filePath, float size) {
 	Font thisFont;
@@ -579,6 +786,13 @@ void deleteTexture(Window* win, Texture texture) {
 	}
 	glDeleteTextures(1, &win->shaders.data[win->currentShader].textures.data[texture].textureID);
 }
+void delete3DTexture(Window* win, Texture texture) {
+	//deleteTextureBatch(&win->shaders.data[win->currentShader].textures.data[texture]);
+	for (int i = 0; i < win->shaders.size; i++) {
+		delete3DBatch(&win->shaders.data[i].textures.data[texture]);
+	}
+	glDeleteTextures(1, &win->shaders.data[win->currentShader].textures.data[texture].textureID);
+}
 void updateWindow(Window* win) {
 	win->transform.camera = win->camera;
 	/*flushBatch(&win->shaders.data[win->currentShader].shapeBatch);
@@ -593,9 +807,11 @@ void updateWindow(Window* win) {
 	for (int i = 0; i < win->shaders.size; i++) {
 		flushBatch(&win->shaders.data[i].shapeBatch);
 		flushBatch(&win->shaders.data[i].lineBatch);
-		flushBatch(&win->shaders.data[i].shape3DBatch);
 		for (int z = 0; z < win->shaders.data[i].textures.size; z++) {
 			flushTextureBatch(&win->shaders.data[i].textures.data[z]);
+		}
+		for (int z = 0; z < win->shaders.data[i].textures3D.size; z++) {
+			flushTextureBatch(&win->shaders.data[i].textures3D.data[z]);
 		}
 		for (int z = 0; z < win->shaders.data[i].fonts.size; z++) {
 			for (int y = 0; y < 128; y++) {
@@ -699,6 +915,23 @@ void renderWindow(Window win) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < win.shaders.size; i++) {
+
+		glUseProgram(win.shaders.data[i].texture3DShader.shaderID);
+		//glUniform2f(glGetUniformLocation(win.shaders.data[i].texture3DShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
+		glUniform3f(glGetUniformLocation(win.shaders.data[i].texture3DShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
+		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].texture3DShader.shaderID, "transform"), 1, GL_TRUE, (float[16])createFloatBuffer(Transform_getTranformation(win.transform)));
+		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].texture3DShader.shaderID, "transformProj"), 1, GL_TRUE, (float[16])createFloatBuffer(Transform_getProjectedTranformation(win.transform)));
+
+		for (int z = 0; z < win.shaders.data[i].textures3D.size; z++) {
+			bind3DBatch(win.shaders.data[i].textures3D.data[z]);
+			glBindTexture(GL_TEXTURE_2D, win.shaders.data[i].textures3D.data[z].textureID);
+			glBindVertexArray(win.shaders.data[i].textures3D.data[z].VAO);
+			draw3DBatch(win.shaders.data[i].textures3D.data[z], GL_TRIANGLES);
+		}
+
+
+
+
 		bindBatch(win.shaders.data[i].shapeBatch);
 		glUseProgram(win.shaders.data[i].colorShader.shaderID);
 		glUniform2f(glGetUniformLocation(win.shaders.data[i].colorShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
@@ -732,14 +965,6 @@ void renderWindow(Window win) {
 				drawTextureBatch(win.shaders.data[i].fonts.data[z].characters[y].batch, GL_TRIANGLE_FAN);
 			}
 		}
-
-		bindBatch(win.shaders.data[i].shape3DBatch);
-		glUseProgram(win.shaders.data[i].color3DShader.shaderID);
-		glUniform2f(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "viewport"), (GLfloat)win.width / 2, (GLfloat)win.height / 2);
-		glUniform3f(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "offset"), (GLfloat)win.offset.x, (GLfloat)win.offset.y, (GLfloat)win.offset.z);
-		glUniformMatrix4fv(glGetUniformLocation(win.shaders.data[i].color3DShader.shaderID, "transform"), 1, GL_TRUE, (float[16])createFloatBuffer(Transform_getProjectedTranformation(win.transform)));
-
-		draw(win.shaders.data[i].shape3DBatch, GL_TRIANGLES);
 	}
 
 	glfwSwapBuffers(win.windowHandle);
@@ -1183,25 +1408,102 @@ void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float
 	win->zmod -= 0.000001f;
 }
 
-Vertice Vertice_new(float x, float y, float z, Color color) {
-	Vertice v;
-	v.x = x;
-	v.y = -y;
-	v.z = z;
-	v.r = (float)color[0] / 255.0f;
-	v.g = (float)color[1] / 255.0f;
-	v.b = (float)color[2] / 255.0f;
-	v.a = (float)color[3] / 255.0f;
-	return v;
+Vertice Vertice_new(float x, float y, float z, Color color, float u, float v) {
+	Vertice o;
+	o.x = x;
+	o.y = -y;
+	o.z = z;
+	o.r = (float)color[0] / 255.0f;
+	o.g = (float)color[1] / 255.0f;
+	o.b = (float)color[2] / 255.0f;
+	o.a = (float)color[3] / 255.0f;
+	o.u = u;
+	o.v = v;
+	o.nx = 0;
+	o.ny = 0;
+	o.nz = 0;
+	return o;
 }
 
-void draw3DShape(Window* win, Vertices vertices) {
+Vertice Vertice_create(Vec3 pos, Color color, Vec2 uv, Vec3 normal) {
+	Vertice o;
+	o.x = pos.x;
+	o.y = pos.y;
+	o.z = pos.z;
+	o.r = (float)color[0] / 255.0f;
+	o.g = (float)color[1] / 255.0f;
+	o.b = (float)color[2] / 255.0f;
+	o.a = (float)color[3] / 255.0f;
+	o.u = uv.x;
+	o.v = uv.y;
+	o.nx = normal.x;
+	o.ny = normal.y;
+	o.nz = normal.z;
+	return o;
+}
+
+boolean vertEqToVec(Vertice a, Vec3 b) {
+	return a.x == b.x && a.y == b.y && a.z == b.z;
+}
+
+Vertices calcNormals(Vertices v) {
+	Vertices o;
+	o.size = v.size;
+	o.vertices = (Vertice*)calloc(v.size, sizeof(Vertice));
+	for (int i = 0; i < v.size; i++) {
+		o.vertices[i] = v.vertices[i];
+	}
+
+	for (int i = 0; i < o.size; i+=3) {
+		Vertice va = o.vertices[i];
+		Vertice vb = o.vertices[i + 1];
+		Vertice vc = o.vertices[i + 2];
+		Vec3 a = Vec3_new(va.x, va.y, va.z);
+		Vec3 b = Vec3_new(vb.x, vb.y, vb.z);
+		Vec3 c = Vec3_new(vc.x, vc.y, vc.z);
+
+		Vec3 p = Vec3_cross(Vec3_sub(b, a), Vec3_sub(c, a));
+
+		for (int j = 0; j < o.size; j++) {
+			if (vertEqToVec(o.vertices[j], a) || vertEqToVec(o.vertices[j], b) || vertEqToVec(o.vertices[j], c)) {
+				o.vertices[j].nx += p.x;
+				o.vertices[j].ny += p.y;
+				o.vertices[j].nz += p.z;
+			}
+		}
+	}
+
+	for (int j = 0; j < o.size; j++) {
+		Vec3 normal = Vec3_normalize(Vec3_new(o.vertices[j].nx, o.vertices[j].ny, o.vertices[j].nz));
+		o.vertices[j].nx = normal.x;
+		o.vertices[j].ny = normal.y;
+		o.vertices[j].nz = normal.z;
+	}
+
+	return o;
+}
+
+void draw3DShape(Window* win, Texture texture, Vertices vert) {
+	boolean a = TRUE;
+	for (int i = 0; i < vert.size; i++) {
+		if (vert.vertices[i].nx != 0 || vert.vertices[i].ny != 0 || vert.vertices[i].nz != 0) a = FALSE;
+	}
+	Vertices vertices;
+	if (a) {
+		vertices = calcNormals(vert);
+	}
+	else {
+		vertices = vert;
+	}
 	for (int i = 0; i < vertices.size; i++) {
 
-		float passIn1[7] = { vertices.vertices[i].x, vertices.vertices[i].y, vertices.vertices[i].z, vertices.vertices[i].r, vertices.vertices[i].g, vertices.vertices[i].b, vertices.vertices[i].a };
-		addVertice(&win->shaders.data[win->currentShader].shape3DBatch, passIn1);
+		Vertice v = vertices.vertices[i];
+		float passIn1[12] = { v.x,v.y,v.z, v.r,v.g,v.b,v.a, v.u,v.v, v.nx,v.ny,v.nz };
+		//printf("%f, %f, %f\n", v.nx, v.ny, v.nz);
+		add3DVertice(&win->shaders.data[win->currentShader].textures3D.data[texture], passIn1);
 	}
-	endShape(&win->shaders.data[win->currentShader].shape3DBatch);
+	//printf("\n");
+	end3DShape(&win->shaders.data[win->currentShader].textures3D.data[texture]);
 	win->zmod -= 0.000001f;
 }
 

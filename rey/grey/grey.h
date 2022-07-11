@@ -185,6 +185,14 @@ extern "C" {
 	};
 	typedef struct TextureBatch TextureBatch;
 
+	struct Batch3D {
+		GLuint VAO, VBO, textureID;
+		floatVec triangles;
+		int verticeCount, stack;
+		intVec shapeVertices;
+	};
+	typedef struct Batch3D Batch3D;
+
 	void addVertice(Batch* batch, float verts[7]);
 	void addTriangle(Batch* batch, float verts[21]);
 	void endShape(Batch* batch);
@@ -193,6 +201,16 @@ extern "C" {
 	void bindBatch(Batch batch);
 	void flushBatch(Batch* batch);
 	void deleteBatch(Batch* batch);
+
+	void add3DVertice(Batch3D* batch, float verts[12]);
+	void add3DTriangle(Batch3D* batch, float verts[36]);
+	void end3DShape(Batch3D* batch);
+	void draw3DBatch(Batch3D batch, GLenum type);
+	TextureBatch createTextureBatch(const char* filePath, int filter);
+	void bind3DBatch(Batch3D batch);
+	void flush3DBatch(Batch3D* batch);
+	void delete3DBatch(Batch3D* batch);
+
 
 	void addTextureVertice(TextureBatch* batch, float verts[9]);
 	void addTextureTriangle(TextureBatch* batch, float verts[27]);
@@ -210,10 +228,22 @@ extern "C" {
 	};
 	typedef struct textureVec textureVec;
 
+	struct texture3DVec {
+		Batch3D* data;
+		int size;
+		int limit;
+	};
+	typedef struct texture3DVec texture3DVec;
+
 	textureVec textureVecCreate();
 	void textureVecPushBack(textureVec* vec, TextureBatch num);
 	void textureVecClear(textureVec* vec);
 	void textureVecDelete(textureVec* vec);
+
+	texture3DVec texture3DVecCreate();
+	void texture3DVecPushBack(texture3DVec* vec, Batch3D num);
+	void texture3DVecClear(texture3DVec* vec);
+	void texture3DVecDelete(texture3DVec* vec);
 
 	FT_Library FT;
 
@@ -251,11 +281,11 @@ extern "C" {
 	Shader createShader(const char* vertexShader, const char* fragmentShader);
 
 	struct CustomShader {
-		Shader colorShader, textureShader, fontShader, color3DShader;
+		Shader colorShader, textureShader, fontShader, texture3DShader;
 		Batch shapeBatch;
-		Batch shape3DBatch;
 		Batch lineBatch;
 		textureVec textures;
+		texture3DVec textures3D;
 		fontVec fonts;
 	};
 	typedef struct CustomShader CustomShader;
@@ -356,10 +386,14 @@ extern "C" {
 	(For reference, when upscaling/downscaling, FILTER_NEAREST can make it look blurry (better for realistic images), and FILTER_LINEAR can make it look pixelated (better for low-pixel images AKA pixel art).
 	*/
 	Texture newTexture(Window* win, const char* path, int filter);
+
+	Texture new3DTexture(Window* win, const char* path, int filter);
 	/*
 	Deloads a texture, freeing up the memory it's using.
 	*/
 	void deleteTexture(Window* win, Texture texture);
+
+	void delete3DTexture(Window* win, Texture texture);
 	/*
 	Checks if a certain key is down. All keys can be found in the grey file near line 26.
 	Note that this shouldn't be confused with isKeyPressed, which is only valid once on the frame the user clicks.
@@ -404,7 +438,10 @@ extern "C" {
 	void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
 
 	typedef struct Vertice {
-		float x, y, z, r, g, b, a;
+		float x, y, z;
+		float r, g, b, a;
+		float u, v;
+		float nx, ny, nz;
 	} Vertice;
 
 	typedef struct Vertices {
@@ -412,9 +449,11 @@ extern "C" {
 		int size;
 	} Vertices;
 
-	Vertice Vertice_new(float x, float y, float z, Color color);
+	Vertice Vertice_new(float x, float y, float z, Color color, float u, float v);
 
-	void draw3DShape(Window* win, Vertices vertices);
+	Vertice Vertice_create(Vec3 pos, Color color, Vec2 uv, Vec3 normal);
+
+	void draw3DShape(Window* win, Texture texture, Vertices vertices);
 
 	void setMouseLocked(Window* win, boolean locked);
 
