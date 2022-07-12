@@ -13,6 +13,8 @@ struct Style {
 	double x, y, width, height;
 	unsigned int drawShape;
 	unsigned int roundedness;
+	unsigned int borderSize;
+	unsigned int borderColor[4];
 	unsigned int normalColor[4];
 	unsigned int hoverColor[4];
 	unsigned int clickedColor[4];

@@ -5,15 +5,15 @@ void df(struct Button* button) {
 }
 
 Button createButton(double x, double y, double width, double height) {
-	Style s = { x, y, width, height, STYLE_SHAPE_RECT, 0, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
+	Style s = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
 	Button b = { s, BUTTON_HOVER_STATE_OFF, BUTTON_MOUSE_STATE_OFF, df, df, df, df, df, df };
 	return b;
 }
 
 Slider createSlider(double x1, double x2, double y, double width, double height, double value) {
 	double position = (x2 - x1) * value;
-	Style ls = { x1, y + (height / 3), (x2 - x1), height / 3, STYLE_SHAPE_RECT, 0, { 200, 200, 200, 255 }, { 255, 255, 255, 255 }, { 150, 150, 150, 255 } };
-	Style ss = { (x1 - (width / 2)) + position, y, width, height, STYLE_SHAPE_RECT, 0, { 200, 200, 200, 255 }, { 255, 255, 255, 255 }, { 150, 150, 150, 255 } };
+	Style ls = { x1, y + (height / 3), (x2 - x1), height / 3, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 }, { 150, 150, 150, 255 } };
+	Style ss = { (x1 - (width / 2)) + position, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 }, { 150, 150, 150, 255 } };
 	Slider s = { ls, ss, BUTTON_HOVER_STATE_OFF, BUTTON_MOUSE_STATE_OFF, value, df, df, df, df, df, df };
 	return s;
 }
@@ -55,9 +55,21 @@ void renderButton(Window win, Button* button) {
 		break;
 	case STYLE_SHAPE_RECT:
 		drawRectangle(&win, button->style.x, button->style.y, button->style.width, button->style.height, 0, drawColor);
+		if (button->style.borderSize > 0) {
+			drawRectangle(&win, button->style.x, button->style.y, button->style.width, button->style.borderSize, 0, button->style.borderColor);
+			drawRectangle(&win, button->style.x, (button->style.y + button->style.height) - button->style.borderSize, button->style.width, button->style.borderSize, 0, button->style.borderColor);
+			drawRectangle(&win, button->style.x, button->style.y + button->style.borderSize, button->style.borderSize, button->style.height - (button->style.borderSize * 2.0), 0, button->style.borderColor);
+			drawRectangle(&win, (button->style.x + button->style.width) - button->style.borderSize, button->style.y + button->style.borderSize, button->style.borderSize, button->style.height - (button->style.borderSize * 2.0), 0, button->style.borderColor);
+		}
 		break;
 	case STYLE_SHAPE_ROUNDED_RECT:
-		drawRoundedRect(&win, button->style.x, button->style.y, button->style.width, button->style.height, button->style.roundedness, 0, drawColor);
+		if (button->style.borderSize > 0) {
+			drawRoundedRect(&win, button->style.x, button->style.y, button->style.width, button->style.height, button->style.roundedness, 0, button->style.borderColor);
+			drawRoundedRect(&win, button->style.x + button->style.borderSize, button->style.y + button->style.borderSize, button->style.width - (button->style.borderSize * 2.0), button->style.height - (button->style.borderSize * 2.0), button->style.roundedness / 2, 0, drawColor);
+		}
+		else {
+			drawRoundedRect(&win, button->style.x, button->style.y, button->style.width, button->style.height, button->style.roundedness, 0, drawColor);
+		}
 		break;
 	}
 
