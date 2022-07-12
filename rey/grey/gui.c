@@ -109,6 +109,9 @@ void renderSlider(Window win, Slider* slider) {
 	case STYLE_SHAPE_RECT:
 		drawRectangle(&win, slider->lineStyle.x, slider->lineStyle.y, slider->lineStyle.width, slider->lineStyle.height, 0, slider->lineStyle.normalColor);
 		break;
+	case STYLE_SHAPE_ROUNDED_RECT:
+		drawRoundedRect(&win, slider->lineStyle.x, slider->lineStyle.y, slider->lineStyle.width, slider->lineStyle.height, slider->lineStyle.roundedness, 0, slider->lineStyle.normalColor);
+		break;
 	}
 
 	switch (slider->sliderStyle.drawShape) {
@@ -116,6 +119,9 @@ void renderSlider(Window win, Slider* slider) {
 		break;
 	case STYLE_SHAPE_RECT:
 		drawRectangle(&win, slider->sliderStyle.x, slider->sliderStyle.y, slider->sliderStyle.width, slider->sliderStyle.height, 0, drawColor);
+		break;
+	case STYLE_SHAPE_ROUNDED_RECT:
+		drawRoundedRect(&win, slider->sliderStyle.x, slider->sliderStyle.y, slider->sliderStyle.width, slider->sliderStyle.height, slider->sliderStyle.roundedness, 0, drawColor);
 		break;
 	}
 
