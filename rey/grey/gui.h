@@ -10,6 +10,7 @@
 #define BUTTON_MOUSE_STATE_ON 1
 
 struct Style {
+	double x, y, width, height;
 	unsigned int drawShape;
 	unsigned int roundedness;
 	unsigned int normalColor[4];
@@ -19,7 +20,6 @@ struct Style {
 typedef struct Style Style;
 
 struct Button {
-	double x, y, width, height;
 	Style style;
 	unsigned int hoverState, clickState;
 	void (*onUpdate)(struct Button*);
@@ -36,3 +36,21 @@ void df(struct Button* button);
 Button createButton(double x, double y, double width, double height);
 
 void renderButton(Window win, Button* button);
+
+struct Slider {
+	Style lineStyle;
+	Style sliderStyle;
+	unsigned int hoverState, clickState;
+	double value;
+	void (*onUpdate)(struct Slider*);
+	void (*onRender)(struct Slider*);
+	void (*onHoverOn)(struct Slider*);
+	void (*onHoverOff)(struct Slider*);
+	void (*onMouseDown)(struct Slider*);
+	void (*onMouseUp)(struct Slider*);
+};
+typedef struct Slider Slider;
+
+Slider createSlider(double x1, double x2, double y, double width, double height, double value);
+
+void renderSlider(Window win, Slider* slider);
