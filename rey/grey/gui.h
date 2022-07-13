@@ -9,6 +9,14 @@
 #define BUTTON_MOUSE_STATE_OFF 0
 #define BUTTON_MOUSE_STATE_ON 1
 
+struct Theme {
+	unsigned int buttonBorder[4];
+	unsigned int buttonNormal[4];
+	unsigned int buttonHover[4];
+	unsigned int buttonClicked[4];
+};
+typedef struct Theme Theme;
+
 struct Style {
 	double x, y, width, height;
 	unsigned int drawShape;
