@@ -88,12 +88,20 @@ extern "C" {
     Mat4 Transform_getProjectedTranformation(Transform t);
     
     typedef struct Vec2 {
-        float x, y;
+        double x, y;
     } Vec2;
-    Vec2 Vec2_new(float x, float y);
-    Vec2 Vec2_toVec(float a[2]);
-    float* Vec2_fromVec(Vec2 a);
+    Vec2 Vec2_new(double x, double y);
+    Vec2 Vec2_toVec(double a[2]);
+    double* Vec2_fromVec(Vec2 a);
     Vec2 Vec2_create();
+
+    double Vec2_dot(Vec2 a, Vec2 b);
+
+    Vec2 Vec2_mulf(Vec2 v, double f);
+
+    Vec2 Vec2_normalize(Vec2 v);
+
+    Vec2 Vec2_subv(Vec2 a, Vec2 b);
 
 
 #define createFloatBuffer(a) {a.m[0][0],a.m[0][1],a.m[0][2],a.m[0][3],a.m[1][0],a.m[1][1],a.m[1][2],a.m[1][3],a.m[2][0],a.m[2][1],a.m[2][2],a.m[2][3],a.m[3][0],a.m[3][1],a.m[3][2],a.m[3][3]}

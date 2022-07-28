@@ -245,7 +245,7 @@ extern "C" {
 	void texture3DVecClear(texture3DVec* vec);
 	void texture3DVecDelete(texture3DVec* vec);
 
-	FT_Library FT;
+	extern FT_Library FT;
 
 	struct Character {
 		unsigned int ID;

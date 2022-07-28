@@ -4,6 +4,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+FT_Library FT;
+
 const char* colorVertexShader = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "layout (location = 1) in vec4 aColor;\n"
@@ -1062,8 +1064,6 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 void drawCircle(Window* win, float x, float y, float radius, Color color) {
 	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
 	y = -y;
-	x += (radius);
-	y -= (radius);
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
 	float passIn[7] = { x, y, win->zmod, cR, cG, cB, cA };
@@ -1518,5 +1518,5 @@ void setMouseLocked(Window* win, boolean locked) {
 }
 
 void setMousePos(Window* win, float x, float y) {
-	glfwSetCursorPos(win, x, y);
+	glfwSetCursorPos(win->windowHandle, x, y);
 }

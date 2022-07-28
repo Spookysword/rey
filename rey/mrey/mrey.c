@@ -392,20 +392,20 @@ Mat4 Transform_getProjectedTranformation(Transform t) {
     return Mat4_mul(projectionMatrix, Mat4_mul(cameraRotation, Mat4_mul(cameraTranslation, transformationMatrix)));
 }
 
-Vec2 Vec2_new(float x, float y) {
+Vec2 Vec2_new(double x, double y) {
     Vec2 v;
     v.x = x;
     v.y = y;
     return v;
 }
-Vec2 Vec2_toVec(float a[2]) {
+Vec2 Vec2_toVec(double a[2]) {
     Vec2 v;
     v.x = a[0];
     v.y = a[1];
     return v;
 }
-float* Vec2_fromVec(Vec2 a) {
-    float f[2] = {
+double* Vec2_fromVec(Vec2 a) {
+    double f[2] = {
         a.x, a.y
     };
     return f;
@@ -413,20 +413,27 @@ float* Vec2_fromVec(Vec2 a) {
 Vec2 Vec2_create() {
     return Vec2_new(0.0f, 0.0f);
 }
-float Vec2_length(Vec2 v) {
+double Vec2_length(Vec2 v) {
     return sqrt(v.x * v.x + v.y * v.y);
 }
-float Vec2_dot(Vec2 a, Vec2 b) {
+double Vec2_dot(Vec2 a, Vec2 b) {
     return a.x * b.x + a.y * b.y;
 }
 Vec2 Vec2_normalize(Vec2 v) {
-    float length = Vec2_length(v);
+    double length = Vec2_length(v);
     return Vec2_new(v.x / length, v.y / length);
 }
-Vec2 Vec2_rotate(Vec2 v, float a) {
-    float r = toRadians(a);
-    float c = cos(r);
-    float s = sin(r);
+Vec2 Vec2_rotate(Vec2 v, double a) {
+    double r = toRadians(a);
+    double c = cos(r);
+    double s = sin(r);
 
     return Vec2_new(v.x * c - v.y * s, v.x * s + v.y * c);
+}
+Vec2 Vec2_mulf(Vec2 v, double f) {
+    return Vec2_new(v.x * f, v.y * f);
+}
+
+Vec2 Vec2_subv(Vec2 a, Vec2 b) {
+    return Vec2_new(a.x - b.x, a.y - b.y);
 }
