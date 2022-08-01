@@ -15,12 +15,13 @@ add_library(rey ${REY_SOURCE_FILES} ${REY_HEADER_FILES})
 
 target_include_directories(rey
   PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../extern/chipmunk/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
-target_link_libraries(rey PUBLIC opengl32 chipmunk glfw glad freetype)
+target_link_libraries(rey PUBLIC opengl32 chipmunk_static glfw glad freetype)
 
 set_target_properties(rey PROPERTIES
 	CXX_STANDARD 11
