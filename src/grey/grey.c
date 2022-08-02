@@ -209,11 +209,11 @@ void drawTextureBatch(TextureBatch batch, GLenum type) {
 	glMultiDrawArrays(type, first.data, batch.shapeVertices.data, batch.shapeVertices.size);
 	intVecDelete(&first);
 }
-
+// https://stackoverflow.com/a/57643613
 void stbi_kyon_horizontal_flip(void *image, int w, int h, int bytes_per_pixel)
 {
   size_t line_bytes = (size_t)w * bytes_per_pixel;
-  stbi_uc temp[line_bytes];
+  stbi_uc* temp = calloc(line_bytes, sizeof(stbi_uc));
   stbi_uc *bytes = (stbi_uc *)image;
   int lpos, rpos;
   for (int col = 0; col < h; col++) {
