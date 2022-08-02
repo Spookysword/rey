@@ -3,6 +3,7 @@ add_executable(sample main.cpp)
 target_link_options(sample PRIVATE -mwindows)
 target_link_options(sample PRIVATE -static-libstdc++)
 target_link_options(sample PRIVATE -static-libgcc)
+target_link_options(sample PRIVATE -static)
 target_include_directories(sample
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
