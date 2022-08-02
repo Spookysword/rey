@@ -1,15 +1,7 @@
-set (REY_SOURCE_FILES
-    drey/drey.c
-    grey/grey.c
-    grey/gui.c
-    mrey/mrey.c
-    prey/prey.cpp)
-set(REY_HEADER_FILES
-    ../include/drey/drey.h
-    ../include/grey/grey.h
-    ../include/grey/gui.h
-    ../include/mrey/mrey.h
-    ../include/prey/prey.h)
+
+file(GLOB_RECURSE REY_SOURCE_FILES "*.c" "*.cpp")
+
+file(GLOB_RECURSE REY_HEADER_FILES "../include/*.h")
 
 add_library(rey ${REY_SOURCE_FILES} ${REY_HEADER_FILES})
 
