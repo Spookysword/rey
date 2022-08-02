@@ -1,0 +1,7 @@
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/..)
+add_executable(sample main.cpp)
+target_link_options(sample PRIVATE -mwindows)
+target_include_directories(sample
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>)
+target_link_libraries(sample PUBLIC rey)
