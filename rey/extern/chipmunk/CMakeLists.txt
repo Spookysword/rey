@@ -52,7 +52,7 @@ if(BUILD_DEMOS OR INSTALL_STATIC)
 endif()
 
 if(NOT MSVC)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -pthread") # always use gnu99
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99 -Wl,-Bstatic -pthread") # always use gnu99
   if(FORCE_CLANG_BLOCKS)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fblocks")
   endif()
