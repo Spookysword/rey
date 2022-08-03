@@ -210,25 +210,25 @@ void drawTextureBatch(TextureBatch batch, GLenum type) {
 	intVecDelete(&first);
 }
 // https://stackoverflow.com/a/57643613
-void stbi_kyon_horizontal_flip(void *image, int w, int h, int bytes_per_pixel)
-{
-  size_t line_bytes = (size_t)w * bytes_per_pixel;
-  stbi_uc* temp = calloc(line_bytes, sizeof(stbi_uc));
-  stbi_uc *bytes = (stbi_uc *)image;
-  int lpos, rpos;
-  for (int col = 0; col < h; col++) {
-    stbi_uc *line = bytes + col * line_bytes;
-    memcpy(&temp, line, line_bytes);
-    for (int row = 0; row < w; row++) {
-      lpos = row * bytes_per_pixel;
-      rpos = line_bytes - row * bytes_per_pixel - 1;
-      line[lpos] = temp[rpos - 3];
-      line[lpos + 1] = temp[rpos - 2];
-      line[lpos + 2] = temp[rpos - 1];
-      line[lpos + 3] = temp[rpos];
-    }
-  }
-}
+// void stbi_kyon_horizontal_flip(void *image, int w, int h, int bytes_per_pixel)
+// {
+//   size_t line_bytes = (size_t)w * bytes_per_pixel;
+//   stbi_uc* temp = calloc(line_bytes, sizeof(stbi_uc));
+//   stbi_uc *bytes = (stbi_uc *)image;
+//   int lpos, rpos;
+//   for (int col = 0; col < h; col++) {
+//     stbi_uc *line = bytes + col * line_bytes;
+//     memcpy(&temp, line, line_bytes);
+//     for (int row = 0; row < w; row++) {
+//       lpos = row * bytes_per_pixel;
+//       rpos = line_bytes - row * bytes_per_pixel - 1;
+//       line[lpos] = temp[rpos - 3];
+//       line[lpos + 1] = temp[rpos - 2];
+//       line[lpos + 2] = temp[rpos - 1];
+//       line[lpos + 3] = temp[rpos];
+//     }
+//   }
+// }
 
 TextureBatch createTextureBatch(const char* filePath, int filter) {
 	TextureBatch batch;
