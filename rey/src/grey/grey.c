@@ -264,7 +264,7 @@ TextureBatch createTextureBatch(const char* filePath, int filter) {
 	int width, height, nrChannels;
 	// No clue what "desired_channels" does here
 	unsigned char* data = stbi_load(filePath, &width, &height, &nrChannels, 4);
-	stbi_kyon_horizontal_flip(data, width, height, 4);
+	//stbi_kyon_horizontal_flip(data, width, height, 4);
 	if (data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
