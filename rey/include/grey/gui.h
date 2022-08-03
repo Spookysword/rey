@@ -92,7 +92,7 @@ typedef struct IconButton IconButton;
 
 void df3(struct IconButton* iconButton);
 
-IconButton createIconButton(double x, double y, double width, double height, Texture iconTexture, unsigned int texturePaddingX, unsigned int texturePaddingY, unsigned int textPadding, FontID font, unsigned int fontSize, char* text);
+IconButton createIconButton(double x, double y, double width, double height, Texture iconTexture, unsigned int texturePaddingX, unsigned int texturePaddingY, unsigned int textPadding, FontID font, unsigned int fontSize, const char* text);
 
 void renderIconButton(Window win, IconButton* iconButton);
 

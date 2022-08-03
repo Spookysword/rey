@@ -26,9 +26,9 @@ Slider createSlider(double x1, double x2, double y, double width, double height,
 	return s;
 }
 
-IconButton createIconButton(double x, double y, double width, double height, Texture iconTexture, unsigned int texturePaddingX, unsigned int texturePaddingY, unsigned int textPadding, FontID font, unsigned int fontSize, char* text) {
+IconButton createIconButton(double x, double y, double width, double height, Texture iconTexture, unsigned int texturePaddingX, unsigned int texturePaddingY, unsigned int textPadding, FontID font, unsigned int fontSize, const char* text) {
 	Style bS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
-	IconButton iB = { bS, iconTexture, texturePaddingX, texturePaddingY, textPadding, font, fontSize, text, 0, 0, df3, df3, df3, df3, df3, df3 };
+	IconButton iB = { bS, iconTexture, texturePaddingX, texturePaddingY, textPadding, font, fontSize, (char*)text, 0, 0, df3, df3, df3, df3, df3, df3 };
 	return iB;
 }
 
@@ -79,13 +79,18 @@ void renderIconButton(Window win, IconButton* iconButton) {
 	case STYLE_SHAPE_ROUNDED_RECT:
 		if (iconButton->buttonStyle.borderSize > 0) {
 			drawRoundedRect(&win, iconButton->buttonStyle.x, iconButton->buttonStyle.y, iconButton->buttonStyle.width, iconButton->buttonStyle.height, iconButton->buttonStyle.roundedness, 0, iconButton->buttonStyle.borderColor);
-			drawRoundedRect(&win, iconButton->buttonStyle.x + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.y + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.width - (iconButton->buttonStyle.borderSize * 2.0), iconButton->buttonStyle.height - (iconButton->buttonStyle.borderSize * 2.0), iconButton->buttonStyle.roundedness / 2, 0, drawColor);
+			drawRoundedRect(&win, iconButton->buttonStyle.x + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.y + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.width - (iconButton->buttonStyle.borderSize * 2.0), iconButton->buttonStyle.height - (iconButton->buttonStyle.borderSize * 2.0), iconButton->buttonStyle.roundedness / 1.5f, 0, drawColor);
 		}
 		else {
 			drawRoundedRect(&win, iconButton->buttonStyle.x, iconButton->buttonStyle.y, iconButton->buttonStyle.width, iconButton->buttonStyle.height, iconButton->buttonStyle.roundedness, 0, drawColor);
 		}
 		break;
 	}
+
+	drawTexture(&win, iconButton->iconTexture, iconButton->buttonStyle.x + iconButton->texturePaddingX / 2, iconButton->buttonStyle.y + iconButton->texturePaddingY / 2, iconButton->buttonStyle.height - iconButton->texturePaddingX, iconButton->buttonStyle.height - iconButton->texturePaddingY, 0, COLOR_WHITE);
+
+	double height = getHeightOfText(&win, iconButton->text, iconButton->font, iconButton->fontSize);
+	drawText(&win, iconButton->text, iconButton->font, iconButton->buttonStyle.height, (0), iconButton->fontSize, COLOR_BLACK);
 
 	iconButton->onRender(iconButton);
 }
