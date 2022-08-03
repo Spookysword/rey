@@ -28,7 +28,7 @@ Slider createSlider(double x1, double x2, double y, double width, double height,
 
 IconButton createIconButton(double x, double y, double width, double height, Texture iconTexture, unsigned int texturePaddingX, unsigned int texturePaddingY, unsigned int textPadding, FontID font, unsigned int fontSize, const char* text) {
 	Style bS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
-	IconButton iB = { bS, iconTexture, texturePaddingX, texturePaddingY, textPadding, font, fontSize, (char*)text, 0, 0, df3, df3, df3, df3, df3, df3 };
+	IconButton iB = { bS, iconTexture, texturePaddingX, texturePaddingY, textPadding, font, fontSize, (char*)text, 0, 0, { 255, 255, 255, 255 }, { 0, 0, 0, 255 }, df3, df3, df3, df3, df3, df3 };
 	return iB;
 }
 
@@ -87,10 +87,10 @@ void renderIconButton(Window win, IconButton* iconButton) {
 		break;
 	}
 
-	drawTexture(&win, iconButton->iconTexture, iconButton->buttonStyle.x + iconButton->texturePaddingX / 2, iconButton->buttonStyle.y + iconButton->texturePaddingY / 2, iconButton->buttonStyle.height - iconButton->texturePaddingX, iconButton->buttonStyle.height - iconButton->texturePaddingY, 0, COLOR_WHITE);
+	drawTexture(&win, iconButton->iconTexture, iconButton->buttonStyle.x + iconButton->texturePaddingX / 2, iconButton->buttonStyle.y + iconButton->texturePaddingY / 2, iconButton->buttonStyle.height - iconButton->texturePaddingX, iconButton->buttonStyle.height - iconButton->texturePaddingY, 0, iconButton->textureColor);
 
 	double height = getHeightOfText(&win, iconButton->text, iconButton->font, iconButton->fontSize);
-	drawText(&win, iconButton->text, iconButton->font, iconButton->buttonStyle.height, (iconButton->buttonStyle.y + iconButton->buttonStyle.height / 2) - height, iconButton->fontSize, COLOR_BLACK);
+	drawText(&win, iconButton->text, iconButton->font, iconButton->buttonStyle.height, (iconButton->buttonStyle.y + iconButton->buttonStyle.height / 2) - height, iconButton->fontSize, iconButton->textColor);
 
 	iconButton->onRender(iconButton);
 }

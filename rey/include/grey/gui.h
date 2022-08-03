@@ -81,6 +81,8 @@ struct IconButton {
 	unsigned int fontSize;
 	char* text;
 	unsigned int hoverState, clickState;
+	unsigned int textureColor[4];
+	unsigned int textColor[4];
 	void (*onUpdate)(struct IconButton*);
 	void (*onRender)(struct IconButton*);
 	void (*onHoverOn)(struct IconButton*);
