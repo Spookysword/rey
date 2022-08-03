@@ -1,4 +1,10 @@
+#ifndef GUI_H
+#define GUI_H
+
 #include <grey/grey.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define STYLE_SHAPE_RECT 0
 #define STYLE_SHAPE_ROUNDED_RECT 1
@@ -64,3 +70,8 @@ typedef struct Slider Slider;
 Slider createSlider(double x1, double x2, double y, double width, double height, double value);
 
 void renderSlider(Window win, Slider* slider);
+
+#ifdef __cplusplus
+}
+#endif
+#endif // GUI_H
