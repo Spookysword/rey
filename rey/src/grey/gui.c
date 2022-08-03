@@ -4,6 +4,14 @@ void df(struct Button* button) {
 	return;
 }
 
+void df2(struct Slider* slider) {
+	return;
+}
+
+void df3(struct IconButton* iconButton) {
+	return;
+}
+
 Button createButton(double x, double y, double width, double height) {
 	Style s = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
 	Button b = { s, BUTTON_HOVER_STATE_OFF, BUTTON_MOUSE_STATE_OFF, df, df, df, df, df, df };
@@ -14,8 +22,72 @@ Slider createSlider(double x1, double x2, double y, double width, double height,
 	double position = (x2 - x1) * value;
 	Style ls = { x1, y + (height / 3), (x2 - x1), height / 3, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 }, { 150, 150, 150, 255 } };
 	Style ss = { (x1 - (width / 2)) + position, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 }, { 150, 150, 150, 255 } };
-	Slider s = { ls, ss, BUTTON_HOVER_STATE_OFF, BUTTON_MOUSE_STATE_OFF, value, df, df, df, df, df, df };
+	Slider s = { ls, ss, BUTTON_HOVER_STATE_OFF, BUTTON_MOUSE_STATE_OFF, value, df2, df2, df2, df2, df2, df2 };
 	return s;
+}
+
+IconButton createIconButton(double x, double y, double width, double height, Texture iconTexture, unsigned int texturePaddingX, unsigned int texturePaddingY, unsigned int textPadding, FontID font, unsigned int fontSize, char* text) {
+	Style bS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
+	IconButton iB = { bS, iconTexture, texturePaddingX, texturePaddingY, textPadding, font, fontSize, text, 0, 0, df3, df3, df3, df3, df3, df3 };
+	return iB;
+}
+
+void renderIconButton(Window win, IconButton* iconButton) {
+	iconButton->onUpdate(iconButton);
+	unsigned int drawColor[4];
+
+	if (win.mouse.x < iconButton->buttonStyle.x + iconButton->buttonStyle.width && win.mouse.x + 1 > iconButton->buttonStyle.x && win.mouse.y < iconButton->buttonStyle.y + iconButton->buttonStyle.height && win.mouse.y + 1 > iconButton->buttonStyle.y) {
+		if (iconButton->hoverState == BUTTON_HOVER_STATE_OFF) {
+			iconButton->onHoverOn(iconButton);
+		}
+		iconButton->hoverState = BUTTON_HOVER_STATE_ON;
+		if (win.mouse.isPrimaryDown) {
+			if (iconButton->clickState == BUTTON_MOUSE_STATE_OFF) {
+				iconButton->onMouseDown(iconButton);
+			}
+			iconButton->clickState = BUTTON_MOUSE_STATE_ON;
+			setColor(&drawColor, iconButton->buttonStyle.clickedColor);
+		}
+		else {
+			if (iconButton->clickState == BUTTON_MOUSE_STATE_ON) {
+				iconButton->onMouseUp(iconButton);
+			}
+			iconButton->clickState = BUTTON_MOUSE_STATE_OFF;
+			setColor(&drawColor, iconButton->buttonStyle.hoverColor);
+		}
+	}
+	else {
+		if (iconButton->hoverState == BUTTON_HOVER_STATE_ON) {
+			iconButton->onHoverOff(iconButton);
+		}
+		iconButton->hoverState = BUTTON_HOVER_STATE_OFF;
+		setColor(&drawColor, iconButton->buttonStyle.normalColor);
+	}
+
+	switch (iconButton->buttonStyle.drawShape) {
+	default:
+		break;
+	case STYLE_SHAPE_RECT:
+		drawRectangle(&win, iconButton->buttonStyle.x, iconButton->buttonStyle.y, iconButton->buttonStyle.width, iconButton->buttonStyle.height, 0, drawColor);
+		if (iconButton->buttonStyle.borderSize > 0) {
+			drawRectangle(&win, iconButton->buttonStyle.x, iconButton->buttonStyle.y, iconButton->buttonStyle.width, iconButton->buttonStyle.borderSize, 0, iconButton->buttonStyle.borderColor);
+			drawRectangle(&win,iconButton->buttonStyle.x, (iconButton->buttonStyle.y + iconButton->buttonStyle.height) - iconButton->buttonStyle.borderSize, iconButton->buttonStyle.width, iconButton->buttonStyle.borderSize, 0, iconButton->buttonStyle.borderColor);
+			drawRectangle(&win, iconButton->buttonStyle.x, iconButton->buttonStyle.y + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.borderSize, iconButton->buttonStyle.height - (iconButton->buttonStyle.borderSize * 2.0), 0, iconButton->buttonStyle.borderColor);
+			drawRectangle(&win, (iconButton->buttonStyle.x + iconButton->buttonStyle.width) - iconButton->buttonStyle.borderSize, iconButton->buttonStyle.y + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.borderSize, iconButton->buttonStyle.height - (iconButton->buttonStyle.borderSize * 2.0), 0, iconButton->buttonStyle.borderColor);
+		}
+		break;
+	case STYLE_SHAPE_ROUNDED_RECT:
+		if (iconButton->buttonStyle.borderSize > 0) {
+			drawRoundedRect(&win, iconButton->buttonStyle.x, iconButton->buttonStyle.y, iconButton->buttonStyle.width, iconButton->buttonStyle.height, iconButton->buttonStyle.roundedness, 0, iconButton->buttonStyle.borderColor);
+			drawRoundedRect(&win, iconButton->buttonStyle.x + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.y + iconButton->buttonStyle.borderSize, iconButton->buttonStyle.width - (iconButton->buttonStyle.borderSize * 2.0), iconButton->buttonStyle.height - (iconButton->buttonStyle.borderSize * 2.0), iconButton->buttonStyle.roundedness / 2, 0, drawColor);
+		}
+		else {
+			drawRoundedRect(&win, iconButton->buttonStyle.x, iconButton->buttonStyle.y, iconButton->buttonStyle.width, iconButton->buttonStyle.height, iconButton->buttonStyle.roundedness, 0, drawColor);
+		}
+		break;
+	}
+
+	iconButton->onRender(iconButton);
 }
 
 void renderButton(Window win, Button* button) {

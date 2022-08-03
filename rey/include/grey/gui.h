@@ -67,9 +67,34 @@ struct Slider {
 };
 typedef struct Slider Slider;
 
+void df2(struct Slider* slider);
+
 Slider createSlider(double x1, double x2, double y, double width, double height, double value);
 
 void renderSlider(Window win, Slider* slider);
+
+struct IconButton {
+	Style buttonStyle;
+	Texture iconTexture;
+	unsigned int texturePaddingX, texturePaddingY, textPadding;
+	FontID font;
+	unsigned int fontSize;
+	char* text;
+	unsigned int hoverState, clickState;
+	void (*onUpdate)(struct IconButton*);
+	void (*onRender)(struct IconButton*);
+	void (*onHoverOn)(struct IconButton*);
+	void (*onHoverOff)(struct IconButton*);
+	void (*onMouseDown)(struct IconButton*);
+	void (*onMouseUp)(struct IconButton*);
+};
+typedef struct IconButton IconButton;
+
+void df3(struct IconButton* iconButton);
+
+IconButton createIconButton(double x, double y, double width, double height, Texture iconTexture, unsigned int texturePaddingX, unsigned int texturePaddingY, unsigned int textPadding, FontID font, unsigned int fontSize, char* text);
+
+void renderIconButton(Window win, IconButton* iconButton);
 
 #ifdef __cplusplus
 }
