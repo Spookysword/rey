@@ -17,9 +17,7 @@ int main() {
 
         clearWindowBackground(&win, COLOR_DARK_GREY);
 
-        //renderIconButton(win, &iconButton);
-        //drawTexture(&win, block, 0, 0, 100, 100, 0, COLOR_WHITE);
-        drawText(&win, "this text is at (0, 0)", arial, 0, 0, 50, COLOR_BLACK);
+        renderIconButton(win, &iconButton);
 
         renderWindow(win);
     }

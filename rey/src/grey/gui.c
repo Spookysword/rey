@@ -90,7 +90,7 @@ void renderIconButton(Window win, IconButton* iconButton) {
 	drawTexture(&win, iconButton->iconTexture, iconButton->buttonStyle.x + iconButton->texturePaddingX / 2, iconButton->buttonStyle.y + iconButton->texturePaddingY / 2, iconButton->buttonStyle.height - iconButton->texturePaddingX, iconButton->buttonStyle.height - iconButton->texturePaddingY, 0, COLOR_WHITE);
 
 	double height = getHeightOfText(&win, iconButton->text, iconButton->font, iconButton->fontSize);
-	drawText(&win, iconButton->text, iconButton->font, iconButton->buttonStyle.height, (0), iconButton->fontSize, COLOR_BLACK);
+	drawText(&win, iconButton->text, iconButton->font, iconButton->buttonStyle.height, (iconButton->buttonStyle.y + iconButton->buttonStyle.height / 2) - height, iconButton->fontSize, COLOR_BLACK);
 
 	iconButton->onRender(iconButton);
 }
