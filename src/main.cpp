@@ -13,6 +13,7 @@ int main() {
         updateWindow(&win);
 
         //renderIconButton(win, &iconButton);
+        drawTexture(&win, block, 0, 0, 100, 100, 0, COLOR_WHITE);
 
         renderWindow(win);
     }

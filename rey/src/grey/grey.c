@@ -1127,12 +1127,12 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 	float r0 = asin(((height / 2) * (sin(pi / 2))) / a1), r1 = r0 + rotation, r2 = -r0 + rotation, r3 = r1 - pi, r4 = r2 - pi;
 	float c1 = x + width / 2, c2 = y - height / 2;
 	float passIn1[27] = {
-		a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a, 0.0f, 1.0f,
-		a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a, 0.0f, 0.0f,
-		a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a, 1.0f, 0.0f
+		a1 * cos(r1) + c1, a1 * sin(r1) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f,
+		a1 * cos(r2) + c1, a1 * sin(r2) + c2, win->zmod, r, g, b, a, 1.0f, 0.0f,
+		a1 * cos(r3) + c1, a1 * sin(r3) + c2, win->zmod, r, g, b, a, 0.0f, 0.0f
 	};
 	float passIn2[9] = {
-		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 1.0f, 1.0f
+		a1 * cos(r4) + c1, a1 * sin(r4) + c2, win->zmod, r, g, b, a, 0.0f, 1.0f
 	};
 	addTextureTriangle(&win->shaders.data[win->currentShader].textures.data[texture], passIn1);
 	addTextureVertice(&win->shaders.data[win->currentShader].textures.data[texture], passIn2);
