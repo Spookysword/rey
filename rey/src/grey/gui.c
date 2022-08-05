@@ -42,6 +42,7 @@ TextureButton createTextureButton(double x, double y, double width, double heigh
 	Style bS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
 	Style tS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, { 255, 255, 255, 255 } , { 255, 255, 255, 255 } };
 	TextureButton tB = { bS, tS, texture, 0, 0, df4, df4, df4, df4, df4, df4 };
+	return tB;
 }
 
 void renderTextureButton(Window win, TextureButton* textureButton) {
@@ -98,7 +99,7 @@ void renderTextureButton(Window win, TextureButton* textureButton) {
 		}
 		break;
 	}
-	
+
 	drawTexture(&win, textureButton->texture, textureButton->textureStyle.x, textureButton->textureStyle.y, textureButton->textureStyle.width, textureButton->textureStyle.height, 0, textureButton->textureStyle.normalColor);
 
 	textureButton->onRender(textureButton);
