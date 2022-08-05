@@ -18,6 +18,10 @@ void df4(struct TextureButton* textureButton) {
 	return;
 }
 
+void df5(struct TextButton* textButton) {
+	return;
+}
+
 Button createButton(double x, double y, double width, double height) {
 	Style s = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
 	Button b = { s, BUTTON_HOVER_STATE_OFF, BUTTON_MOUSE_STATE_OFF, df, df, df, df, df, df };
@@ -43,6 +47,74 @@ TextureButton createTextureButton(double x, double y, double width, double heigh
 	Style tS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, { 255, 255, 255, 255 } , { 255, 255, 255, 255 } };
 	TextureButton tB = { bS, tS, texture, 0, 0, df4, df4, df4, df4, df4, df4 };
 	return tB;
+}
+
+TextButton createTextButton(double x, double y, double width, double height, const char* text, FontID font, unsigned int fontSize) {
+	Style s = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
+	Style tS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 0, 0, 0, 255 }, { 0, 0, 0, 255 }, { 0, 0, 0, 255 } };
+	TextButton tB = { s, tS, font, fontSize, (char*)text, 0, 0, 0, 0, df5, df5, df5, df5, df5, df5  };
+	return tB;
+}
+
+void renderTextButton(Window win, TextButton* textButton) {
+	textButton->onUpdate(textButton);
+	unsigned int drawColor[4];
+
+	if (win.mouse.x < textButton->buttonStyle.x + textButton->buttonStyle.width && win.mouse.x + 1 > textButton->buttonStyle.x && win.mouse.y < textButton->buttonStyle.y + textButton->buttonStyle.height && win.mouse.y + 1 > textButton->buttonStyle.y) {
+		if (textButton->hoverState == BUTTON_HOVER_STATE_OFF) {
+			textButton->onHoverOn(textButton);
+		}
+		textButton->hoverState = BUTTON_HOVER_STATE_ON;
+		if (win.mouse.isPrimaryDown) {
+			if (textButton->clickState == BUTTON_MOUSE_STATE_OFF) {
+				textButton->onMouseDown(textButton);
+			}
+			textButton->clickState = BUTTON_MOUSE_STATE_ON;
+			setColor(&drawColor, textButton->buttonStyle.clickedColor);
+		}
+		else {
+			if (textButton->clickState == BUTTON_MOUSE_STATE_ON) {
+				textButton->onMouseUp(textButton);
+			}
+			textButton->clickState = BUTTON_MOUSE_STATE_OFF;
+			setColor(&drawColor, textButton->buttonStyle.hoverColor);
+		}
+	}
+	else {
+		if (textButton->hoverState == BUTTON_HOVER_STATE_ON) {
+			textButton->onHoverOff(textButton);
+		}
+		textButton->hoverState = BUTTON_HOVER_STATE_OFF;
+		setColor(&drawColor, textButton->buttonStyle.normalColor);
+	}
+
+	switch (textButton->buttonStyle.drawShape) {
+	default:
+		break;
+	case STYLE_SHAPE_RECT:
+		drawRectangle(&win, textButton->buttonStyle.x, textButton->buttonStyle.y, textButton->buttonStyle.width, textButton->buttonStyle.height, 0, drawColor);
+		if (textButton->buttonStyle.borderSize > 0) {
+			drawRectangle(&win, textButton->buttonStyle.x, textButton->buttonStyle.y, textButton->buttonStyle.width, textButton->buttonStyle.borderSize, 0, textButton->buttonStyle.borderColor);
+			drawRectangle(&win, textButton->buttonStyle.x, (textButton->buttonStyle.y + textButton->buttonStyle.height) - textButton->buttonStyle.borderSize, textButton->buttonStyle.width, textButton->buttonStyle.borderSize, 0, textButton->buttonStyle.borderColor);
+			drawRectangle(&win, textButton->buttonStyle.x, textButton->buttonStyle.y + textButton->buttonStyle.borderSize, textButton->buttonStyle.borderSize, textButton->buttonStyle.height - (textButton->buttonStyle.borderSize * 2.0), 0, textButton->buttonStyle.borderColor);
+			drawRectangle(&win, (textButton->buttonStyle.x + textButton->buttonStyle.width) - textButton->buttonStyle.borderSize, textButton->buttonStyle.y + textButton->buttonStyle.borderSize, textButton->buttonStyle.borderSize, textButton->buttonStyle.height - (textButton->buttonStyle.borderSize * 2.0), 0, textButton->buttonStyle.borderColor);
+		}
+		break;
+	case STYLE_SHAPE_ROUNDED_RECT:
+		if (textButton->buttonStyle.borderSize > 0) {
+			drawRoundedRect(&win, textButton->buttonStyle.x, textButton->buttonStyle.y, textButton->buttonStyle.width, textButton->buttonStyle.height, textButton->buttonStyle.roundedness, 0, textButton->buttonStyle.borderColor);
+			drawRoundedRect(&win, textButton->buttonStyle.x + textButton->buttonStyle.borderSize, textButton->buttonStyle.y + textButton->buttonStyle.borderSize, textButton->buttonStyle.width - (textButton->buttonStyle.borderSize * 2.0), textButton->buttonStyle.height - (textButton->buttonStyle.borderSize * 2.0), textButton->buttonStyle.roundedness / 1.5f, 0, drawColor);
+		}
+		else {
+			drawRoundedRect(&win, textButton->buttonStyle.x, textButton->buttonStyle.y, textButton->buttonStyle.width, textButton->buttonStyle.height, textButton->buttonStyle.roundedness, 0, drawColor);
+		}
+		break;
+	}
+
+	double height = getHeightOfText(&win, textButton->text, textButton->font, textButton->fontSize);
+	drawText(&win, textButton->text, textButton->font, textButton->buttonStyle.x + textButton->textOffsetX, ((textButton->buttonStyle.y + textButton->buttonStyle.height / 2) - height) + textButton->textOffsetY, textButton->fontSize, textButton->textStyle.normalColor);
+
+	textButton->onRender(textButton);
 }
 
 void renderTextureButton(Window win, TextureButton* textureButton) {
