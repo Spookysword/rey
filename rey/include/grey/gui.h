@@ -28,10 +28,10 @@ struct Style {
 	unsigned int drawShape;
 	unsigned int roundedness;
 	unsigned int borderSize;
-	unsigned int borderColor[4];
-	unsigned int normalColor[4];
-	unsigned int hoverColor[4];
-	unsigned int clickedColor[4];
+	Color borderColor[4];
+	Color normalColor[4];
+	Color hoverColor[4];
+	Color clickedColor[4];
 };
 typedef struct Style Style;
 

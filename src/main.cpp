@@ -1,5 +1,5 @@
 #include <grey/grey.h>
-#include <grey/gui.h>
+#include <grey/menu.hpp>
 
 int main() {
     initGrey(4);
@@ -7,17 +7,15 @@ int main() {
     Window win = createWindow(1280, 720, "grey");
     Texture block = newTexture(&win, "resources/block.png", FILTER_NEAREST);
     FontID arial = loadFont(&win, "resources/arial.ttf", 100);
-    IconButton iconButton = createIconButton(0, 0, 500, 100, block, 30, 30, 30, arial, 50, "hello");
-    iconButton.buttonStyle.borderSize = 7.5f;
-    iconButton.buttonStyle.drawShape = STYLE_SHAPE_ROUNDED_RECT;
-    iconButton.buttonStyle.roundedness = 15;
+    Menu menu(0, 0, 200, 200, COLOR_BLACK);
+    menu.addButton(0, 0, 100, 100);
 
     while (!shouldWindowClose(win)) {
         updateWindow(&win);
 
         clearWindowBackground(&win, COLOR_DARK_GREY);
 
-        renderIconButton(win, &iconButton);
+        menu.drawMenu(win);
 
         renderWindow(win);
     }
