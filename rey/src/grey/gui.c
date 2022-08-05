@@ -1,3 +1,5 @@
+// This one god-damned file has taken so many hours from my life that I'll never get back.
+// I'm only willing to code an entire GUI system in C so that I never, ever, have to do this again.
 #include "grey/gui.h"
 
 void df(struct Button* button) {
@@ -9,6 +11,10 @@ void df2(struct Slider* slider) {
 }
 
 void df3(struct IconButton* iconButton) {
+	return;
+}
+
+void df4(struct TextureButton* textureButton) {
 	return;
 }
 
@@ -30,6 +36,72 @@ IconButton createIconButton(double x, double y, double width, double height, Tex
 	Style bS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
 	IconButton iB = { bS, iconTexture, texturePaddingX, texturePaddingY, textPadding, font, fontSize, (char*)text, 0, 0, { 255, 255, 255, 255 }, { 0, 0, 0, 255 }, df3, df3, df3, df3, df3, df3 };
 	return iB;
+}
+
+TextureButton createTextureButton(double x, double y, double width, double height, Texture texture) {
+	Style bS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 0, 0, 0, 255 }, { 200, 200, 200, 255 }, { 255, 255, 255, 255 } , { 150, 150, 150, 255 } };
+	Style tS = { x, y, width, height, STYLE_SHAPE_RECT, 0, 0, { 255, 255, 255, 255 }, { 255, 255, 255, 255 }, { 255, 255, 255, 255 } , { 255, 255, 255, 255 } };
+	TextureButton tB = { bS, tS, texture, 0, 0, df4, df4, df4, df4, df4, df4 };
+}
+
+void renderTextureButton(Window win, TextureButton* textureButton) {
+	textureButton->onUpdate(textureButton);
+	unsigned int drawColor[4];
+
+	if (win.mouse.x < textureButton->buttonStyle.x + textureButton->buttonStyle.width && win.mouse.x + 1 > textureButton->buttonStyle.x && win.mouse.y < textureButton->buttonStyle.y + textureButton->buttonStyle.height && win.mouse.y + 1 > textureButton->buttonStyle.y) {
+		if (textureButton->hoverState == BUTTON_HOVER_STATE_OFF) {
+			textureButton->onHoverOn(textureButton);
+		}
+		textureButton->hoverState = BUTTON_HOVER_STATE_ON;
+		if (win.mouse.isPrimaryDown) {
+			if (textureButton->clickState == BUTTON_MOUSE_STATE_OFF) {
+				textureButton->onMouseDown(textureButton);
+			}
+			textureButton->clickState = BUTTON_MOUSE_STATE_ON;
+			setColor(&drawColor, textureButton->buttonStyle.clickedColor);
+		}
+		else {
+			if (textureButton->clickState == BUTTON_MOUSE_STATE_ON) {
+				textureButton->onMouseUp(textureButton);
+			}
+			textureButton->clickState = BUTTON_MOUSE_STATE_OFF;
+			setColor(&drawColor, textureButton->buttonStyle.hoverColor);
+		}
+	}
+	else {
+		if (textureButton->hoverState == BUTTON_HOVER_STATE_ON) {
+			textureButton->onHoverOff(textureButton);
+		}
+		textureButton->hoverState = BUTTON_HOVER_STATE_OFF;
+		setColor(&drawColor, textureButton->buttonStyle.normalColor);
+	}
+
+	switch (textureButton->buttonStyle.drawShape) {
+	default:
+		break;
+	case STYLE_SHAPE_RECT:
+		drawRectangle(&win, textureButton->buttonStyle.x, textureButton->buttonStyle.y, textureButton->buttonStyle.width, textureButton->buttonStyle.height, 0, drawColor);
+		if (textureButton->buttonStyle.borderSize > 0) {
+			drawRectangle(&win, textureButton->buttonStyle.x, textureButton->buttonStyle.y, textureButton->buttonStyle.width, textureButton->buttonStyle.borderSize, 0, textureButton->buttonStyle.borderColor);
+			drawRectangle(&win, textureButton->buttonStyle.x, (textureButton->buttonStyle.y + textureButton->buttonStyle.height) - textureButton->buttonStyle.borderSize, textureButton->buttonStyle.width, textureButton->buttonStyle.borderSize, 0, textureButton->buttonStyle.borderColor);
+			drawRectangle(&win, textureButton->buttonStyle.x, textureButton->buttonStyle.y + textureButton->buttonStyle.borderSize, textureButton->buttonStyle.borderSize, textureButton->buttonStyle.height - (textureButton->buttonStyle.borderSize * 2.0), 0, textureButton->buttonStyle.borderColor);
+			drawRectangle(&win, (textureButton->buttonStyle.x + textureButton->buttonStyle.width) - textureButton->buttonStyle.borderSize, textureButton->buttonStyle.y + textureButton->buttonStyle.borderSize, textureButton->buttonStyle.borderSize, textureButton->buttonStyle.height - (textureButton->buttonStyle.borderSize * 2.0), 0, textureButton->buttonStyle.borderColor);
+		}
+		break;
+	case STYLE_SHAPE_ROUNDED_RECT:
+		if (textureButton->buttonStyle.borderSize > 0) {
+			drawRoundedRect(&win, textureButton->buttonStyle.x, textureButton->buttonStyle.y, textureButton->buttonStyle.width, textureButton->buttonStyle.height, textureButton->buttonStyle.roundedness, 0, textureButton->buttonStyle.borderColor);
+			drawRoundedRect(&win, textureButton->buttonStyle.x + textureButton->buttonStyle.borderSize, textureButton->buttonStyle.y + textureButton->buttonStyle.borderSize, textureButton->buttonStyle.width - (textureButton->buttonStyle.borderSize * 2.0), textureButton->buttonStyle.height - (textureButton->buttonStyle.borderSize * 2.0), textureButton->buttonStyle.roundedness / 1.5f, 0, drawColor);
+		}
+		else {
+			drawRoundedRect(&win, textureButton->buttonStyle.x, textureButton->buttonStyle.y, textureButton->buttonStyle.width, textureButton->buttonStyle.height, textureButton->buttonStyle.roundedness, 0, drawColor);
+		}
+		break;
+	}
+	
+	drawTexture(&win, textureButton->texture, textureButton->textureStyle.x, textureButton->textureStyle.y, textureButton->textureStyle.width, textureButton->textureStyle.height, 0, textureButton->textureStyle.normalColor);
+
+	textureButton->onRender(textureButton);
 }
 
 void renderIconButton(Window win, IconButton* iconButton) {

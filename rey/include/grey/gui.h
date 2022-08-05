@@ -90,6 +90,26 @@ IconButton createIconButton(double x, double y, double width, double height, Tex
 
 void renderIconButton(Window win, IconButton* iconButton);
 
+struct TextureButton {
+	Style buttonStyle;
+	Style textureStyle;
+	Texture texture;
+	unsigned int hoverState, clickState;
+	void (*onUpdate)(struct TextureButton*);
+	void (*onRender)(struct TextureButton*);
+	void (*onHoverOn)(struct TextureButton*);
+	void (*onHoverOff)(struct TextureButton*);
+	void (*onMouseDown)(struct TextureButton*);
+	void (*onMouseUp)(struct TextureButton*);
+};
+typedef struct TextureButton TextureButton;
+
+void df4(struct TextureButton* textureButton);
+
+TextureButton createTextureButton(double x, double y, double width, double height, Texture texture);
+
+void renderTextureButton(Window win, TextureButton* textureButton);
+
 #ifdef __cplusplus
 }
 #endif
