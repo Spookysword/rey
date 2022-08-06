@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include "mrey/mrey.h"
 #include "grey/grey/window_flags.h"
+#include <stdio.h>
+#include <stb_image.h>
 
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A 3D batch of vertice data used to draw 3D shapes.
 struct Batch3D {
