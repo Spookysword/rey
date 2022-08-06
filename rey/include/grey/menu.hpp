@@ -3,9 +3,6 @@
 
 #include <grey/gui.h>
 #include <vector>
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 class Menu {
 public:
@@ -19,7 +16,4 @@ public:
     void drawMenu(Window win);
 };
 
-#ifdef __cplusplus
-}
-#endif
 #endif // MENU_H
