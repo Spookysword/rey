@@ -1,6 +1,5 @@
-
-// A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
 #ifdef __cplusplus
+    // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
     class Color {
     public:
         unsigned int r, g, b, a;
@@ -43,7 +42,8 @@
     }
     };
 #else
+    // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
 	typedef unsigned int Color[4];
 #endif
+    // Takes the memory address of a color and replaces it with another color. Essentially, oldColor = newColor for nerds using C.
 	void setColor(Color* oldColor, Color newColor);
-	// A texture, which is really just an ID of the texture.
