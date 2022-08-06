@@ -5,6 +5,7 @@ int main() {
     initGrey(4);
 
     Window win = createWindow(1280, 720, "grey");
+    setWindowFlag(win, WINDOW_SCALE_TO_MONITOR, false);
     FontID arial = loadFont(&win, "resources/arial.ttf", 100);
 
     // TEXT ENTRY VARS \/
@@ -35,6 +36,10 @@ int main() {
 
     while (!shouldWindowClose(win)) {
         updateWindow(&win);
+
+        if (isKeyPressed(win, KEY_F11)) {
+            win.fullscreen = !win.fullscreen;
+        }
 
         clearWindowBackground(&win, COLOR_DARK_GREY);
 

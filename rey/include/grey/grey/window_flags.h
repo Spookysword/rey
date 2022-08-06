@@ -1,16 +1,23 @@
 #pragma once
 
-// Window flags
+// Actual window flags
+
+// Determines if the window should be resizable or not.
 #define WINDOW_RESIZABLE GLFW_RESIZABLE
+// Determines if the window should be visible or not.
 #define WINDOW_VISIBLE GLFW_VISIBLE
+// Determines if the window should have a title bar and border or not.
 #define WINDOW_DECORATED GLFW_DECORATED
-#define WINDOW_FOCUSED GLFW_FOCUSED
+// Determines if the window should automatically hide itself once alt-tabbed on fullscreen or not.
 #define WINDOW_AUTO_ICONIFY GLFW_AUTO_ICONIFY
+// Determines if the window should stay above all other windows permanently or not.
 #define WINDOW_FLOATING GLFW_FLOATING
-#define WINDOW_MAXIMIZED GLFW_MAXIMIZED
-#define WINDOW_CENTER_CURSOR GLFW_CENTER_CURSOR
+// Determines if alpha-channels allow to actually see through the window itself or not.
 #define WINDOW_TRANSPARENT_FRAMEBUFFER GLFW_TRANSPARENT_FRAMEBUFFER
-#define WINDOW_FOCUS_ON_SHOW GLFW_FOCUS_ON_SHOW
-#define WINDOW_SCALE_TO_MONITOR GLFW_SCALE_TO_MONITOR
+
+// Not window flags but still in here -_-
+
+// https://learnopengl.com/img/getting-started/texture_filtering.png
 #define FILTER_NEAREST GL_NEAREST
+// https://learnopengl.com/img/getting-started/texture_filtering.png
 #define FILTER_LINEAR GL_LINEAR
