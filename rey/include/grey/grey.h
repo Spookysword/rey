@@ -471,6 +471,8 @@ extern "C" {
 
 	float getWidthOfText(Window* win, const char* text, FontID font, float scale);
 
+	float getWidthOfChar(Window* win, char text, FontID font, float scale);
+
 	float getHeightOfText(Window* win, const char* text, FontID font, float scale);
 
 	void drawPolygon(Window* win, float* xs, float* ys, int points, Color color);
@@ -504,6 +506,8 @@ extern "C" {
 	void setMouseLocked(Window* win, boolean locked);
 
 	void setMousePos(Window* win, float x, float y);
+
+	const char* getClipboardText(Window* win);
 
 #ifdef __cplusplus
 	// Chromakey

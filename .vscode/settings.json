@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.grey": "grey",
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",
@@ -42,6 +43,7 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "xutility": "cpp"
     }
 }

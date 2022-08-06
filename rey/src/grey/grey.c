@@ -1412,6 +1412,11 @@ float getWidthOfText(Window* win, const char* text, FontID font, float scale) {
 	}
 	return x;
 }
+float getWidthOfChar(Window* win, char text, FontID font, float scale) {
+	Character c = win->shaders.data[win->currentShader].fonts.data[font].characters[text];
+	float size = (c.advance >> 6) * (scale / win->shaders.data[win->currentShader].fonts.data[font].scale);
+	return size;
+}
 float getHeightOfText(Window* win, const char* text, FontID font, float scale) {
 	float finalh = 0.0f;
 	if (font == -1) { return; }
@@ -1602,4 +1607,8 @@ void setMouseLocked(Window* win, boolean locked) {
 
 void setMousePos(Window* win, float x, float y) {
 	glfwSetCursorPos(win->windowHandle, x, y);
+}
+
+const char* getClipboardText(Window* win) {
+	return glfwGetClipboardString(win->windowHandle);
 }
