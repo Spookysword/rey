@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef __cplusplus
     // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
     class Color {
