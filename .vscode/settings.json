@@ -44,6 +44,8 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "shaders.h": "c",
+        "batch.h": "c"
     }
 }
