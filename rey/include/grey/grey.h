@@ -90,27 +90,28 @@ extern "C" {
 	void drawCircle(Window* win, float x, float y, float radius, Color color);
 	// Draws a rounded rectangle.
 	void drawRoundedRect(Window* win, float x, float y, float width, float height, float radius, float rotation, Color color);
-
+	// Draws the specified text with the font passed in. Scale controls how many pixels large it is.
 	void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
-
+	// Draws text but with a border around it. Kinda broken honestly.
 	void drawBorderedText(Window* win, const char* text, FontID font, float x, float y, float scale, float borderSize, Color color, Color borderColor);
-
+	// Gets the total width, in pixels, of the specified text.
 	float getWidthOfText(Window* win, const char* text, FontID font, float scale);
-
+	// Gets the width, in pixels, of the specified character of a font.
 	float getWidthOfChar(Window* win, char text, FontID font, float scale);
-
+	// Get the height, in pixels, of the specified text.
 	float getHeightOfText(Window* win, const char* text, FontID font, float scale);
-
+	// Draws a polygon with the given coordinates.
 	void drawPolygon(Window* win, float* xs, float* ys, int points, Color color);
-
+	// Draws a rectangle with all of the four points' colors specified.
 	void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight);
-
+	// Draws a triangle with all of the trhee points' colors specified.
 	void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color bottomLeft, Color topMiddle, Color bottomRight);
-
+	// Draws a line between the two points given.
 	void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color);
-
+	// Draws a line with all of the two points' colors specified.
 	void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
 
+	// A vertice struct.
 	typedef struct Vertice {
 		float x, y, z;
 		float r, g, b, a;
@@ -118,21 +119,23 @@ extern "C" {
 		float nx, ny, nz;
 	} Vertice;
 
+	// A struct of verticies.
 	typedef struct Vertices {
 		Vertice* vertices;
 		int size;
 	} Vertices;
 
+	// Returns a valid vertice struct with the data passed in.
 	Vertice Vertice_new(float x, float y, float z, Color color, float u, float v);
-
+	// Returns a valid vertice struct with the data passed in part 2: Electric Boogaloo.
 	Vertice Vertice_create(Vec3 pos, Color color, Vec2 uv, Vec3 normal);
-
+	// Draws a 3D shape with the vertices and texture passed in.
 	void draw3DShape(Window* win, Texture texture, Vertices vertices);
-
+	// Sets the status of the mouse being locked to true or false.
 	void setMouseLocked(Window* win, boolean locked);
-
+	// Sets the mouse position relative to the window.
 	void setMousePos(Window* win, float x, float y);
-
+	// Gets the current clipboard text of the user.
 	const char* getClipboardText(Window* win);
 
 #ifdef __cplusplus
