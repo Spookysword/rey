@@ -1,14 +1,21 @@
 # [rey](https://greyengine.org/rey/)
-A collection of code in different programming languages, designed to make game development as easy as possible. We currently have native C support.
+A collection of code in different programming languages, designed to make game development as easy as possible. We currently have native C support. And C++ support is WIP
 
 # Setting up
-In order to get started with the *latest* version, you would need to download the main source code and open up the solution (crey.sln). Inside the main.c, you will find some basic boilerplate that gets a window to pop up on screen.
+In order to get started with the *latest* version, you would need to download the source code (We recommend that you download it from releases, because sometimes the newest commit has problems)
+
+### Latest Release
+To use the latest release, you can just write your code, then compile with the rey.lib and the include directory
+
+### From Source
+To use the latest source, you need to have cmake installed, then you can just run `cmake -B./build` then `cmake --build ./build --config Release --target all`
+This should build the latest release, and the sample.cpp
 
 # Window
 
 ## Basic Window boilerplate
 ```
-#include <grey.h>
+#include <grey/grey.h>
 
 int main()
 {
@@ -95,45 +102,52 @@ Before you get started drawing, you might want to understand how colors work in 
 
 ### Default colors
 ```
-// Chromakey
-#define COLOR_BLACK (unsigned int [4]){ 0, 0, 0, 255 }
-#define COLOR_WHITE (unsigned int [4]){ 255, 255, 255, 255 }
-#define COLOR_LIGHT_GREY (unsigned int [4]){ 128, 128, 128, 255 }
-#define COLOR_DARK_GREY (unsigned int [4]){ 63, 63, 63, 255 }
-#define grey (unsigned int [4]){ 15, 15, 15, 255 }
-// Primary
-#define COLOR_RED (unsigned int [4]){ 255, 0, 0, 255 }
-#define COLOR_GREEN (unsigned int [4]){ 0, 255, 0, 255 }
-#define COLOR_BLUE (unsigned int [4]){ 0, 0, 255, 255 }
-// Secondary
-#define COLOR_YELLOW (unsigned int [4]){ 255, 255, 0, 255 }
-#define COLOR_CYAN (unsigned int [4]){ 0, 255, 255, 255 }
-#define COLOR_MAGENTA (unsigned int [4]){ 255, 0, 255, 255 }
-// Tertiary
-#define COLOR_ORANGE (unsigned int [4]){ 255, 128, 0, 255 }
-#define COLOR_CHARTREUSE (unsigned int [4]){ 128, 255, 0, 255 }
-#define COLOR_SPRING_GREEN (unsigned int [4]){ 0, 255, 128, 255 }
-#define COLOR_AZURE (unsigned int [4]){ 0, 128, 255, 255 }
-#define COLOR_VIOLET (unsigned int [4]){ 128, 0, 255, 255 }
-#define COLOR_ROSE (unsigned int [4]){ 255, 0, 128, 255 }
-// Soft Primary
-#define COLOR_SOFT_RED (unsigned int [4]){ 255, 50, 50, 255 }
-#define COLOR_SOFT_GREEN (unsigned int [4]){ 50, 255, 50, 255 }
-#define COLOR_SOFT_BLUE (unsigned int [4]){ 50, 50, 255, 255 }
-// Soft Secondary
-#define COLOR_SOFT_YELLOW (unsigned int [4]){ 255, 255, 50, 255 }
-#define COLOR_SOFT_CYAN (unsigned int [4]){ 50, 255, 255, 255 }
-#define COLOR_SOFT_MAGENTA (unsigned int [4]){ 255, 50, 255, 255 }
-// Soft Tertiary
-#define COLOR_SOFT_ORANGE (unsigned int [4]){ 255, 128, 50, 255 }
-#define COLOR_SOFT_CHARTREUSE (unsigned int [4]){ 128, 255, 50, 255 }
-#define COLOR_SOFT_SPRING_GREEN (unsigned int [4]){ 50, 255, 128, 255 }
-#define COLOR_SOFT_AZURE (unsigned int [4]){ 50, 128, 255, 255 }
-#define COLOR_SOFT_VIOLET (unsigned int [4]){ 128, 50, 255, 255 }
-#define COLOR_SOFT_ROSE (unsigned int [4]){ 255, 50, 128, 255 }
-// Miscellaneous
-#define COLOR_DISCORD (unsigned int [4]){ 54, 57, 63, 255 }
-#define COLOR_SIMPLE (unsigned int [4]){ 0, 159, 141, 255 }
+***Chromakey***
+COLOR_BLACK = { 0, 0, 0, 255 }
+COLOR_WHITE = { 255, 255, 255, 255 }
+COLOR_LIGHT_GREY = { 128, 128, 128, 255 }
+COLOR_DARK_GREY = { 63, 63, 63, 255 }
+grey = { 15, 15, 15, 255 }
+
+***Primary***
+COLOR_RED = { 255, 0, 0, 255 }
+COLOR_GREEN = { 0, 255, 0, 255 }
+COLOR_BLUE = { 0, 0, 255, 255 }
+
+***Secondary***
+COLOR_YELLOW = { 255, 255, 0, 255 }
+COLOR_CYAN = { 0, 255, 255, 255 }
+COLOR_MAGENTA = { 255, 0, 255, 255 }
+
+***Tertiary***
+COLOR_ORANGE = { 255, 128, 0, 255 }
+COLOR_CHARTREUSE = { 128, 255, 0, 255 }
+COLOR_SPRING_GREEN = { 0, 255, 128, 255 }
+COLOR_AZURE = { 0, 128, 255, 255 }
+COLOR_VIOLET = { 128, 0, 255, 255 }
+COLOR_ROSE = { 255, 0, 128, 255 }
+
+***Soft Primary***
+COLOR_SOFT_RED = { 255, 50, 50, 255 }
+COLOR_SOFT_GREEN = { 50, 255, 50, 255 }
+COLOR_SOFT_BLUE = { 50, 50, 255, 255 }
+
+***Soft Secondary***
+COLOR_SOFT_YELLOW = { 255, 255, 50, 255 }
+COLOR_SOFT_CYAN = { 50, 255, 255, 255 }
+COLOR_SOFT_MAGENTA = { 255, 50, 255, 255 }
+
+***Soft Tertiary***
+COLOR_SOFT_ORANGE = { 255, 128, 50, 255 }
+COLOR_SOFT_CHARTREUSE = { 128, 255, 50, 255 }
+COLOR_SOFT_SPRING_GREEN = { 50, 255, 128, 255 }
+COLOR_SOFT_AZURE = { 50, 128, 255, 255 }
+COLOR_SOFT_VIOLET = { 128, 50, 255, 255 }
+COLOR_SOFT_ROSE = { 255, 50, 128, 255 }
+
+***Miscellaneous***
+COLOR_DISCORD = { 54, 57, 63, 255 }
+COLOR_SIMPLE = { 0, 159, 141, 255 }
 ```
 grey already has a lot of default built in colors, all of which can be referenced and used here.
 
