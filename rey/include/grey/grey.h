@@ -6,8 +6,6 @@ extern "C" {
 #endif
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 #include <mrey/mrey.h>
 #ifdef _WIN32
 #include <Windows.h>
@@ -27,37 +25,7 @@ extern "C" {
 #include "grey/grey/window_flags.h"
 #include "grey/grey/color.h"
 #include "grey/grey/texture.h"
-
-	typedef unsigned int FontID;
-
-	extern FT_Library FT;
-
-	struct Character {
-		unsigned int ID;
-		char character;
-		float sizeX, sizeY;
-		float bearingX, bearingY;
-		unsigned int advance;
-		TextureBatch batch;
-	};
-	typedef struct Character Character;
-	struct Font {
-		FT_Face face;
-		Character characters[128];
-		float scale;
-	};
-	typedef struct Font Font;
-	struct fontVec {
-		Font* data;
-		int size;
-		int limit;
-	};
-	typedef struct fontVec fontVec;
-	fontVec fontVecCreate();
-	void fontVecCheckSize(fontVec* vec);
-	void fontVecPushBack(fontVec* vec, Font num);
-	void fontVecClear(fontVec* vec);
-	void fontVecDelete(fontVec* vec);
+#include "grey/grey/font.h"
 
 	struct Shader {
 		GLuint vertexID, fragmentID, shaderID;

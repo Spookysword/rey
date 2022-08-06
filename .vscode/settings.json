@@ -47,6 +47,14 @@
         "xutility": "cpp",
         "shaders.h": "c",
         "batch.h": "c",
-        "window_flags.h": "c"
+        "window_flags.h": "c",
+        "texture_batch.h": "c",
+        "keys.h": "c",
+        "mrey.h": "c",
+        "window.h": "c",
+        "shader.h": "c",
+        "texture.h": "c",
+        "batch_3d.h": "c",
+        "windows.h": "c"
     }
 }
