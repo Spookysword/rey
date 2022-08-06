@@ -46,6 +46,7 @@
         "typeinfo": "cpp",
         "xutility": "cpp",
         "shaders.h": "c",
-        "batch.h": "c"
+        "batch.h": "c",
+        "window_flags.h": "c"
     }
 }

@@ -22,54 +22,13 @@ extern "C" {
 #include "grey/grey/shaders.h"
 #include "grey/grey/batch.h"
 #include "grey/grey/texture_batch.h"
+#include "grey/grey/batch_3d.h"
 #include "grey/grey/keys.h"
 #include "grey/grey/window_flags.h"
 #include "grey/grey/color.h"
-
-	typedef unsigned int Texture;
+#include "grey/grey/texture.h"
 
 	typedef unsigned int FontID;
-
-	struct Batch3D {
-		GLuint VAO, VBO, textureID;
-		floatVec triangles;
-		int verticeCount, stack;
-		intVec shapeVertices;
-	};
-	typedef struct Batch3D Batch3D;
-
-	void add3DVertice(Batch3D* batch, float verts[12]);
-	void add3DTriangle(Batch3D* batch, float verts[36]);
-	void end3DShape(Batch3D* batch);
-	void draw3DBatch(Batch3D batch, GLenum type);
-	Batch3D create3DBatch(const char* filePath, int filter);
-	void bind3DBatch(Batch3D batch);
-	void flush3DBatch(Batch3D* batch);
-	void delete3DBatch(Batch3D* batch);
-
-	struct textureVec {
-		TextureBatch* data;
-		int size;
-		int limit;
-	};
-	typedef struct textureVec textureVec;
-
-	struct texture3DVec {
-		Batch3D* data;
-		int size;
-		int limit;
-	};
-	typedef struct texture3DVec texture3DVec;
-
-	textureVec textureVecCreate();
-	void textureVecPushBack(textureVec* vec, TextureBatch num);
-	void textureVecClear(textureVec* vec);
-	void textureVecDelete(textureVec* vec);
-
-	texture3DVec texture3DVecCreate();
-	void texture3DVecPushBack(texture3DVec* vec, Batch3D num);
-	void texture3DVecClear(texture3DVec* vec);
-	void texture3DVecDelete(texture3DVec* vec);
 
 	extern FT_Library FT;
 

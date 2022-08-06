@@ -2,6 +2,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "mrey/mrey.h"
+#include <stb_image.h>
+
 
 struct TextureBatch {
     GLuint VAO, VBO, textureID;
