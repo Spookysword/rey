@@ -12,6 +12,7 @@
 #include "grey/grey/shader.h"
 #include "grey/grey/color.h"
 
+// SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A mouse struct.
 struct Mouse {
     double x, y;
     boolean isPrimaryDown, isPrimaryPressed;
@@ -53,20 +54,29 @@ struct Window {
     // The amount of times the frame has been drawn in the last second. May not be 100% accurate and change rapidly.
     float framesPerSecond;
 
+    // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. The current shader that the window is using to render.
     int currentShader;
+    // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. The shader vector the window uses.
     CustomShaderVec shaders;
+    // The time the window was created.
     float startTime;
+    // How long the window has existed.
     float time;
+    // The background color of the window.
     Color backgroundColor;
+    // The mouse relative to the window.
     Mouse mouse;
+    // The offset everything in the window renders at.
     Vec3 offset;
-
+    // The camera struct the window uses.
     Camera camera;
+    // The transform struct the window uses.
     Transform transform;
-
+    // Whether the mouse is locked or not.
     boolean mouseLocked;
 };
 typedef struct Window Window;
-
+    // Loads a font and returns the ID of it. The size indicates the resolution the font is intended to be rendered at in pixels.
 	FontID loadFont(Window* win, const char* filePath, float size);
+    // Deletes the specified font from memory.
 	void deleteFont(Window* win, FontID font);
