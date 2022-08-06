@@ -36,6 +36,10 @@ int main() {
     while (!shouldWindowClose(win)) {
         updateWindow(&win);
 
+        if (isKeyPressed(win, KEY_F11)) {
+            win.fullscreen = !win.fullscreen;
+        }
+
         clearWindowBackground(&win, COLOR_DARK_GREY);
 
         // TEXT ENTRY RENDER/UPDATE \/
