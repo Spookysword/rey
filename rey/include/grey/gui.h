@@ -110,6 +110,29 @@ TextureButton createTextureButton(double x, double y, double width, double heigh
 
 void renderTextureButton(Window win, TextureButton* textureButton);
 
+struct TextButton {
+	Style buttonStyle;
+	Style textStyle;
+	FontID font;
+	unsigned int fontSize;
+	char* text;
+	double textOffsetX, textOffsetY;
+	unsigned int hoverState, clickState;
+	void (*onUpdate)(struct TextButton*);
+	void (*onRender)(struct TextButton*);
+	void (*onHoverOn)(struct TextButton*);
+	void (*onHoverOff)(struct TextButton*);
+	void (*onMouseDown)(struct TextButton*);
+	void (*onMouseUp)(struct TextButton*);
+};
+typedef struct TextButton TextButton;
+
+void df5(struct TextButton* textButton);
+
+TextButton createTextButton(double x, double y, double width, double height, const char* text, FontID font, unsigned int fontSize);
+
+void renderTextButton(Window win, TextButton* textButton);
+
 #ifdef __cplusplus
 }
 #endif
