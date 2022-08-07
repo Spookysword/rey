@@ -11,6 +11,11 @@
 #endif
 #include "grey/grey/shader.h"
 #include "grey/grey/color.h"
+#include "grey/grey/shaders.h"
+
+#ifndef CIRCLE_ACCURACY
+#define CIRCLE_ACCURACY 360
+#endif
 
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A mouse struct.
 struct Mouse {
@@ -76,7 +81,75 @@ struct Window {
     boolean mouseLocked;
 };
 typedef struct Window Window;
-    // Loads a font and returns the ID of it. The size indicates the resolution the font is intended to be rendered at in pixels.
-	FontID loadFont(Window* win, const char* filePath, float size);
-    // Deletes the specified font from memory.
-	void deleteFont(Window* win, FontID font);
+
+void framebufferCallback(GLFWwindow* win, int width, int height);
+// Returns a valid Window struct.
+Window createWindow(int width, int height, const char* title);
+// Deletes the Window from memory. Different from closeWindow, which closes the window.
+void deleteWindow(Window* win);
+// Checks if a Window should be closed.
+boolean shouldWindowClose(Window win);
+// Handles updating the window, including polling events & general variables within the struct.
+void updateWindow(Window* win);
+// Collects every draw call you've made and sends it in a few collective batches.
+void renderWindow(Window win);
+// Closes the Window. Different from deleteWindow, which deletes the Window from memory.
+void closeWindow(Window win);
+// Sets a window flag's state. All the window flags can be found in the grey file near line 149.
+void setWindowFlag(Window win, uint32_t flag, boolean state);
+
+    // Clears the background with a color. Generally should be called each frame before drawing anything else.
+void clearWindowBackground(Window* win, Color color);
+// Enables or disables wireframe mode, which draws everything as lines.
+void setWireframeMode(Window win, boolean state);
+// Draws a triangle with three given points and a color.
+void drawTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color);
+// Draws a rectangle. Note that rotation is measured in degrees,
+void drawRectangle(Window* win, float x, float y, float width, float height, float rotation, Color color);
+// Draws a texture. Note that rotation is measured in degrees.
+void drawTexture(Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color);
+// Draws a circle.
+void drawCircle(Window* win, float x, float y, float radius, Color color);
+// Draws a rounded rectangle.
+void drawRoundedRect(Window* win, float x, float y, float width, float height, float radius, float rotation, Color color);
+// Draws the specified text with the font passed in. Scale controls how many pixels large it is.
+void drawText(Window* win, const char* text, FontID font, float x, float y, float scale, Color color);
+// Draws text but with a border around it. Kinda broken honestly.
+void drawBorderedText(Window* win, const char* text, FontID font, float x, float y, float scale, float borderSize, Color color, Color borderColor);
+// Gets the total width, in pixels, of the specified text.
+float getWidthOfText(Window* win, const char* text, FontID font, float scale);
+// Gets the width, in pixels, of the specified character of a font.
+float getWidthOfChar(Window* win, char text, FontID font, float scale);
+// Get the height, in pixels, of the specified text.
+float getHeightOfText(Window* win, const char* text, FontID font, float scale);
+// Draws a polygon with the given coordinates.
+void drawPolygon(Window* win, float* xs, float* ys, int points, Color color);
+// Draws a rectangle with all of the four points' colors specified.
+void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight);
+// Draws a triangle with all of the trhee points' colors specified.
+void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color bottomLeft, Color topMiddle, Color bottomRight);
+// Draws a line between the two points given.
+void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color);
+// Draws a line with all of the two points' colors specified.
+void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
+
+// A vertice struct.
+typedef struct Vertice {
+    float x, y, z;
+    float r, g, b, a;
+    float u, v;
+    float nx, ny, nz;
+} Vertice;
+
+// A struct of verticies.
+typedef struct Vertices {
+    Vertice* vertices;
+    int size;
+} Vertices;
+
+// Returns a valid vertice struct with the data passed in.
+Vertice Vertice_new(float x, float y, float z, Color color, float u, float v);
+// Returns a valid vertice struct with the data passed in part 2: Electric Boogaloo.
+Vertice Vertice_create(Vec3 pos, Color color, Vec2 uv, Vec3 normal);
+// Draws a 3D shape with the vertices and texture passed in.
+void draw3DShape(Window* win, Texture texture, Vertices vertices);
