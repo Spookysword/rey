@@ -22,6 +22,7 @@ add_subdirectory(extern/chipmunk)
 add_subdirectory(extern/glad)
 add_subdirectory(extern/glfw)
 add_subdirectory(extern/freetype)
+add_subdirectory(extern/openal-soft)
 add_subdirectory(src)
 
 install(

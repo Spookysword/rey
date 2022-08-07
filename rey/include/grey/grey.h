@@ -59,7 +59,7 @@ extern "C" {
 	*/
 	boolean isKeyDown(Window win, int key);
 	/*
-	Checks if a certain key has been pressed. All keys can be found in the grey file near line 26.
+	Checks if a certain key has been pressed. All keys can be found in the keys.h file.
 	Note that this shouldn't be confused with isKeyDown, which is valid each frame that the user has the key down.
 	*/
 	boolean isKeyPressed(Window win, int key);
