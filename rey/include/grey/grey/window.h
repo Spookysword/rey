@@ -12,6 +12,7 @@
 #include "grey/grey/shader.h"
 #include "grey/grey/color.h"
 #include "grey/grey/shaders.h"
+#include "grey/grey/vertices.h"
 
 #ifndef CIRCLE_ACCURACY
 #define CIRCLE_ACCURACY 360
@@ -132,20 +133,6 @@ void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, f
 void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color);
 // Draws a line with all of the two points' colors specified.
 void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
-
-// A vertice struct.
-typedef struct Vertice {
-    float x, y, z;
-    float r, g, b, a;
-    float u, v;
-    float nx, ny, nz;
-} Vertice;
-
-// A struct of verticies.
-typedef struct Vertices {
-    Vertice* vertices;
-    int size;
-} Vertices;
 
 // Returns a valid vertice struct with the data passed in.
 Vertice Vertice_new(float x, float y, float z, Color color, float u, float v);
