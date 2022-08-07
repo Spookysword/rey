@@ -56,6 +56,7 @@
         "texture.h": "c",
         "batch_3d.h": "c",
         "windows.h": "c",
-        "vertices.h": "c"
+        "vertices.h": "c",
+        "color.h": "c"
     }
 }

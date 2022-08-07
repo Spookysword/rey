@@ -134,9 +134,5 @@ void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickne
 // Draws a line with all of the two points' colors specified.
 void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2);
 
-// Returns a valid vertice struct with the data passed in.
-Vertice Vertice_new(float x, float y, float z, Color color, float u, float v);
-// Returns a valid vertice struct with the data passed in part 2: Electric Boogaloo.
-Vertice Vertice_create(Vec3 pos, Color color, Vec2 uv, Vec3 normal);
 // Draws a 3D shape with the vertices and texture passed in.
 void draw3DShape(Window* win, Texture texture, Vertices vertices);
