@@ -86,8 +86,8 @@ void deleteWindow(Window* win) {
 		deleteBatch(&win->shaders.data[i].lineBatch);
 		textureVecClear(&win->shaders.data[i].textures);
 		textureVecDelete(&win->shaders.data[i].textures);
-		textureVecClear(&win->shaders.data[i].textures3D);
-		textureVecDelete(&win->shaders.data[i].textures3D);
+		texture3DVecClear(&win->shaders.data[i].textures3D);
+		texture3DVecDelete(&win->shaders.data[i].textures3D);
 		glDeleteProgram(win->shaders.data[i].colorShader.shaderID);
 		glDeleteProgram(win->shaders.data[i].textureShader.shaderID);
 		glDeleteProgram(win->shaders.data[i].fontShader.shaderID);
@@ -116,7 +116,7 @@ void updateWindow(Window* win) {
 			flushTextureBatch(&win->shaders.data[i].textures.data[z]);
 		}
 		for (int z = 0; z < win->shaders.data[i].textures3D.size; z++) {
-			flushTextureBatch(&win->shaders.data[i].textures3D.data[z]);
+			flush3DBatch(&win->shaders.data[i].textures3D.data[z]);
 		}
 		for (int z = 0; z < win->shaders.data[i].fonts.size; z++) {
 			for (int y = 0; y < 128; y++) {
@@ -151,10 +151,7 @@ void updateWindow(Window* win) {
 
 	glfwGetWindowSize(win->windowHandle, &win->width, &win->height);
 	int windowX, windowY;
-	glfwGetWindowPos(win->windowHandle, &windowX, &windowY);
-	glfwGetCursorPos(&win->windowHandle, &win->mouse.x, &win->mouse.y);
-	win->mouse.x -= windowX;
-	win->mouse.y -= windowY;
+	glfwGetCursorPos(win->windowHandle, &win->mouse.x, &win->mouse.y);
 	int state = glfwGetMouseButton(win->windowHandle, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS) {
 		if (win->mouse.isPrimaryDown == FALSE) {
@@ -607,7 +604,7 @@ void drawBorderedText(Window* win, const char* text, FontID font, float x, float
 }
 float getWidthOfText(Window* win, const char* text, FontID font, float scale) {
 	float x = 0;
-	if (font == -1) { return; }
+	if (font == -1) { return 0.0f; }
 	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
 	for (int i = 0; text[i] != '\0'; i++) {
 		Character c = win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]];
@@ -624,7 +621,7 @@ float getWidthOfChar(Window* win, char text, FontID font, float scale) {
 }
 float getHeightOfText(Window* win, const char* text, FontID font, float scale) {
 	float finalh = 0.0f;
-	if (font == -1) { return; }
+	if (font == -1) { return 0.0f; }
 	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
 	for (int i = 0; text[i] != '\0'; i++) {
 		Character c = win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]];
