@@ -146,7 +146,7 @@ void deleteTexture(Window* win, Texture texture) {
 void delete3DTexture(Window* win, Texture texture) {
 	//deleteTextureBatch(&win->shaders.data[win->currentShader].textures.data[texture]);
 	for (int i = 0; i < win->shaders.size; i++) {
-		delete3DBatch(&win->shaders.data[i].textures.data[texture]);
+		delete3DBatch(&win->shaders.data[i].textures3D.data[texture]);
 	}
 	glDeleteTextures(1, &win->shaders.data[win->currentShader].textures.data[texture].textureID);
 }
