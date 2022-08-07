@@ -5,7 +5,7 @@
 #include <AL/al.h>
 #include <AL/alext.h>
 #include <examples/common/alhelpers.h>
-#include <sndfile.h>
+#include <sndfile.hh>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -28,7 +28,7 @@ public:
     std::vector<ALuint> soundEffectBuffers;
 };
 
-SoundDevice* mainSoundDevice;
+extern SoundDevice* mainSoundDevice;
 
 void initArey();
 

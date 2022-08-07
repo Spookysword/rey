@@ -1,5 +1,7 @@
 #include <arey/arey.hpp>
 
+SoundDevice* mainSoundDevice;
+
 SoundDevice* SoundDevice::get() {
     SoundDevice* device = new SoundDevice();
     return device;
