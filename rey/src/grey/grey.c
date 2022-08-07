@@ -177,6 +177,7 @@ void setMouseLocked(Window* win, boolean locked) {
 
 void setMousePos(Window* win, float x, float y) {
 	glfwSetCursorPos(win->windowHandle, x, y);
+	win->mouse.x = x; win->mouse.y = y;
 }
 
 const char* getClipboardText(Window* win) {

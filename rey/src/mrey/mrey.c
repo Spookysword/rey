@@ -136,7 +136,7 @@ float rotateY(float x, float y, float c1, float c2, float rotation) {
 #define PI 3.1415926535897932384626433
 
 float toRadians(float degrees) {
-    return degrees / 180.0f * PI;
+    return degrees * (PI / 180);
 }
 
 float toDegrees(float radians) {
@@ -218,6 +218,9 @@ Vec3 Vec3_sub(Vec3 a, Vec3 b) {
 }
 Vec3 Vec3_normalize(Vec3 a) {
     float length = Vec3_length(a);
+    if (length == 0.0f) {
+        return Vec3_new(0.0f, 0.0f, 0.0f);
+    }
     return Vec3_new(a.x / length, a.y / length, a.z / length);
 }
 Vec3 Vec3_rotate(Vec3 point, float angle, Vec3 axis) {
@@ -251,6 +254,7 @@ Camera Camera_new(Vec3 pos, Vec3 forward, Vec3 up) {
     c.pos = pos;
     c.forward = forward;
     c.up = up;
+    c.yAxis = Vec3_new(0, 1, 0);
     return c;
 }
 Camera Camera_create() {
