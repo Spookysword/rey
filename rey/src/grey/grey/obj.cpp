@@ -1,7 +1,7 @@
 #include "grey/grey/obj.hpp"
 #include "OBJ_Loader.h"
 
-Vertices loadObj(const char* objFile) {
+Vertices loadObj(const char* objFile, bool autoCalcNormals) {
     objl::Loader loader;
     if (!loader.LoadFile(objFile)) return Vertices();
     std::vector<Vertice> v;
@@ -16,6 +16,6 @@ Vertices loadObj(const char* objFile) {
     for (int i = 0; i < vs.size; i++) {
         vs.vertices[i] = v[i];
     }
-    vs = calcNormals(vs);
+    if (autoCalcNormals) vs = calcNormals(vs);
     return vs;
 }

@@ -10,7 +10,7 @@ int main() {
 	float speed = 0.05f;
     bool locked = false;
 
-	Vertices cube = loadObj("resources/cube.obj");
+	Vertices cube = loadObj("resources/suzanne.obj", true);
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
@@ -59,6 +59,13 @@ int main() {
             if (rotX || rotY) 
                 setMousePos(&win, win.width / 2, win.height / 2);
         }
+
+		if (isKeyDown(win, KEY_Q)) {
+			win.transform.rotation.y -= 0.25f;
+		}
+		if (isKeyDown(win, KEY_E)) {
+			win.transform.rotation.y += 0.25f;
+		}
 
 		win.transform.camera = win.camera;
 
