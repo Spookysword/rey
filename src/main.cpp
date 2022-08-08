@@ -6,11 +6,11 @@ int main() {
 
 	Window win = createWindow(1280, 720, "grey");
 	float sensitivity = 50.0f;
-	Texture aggg = new3DTexture(&win, "resources/white.png", FILTER_LINEAR);
+	Texture aggg = new3DTexture(&win, "resources/cube.png", FILTER_LINEAR);
 	float speed = 0.05f;
     bool locked = false;
 
-	Vertices cube = loadObj("resources/suzanne.obj", true);
+	Vertices cube = loadObj("resources/cube.obj", true, COLOR_WHITE);
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
@@ -68,7 +68,6 @@ int main() {
 		}
 
 		win.transform.camera = win.camera;
-
 
 		draw3DShape(&win, aggg, cube);
 		renderWindow(win);
