@@ -13,7 +13,7 @@
 
 #include <vector>
 
-typedef unsigned int Sound;
+typedef ALuint Sound;
 
 class SoundDevice {
 public:
@@ -35,5 +35,7 @@ void initArey();
 void closeArey();
 
 Sound loadSound(const char* filename);
+
+void deleteSound(Sound sound);
 
 #endif // AREY_H

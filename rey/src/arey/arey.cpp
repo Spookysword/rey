@@ -125,6 +125,7 @@ void SoundDevice::removeSoundEffect(ALuint buffer) {
         if (*it == buffer) {
             alDeleteBuffers(1, &*it);
             it = soundEffectBuffers.erase(it);
+            return;
         }
         else {
             ++it;
@@ -144,4 +145,8 @@ void closeArey() {
 Sound loadSound(const char* filename) {
     Sound sound = mainSoundDevice->addSoundEffect(filename);
     return sound;
+}
+
+void deleteSound(Sound sound) {
+    mainSoundDevice->removeSoundEffect(sound);
 }
