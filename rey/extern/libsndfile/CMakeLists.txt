@@ -65,14 +65,16 @@ include (CheckCCompilerFlag)
 #
 # Options
 #
-
+set(BUILD_TESTING OFF)
 option (BUILD_SHARED_LIBS "Build shared libraries" OFF)
 if (BUILD_SHARED_LIBS AND BUILD_TESTING)
 	set (BUILD_TESTING OFF)
 	message ("Build testing required static libraries. To prevent build errors BUILD_TESTING disabled.")
 endif ()
-option (BUILD_PROGRAMS "Build programs" ON)
-option (BUILD_EXAMPLES "Build examples" ON)
+option (BUILD_PROGRAMS "Build programs" OFF)
+set(BUILD_PROGRAMS OFF)
+option (BUILD_EXAMPLES "Build examples" OFF)
+set(BUILD_EXAMPLES OFF)
 option (ENABLE_CPACK "Enable CPack support" ON)
 option (ENABLE_BOW_DOCS "Enable black-on-white html docs" OFF)
 if (MSVC AND (DEFINED ENABLE_STATIC_RUNTIME))

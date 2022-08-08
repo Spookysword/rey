@@ -57,6 +57,22 @@
         "batch_3d.h": "c",
         "windows.h": "c",
         "vertices.h": "c",
-        "color.h": "c"
+        "color.h": "c",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "fstream": "cpp",
+        "ios": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "sstream": "cpp",
+        "xfacet": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocinfo": "cpp",
+        "xlocnum": "cpp",
+        "xmemory": "cpp",
+        "xstddef": "cpp",
+        "xstring": "cpp",
+        "xtr1common": "cpp"
     }
 }

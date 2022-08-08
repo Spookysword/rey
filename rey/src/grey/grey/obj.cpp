@@ -1,25 +1,21 @@
 #include "grey/grey/obj.hpp"
-#include "mrey/mrey.h"
-#include <vector>
-
-std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-std::vector<Vec3> temp_vertices;
-std::vector<Vec2> temp_uvs;
-std::vector<Vec3> temp_normals;
+#include "OBJ_Loader.h"
 
 Vertices loadObj(const char* objFile) {
-    // FILE* file = fopen(objFile, "r");
-    // if (file == NULL) {
-    //     printf("Could not open file %s\n", objFile);
-    //     exit(1);
-    // }
-
-    // while (1) {
-    //     char lineHeader[128];
-
-    //     int res = fscanf(file, "%s", lineHeader);
-    //     if (res == EOF)
-    //         break;
-    // }
-
+    objl::Loader loader;
+    if (!loader.LoadFile(objFile)) return Vertices();
+    std::vector<Vertice> v;
+    for (int i = 0; i < loader.LoadedIndices.size(); i++) {
+        objl::Vertex vert = loader.LoadedVertices[loader.LoadedIndices[i]];
+        Vertice mvert = Vertice_create(Vec3_new(vert.Position.X, vert.Position.Y, vert.Position.Z), COLOR_RED, Vec2_new(vert.TextureCoordinate.X, vert.TextureCoordinate.Y), Vec3_new(vert.Normal.X, vert.Normal.Y, vert.Normal.Z));
+        v.push_back(mvert);
+    } 
+    Vertices vs;
+    vs.size = v.size();
+    vs.vertices = new Vertice[vs.size];
+    for (int i = 0; i < vs.size; i++) {
+        vs.vertices[i] = v[i];
+    }
+    vs = calcNormals(vs);
+    return vs;
 }

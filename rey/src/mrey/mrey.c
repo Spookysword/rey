@@ -441,3 +441,15 @@ Vec2 Vec2_mulf(Vec2 v, double f) {
 Vec2 Vec2_subv(Vec2 a, Vec2 b) {
     return Vec2_new(a.x - b.x, a.y - b.y);
 }
+
+Vec4 Vec4_new(double x, double y, double z, double w) {
+    Vec4 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    v.w = w;
+    return v;
+}
+Vec4 Vec4_create() {
+    return Vec4_new(0.0f, 0.0f, 0.0f, 1.0f);
+}
