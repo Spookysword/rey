@@ -47,7 +47,7 @@ ALuint SoundDevice::addSoundEffect(const char* filename) {
     drwav_uint64 totalPCMFrameCount;
     ALenum format;
     ALsizei size;
-    float* sampleData = drwav_open_file_and_read_pcm_frames_f32(filename, &channels, &sampleRate, &totalPCMFrameCount, NULL);
+    drwav_int16* sampleData = drwav_open_file_and_read_pcm_frames_s16(filename, &channels, &sampleRate, &totalPCMFrameCount, NULL);
     if (sampleData == NULL) {
         printf("arey: failed to read file %s\n", filename);
         return 0;
@@ -71,7 +71,7 @@ ALuint SoundDevice::addSoundEffect(const char* filename) {
         break;
         return 0; // Not sure if this works, we'll find out the hard way.
     }
-    size = (ALsizei)(totalPCMFrameCount * channels) * (ALsizei)sizeof(float);
+    size = (ALsizei)(totalPCMFrameCount * channels) * (ALsizei)sizeof(short);
 
     ALuint buffer = 0;
     alGenBuffers(1, &buffer);
@@ -107,10 +107,35 @@ void closeArey() {
 }
 
 Sound loadSound(const char* filename) {
-    Sound sound = mainSoundDevice->addSoundEffect(filename);
+    Sound sound;
+    sound.index = mainSoundDevice->addSoundEffect(filename);
     return sound;
 }
 
-void deleteSound(Sound sound) {
-    mainSoundDevice->removeSoundEffect(sound);
+void deleteSound(Sound* sound) {
+    mainSoundDevice->removeSoundEffect(sound->index);
+    if (sound->isActive) {
+        alDeleteSources(1, &sound->source);
+    }
+    sound->isActive = false;
+}
+
+void playSound(Sound* sound) {
+    sound->isActive = true;
+    alGenSources(1, &sound->source); // Problems could come from this line
+    alSourcef(sound->source, AL_PITCH, sound->pitch);
+    alSourcef(sound->source, AL_GAIN, sound->gain);
+    alSource3f(sound->source, AL_POSITION, -1000, sound->position[1], sound->position[2]);
+    alSource3f(sound->source, AL_VELOCITY, sound->velocity[0], sound->velocity[1], sound->velocity[2]);
+    alSourcei(sound->source, AL_LOOPING, sound->loopSound);
+    alSourcei(sound->source, AL_BUFFER, sound->index);
+    alSourcePlay(sound->source);
+}
+
+void stopSound(Sound* sound) {
+    if (sound->isActive == true) {
+        sound->isActive = false;
+    }
+    alSourceStop(sound->source);
+    alDeleteSources(1, &sound->source);
 }

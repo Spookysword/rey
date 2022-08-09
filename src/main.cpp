@@ -7,17 +7,18 @@ int main() {
 	initArey();
 
 	Window win = createWindow(1280, 720, "grey");
-	Sound aeh = loadSound("resources/aeh.wav");
+	Sound aeh = loadSound("resources/da.wav");
+	aeh.loopSound = true;
+	aeh.position[0] = -1000;
+	playSound(&aeh);
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 
-		
-
 		renderWindow(win);
 	}
 
-	deleteSound(aeh);
+	deleteSound(&aeh);
 	deleteWindow(&win);
 	closeGrey();
 	closeArey();

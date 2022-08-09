@@ -13,7 +13,19 @@
 
 #include <vector>
 
-typedef ALuint Sound;
+//typedef ALuint Sound;
+class Sound {
+public:
+    ALuint index = 0;
+    ALuint source = 0;
+    float pitch = 1.0f;
+    float gain = 1.0f;
+    float position[3] = { -1000, 0, 0 };
+    float velocity[3] = { 0, 0, 0 };
+    bool loopSound = false;
+public:
+    bool isActive = false;
+};
 
 class SoundDevice {
 public:
@@ -36,6 +48,10 @@ void closeArey();
 
 Sound loadSound(const char* filename);
 
-void deleteSound(Sound sound);
+void deleteSound(Sound* sound);
+
+void playSound(Sound* sound);
+
+void stopSound(Sound* sound);
 
 #endif // AREY_H
