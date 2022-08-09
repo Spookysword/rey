@@ -5,7 +5,8 @@
 #include <AL/al.h>
 #include <AL/alext.h>
 #include <examples/common/alhelpers.h>
-#include <sndfile.hh>
+#define DR_WAV_IMPLEMENTATION
+#include "dr_wav.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>

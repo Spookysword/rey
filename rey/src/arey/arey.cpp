@@ -41,30 +41,17 @@ SoundDevice::~SoundDevice() {
 }
 
 ALuint SoundDevice::addSoundEffect(const char* filename) {
-    ALenum err, format;
-    ALuint buffer;
-    SNDFILE* sndfile;
-    SF_INFO sfinfo;
-    short* membuf;
-    sf_count_t num_frames;
-    ALsizei num_bytes;
-
-    // Open and check for errors
-    sndfile = sf_open(filename, SFM_READ, &sfinfo);
-    if (!sndfile) {
-        printf("arey: couldn't open audio file %s\n", filename);
+    unsigned int channels;
+    unsigned int sampleRate;
+    drwav_uint64 totalPCMFrameCount;
+    ALenum format;
+    ALsizei size;
+    float* sampleData = drwav_open_file_and_read_pcm_frames_f32(filename, &channels, &sampleRate, &totalPCMFrameCount, NULL);
+    if (sampleData == NULL) {
+        printf("arey: failed to read file %s\n", filename);
         return 0;
     }
-    // Ahahaha I have no clue what this MEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANS
-    if (sfinfo.frames < 1 || sfinfo.frames > (sf_count_t)(INT_MAX / sizeof(short)) / sfinfo.channels) {
-        printf("arey: bad sample count in audio file %s\n", filename);
-        sf_close(sndfile);
-        return 0;
-    }
-    // Formatting stuff I don't understand I just copied this from one of the examples off of the openal soft github page
-    // Also I dunno why they didn't use a switch here so I did >:)
-    format = AL_NONE;
-    switch(sfinfo.channels) {
+    switch(channels) {
     case 1:
         format = AL_FORMAT_MONO16;
         break;
@@ -72,48 +59,24 @@ ALuint SoundDevice::addSoundEffect(const char* filename) {
         format = AL_FORMAT_STEREO16;
         break;
     case 3:
-        if (sf_command(sndfile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT) {
-            format = AL_FORMAT_BFORMAT2D_16;
-        }
+        format = AL_FORMAT_BFORMAT2D_16;
         break;
     case 4:
-        if (sf_command(sndfile, SFC_WAVEX_GET_AMBISONIC, NULL, 0) == SF_AMBISONIC_B_FORMAT) {
-            format = AL_FORMAT_BFORMAT3D_16;
-        }
+        format = AL_FORMAT_BFORMAT3D_16;
         break;
     default:
-        printf("arey: audio file %s has unsupported channel count %d\n", sfinfo.channels);
+        printf("arey: audio file %s has unsupported channel count %d\n", channels);
+        drwav_free(sampleData, NULL);
         break;
         return 0; // Not sure if this works, we'll find out the hard way.
     }
+    size = (ALsizei)(totalPCMFrameCount * channels) * (ALsizei)sizeof(float);
 
-    // This is why this wasn't done in C.
-    membuf = static_cast<short*>(malloc((size_t)(sfinfo.frames * sfinfo.channels) * sizeof(short)));
-    num_frames = sf_readf_short(sndfile, membuf, sfinfo.frames);
-    if (num_frames < 1) {
-        free(membuf);
-        sf_close(sndfile);
-        printf("arey: couldn't read sample files in sound file %s\n", filename);
-        return 0;
-    }
-    num_bytes = (ALsizei)(num_frames * sfinfo.channels) * (ALsizei)sizeof(short);
-
-    // Buffer it in and just throw it away
-    buffer = 0;
+    ALuint buffer = 0;
     alGenBuffers(1, &buffer);
-    alBufferData(buffer, format, membuf, num_bytes, sfinfo.samplerate); // This line is so satisfying lol
-    free(membuf);
-    sf_close(sndfile);
-
-    // Error checking
-    err = alGetError();
-    if (err != AL_NO_ERROR) {
-        printf("arey: al error: %s\n", alGetString(err));
-        if (buffer && alIsBuffer(buffer)) {
-            alDeleteBuffers(1, &buffer);
-        }
-        return 0;
-    }
+    // Maybe sampleData doesn't work here
+    alBufferData(buffer, format, sampleData, size, sampleRate); // This line is so satisfying lol
+    drwav_free(sampleData, NULL);
 
     soundEffectBuffers.push_back(buffer);
     return buffer;
