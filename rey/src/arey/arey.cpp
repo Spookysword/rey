@@ -1,3 +1,4 @@
+#define DR_WAV_IMPLEMENTATION
 #include <arey/arey.hpp>
 
 SoundDevice* mainSoundDevice;
