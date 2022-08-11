@@ -73,6 +73,10 @@
         "xmemory": "cpp",
         "xstddef": "cpp",
         "xstring": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "stb_vorbis.c": "cpp",
+        "bitset": "cpp",
+        "mutex": "cpp",
+        "ratio": "cpp"
     }
 }

@@ -7,13 +7,18 @@ int main() {
 	initArey();
 
 	Window win = createWindow(1280, 720, "grey");
-	Sound aeh = loadSound("resources/da.wav");
-	aeh.loopSound = true;
+	Sound aeh = loadSound("resources/aeh.flac");
+	aeh.loopSound = false;
 	aeh.position[0] = -1000;
-	playSound(&aeh);
+	aeh.position[1] = 0;
+	aeh.position[2] = 0;
 
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
+
+		if (isKeyPressed(win, KEY_A)) {
+			playSound(&aeh);
+		}
 
 		renderWindow(win);
 	}

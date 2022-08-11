@@ -6,6 +6,9 @@
 #include <AL/alext.h>
 #include <examples/common/alhelpers.h>
 #include "dr_wav.h"
+#include "dr_flac.h"
+#include "dr_mp3.h"
+#include "stb_vorbis.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -20,7 +23,7 @@ public:
     ALuint source = 0;
     float pitch = 1.0f;
     float gain = 1.0f;
-    float position[3] = { -1000, 0, 0 };
+    float position[3] = { 0, 0, 0 };
     float velocity[3] = { 0, 0, 0 };
     bool loopSound = false;
 public:
