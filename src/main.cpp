@@ -16,6 +16,15 @@ int main() {
 	while (!shouldWindowClose(win)) {
 		updateWindow(&win);
 
+		if (isKeyDown(win, KEY_LEFT)) {
+			aeh.position[0] -= 5;
+			
+		}
+
+		if (isKeyDown(win, KEY_RIGHT)) {
+			aeh.position[0] += 5;
+		}
+
 		if (isKeyPressed(win, KEY_A)) {
 			playSound(&aeh);
 		}

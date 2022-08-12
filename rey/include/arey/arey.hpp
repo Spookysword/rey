@@ -20,7 +20,7 @@
 class Sound {
 public:
     ALuint index = 0;
-    ALuint source = 0;
+    ALuint source;
     float pitch = 1.0f;
     float gain = 1.0f;
     float position[3] = { 0, 0, 0 };

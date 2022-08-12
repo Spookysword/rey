@@ -4,6 +4,13 @@
 #define STB_VORBIS_HEADER_ONLY
 #include <arey/arey.hpp>
 
+void CheckALError() {
+    ALenum error = alGetError();
+    if (error != AL_NO_ERROR) {
+        printf("OpenAL Error: %s\n", alGetString(error));
+    }
+}
+
 SoundDevice* mainSoundDevice;
 
 SoundDevice* SoundDevice::get() {
@@ -14,11 +21,13 @@ SoundDevice* SoundDevice::get() {
 SoundDevice::SoundDevice() {
     // Grab default device
     device = alcOpenDevice(nullptr);
+    CheckALError();
     if (!device) {
         printf("arey: no sound device found.\n");
     }
     // Make sound context
     context = alcCreateContext(device, nullptr);
+    CheckALError();
     if (!context) {
         printf("arey: context couldn't be created.\n");
     }
@@ -33,6 +42,7 @@ SoundDevice::~SoundDevice() {
         printf("arey: couldn't void current audio context\n");
     }
     alcDestroyContext(context);
+    CheckALError();
     if (context) {
         printf("arey: couldn't close audio context\n");
     }
@@ -41,6 +51,7 @@ SoundDevice::~SoundDevice() {
     }
 
     alDeleteBuffers(soundEffectBuffers.size(), soundEffectBuffers.data());
+    CheckALError();
     soundEffectBuffers.clear();
 }
 
@@ -120,8 +131,10 @@ ALuint SoundDevice::addSoundEffect(const char* filename) {
 
     ALuint buffer = 0;
     alGenBuffers(1, &buffer);
+    CheckALError();
     // Maybe sampleData doesn't work here
     alBufferData(buffer, format, sampleData, size, sampleRate); // This line is so satisfying lol
+    CheckALError();
     drwav_free(sampleData, NULL);
 
     soundEffectBuffers.push_back(buffer);
@@ -206,8 +219,10 @@ ALuint SoundDevice::addCursedSoundEffect(const char* filename) {
 
     ALuint buffer = 0;
     alGenBuffers(1, &buffer);
+    CheckALError();
     // Maybe sampleData doesn't work here
     alBufferData(buffer, format, sampleData, size, sampleRate); // This line is so satisfying lol
+    CheckALError();
     drwav_free(sampleData, NULL);
 
     soundEffectBuffers.push_back(buffer);
@@ -219,6 +234,7 @@ void SoundDevice::removeSoundEffect(ALuint buffer) {
     while (it != soundEffectBuffers.end()) {
         if (*it == buffer) {
             alDeleteBuffers(1, &*it);
+            CheckALError();
             it = soundEffectBuffers.erase(it);
             return;
         }
@@ -253,16 +269,20 @@ void deleteSound(Sound* sound) {
     mainSoundDevice->removeSoundEffect(sound->index);
     if (sound->isActive) {
         alDeleteSources(1, &sound->source);
+        CheckALError();
     }
     sound->isActive = false;
 }
 
 void playSound(Sound* sound) {
     alDistanceModel(AL_INVERSE_DISTANCE_CLAMPED);
-
+    CheckALError();
+    
     alListener3f(AL_POSITION, 0.0, 0.0, 0.0);
-	alListener3f(AL_VELOCITY, 0.0, 0.0, 0.0);
-
+    CheckALError();
+    alListener3f(AL_VELOCITY, 0.0, 0.0, 0.0);
+    CheckALError();
+    
     ALfloat pt[6];
 	pt[0] = 0.0;
 	pt[1] = 0.0;
@@ -271,22 +291,35 @@ void playSound(Sound* sound) {
 	pt[4] = 0.0;
 	pt[5] = 0.0;
 	alListenerfv(AL_ORIENTATION, pt);
-
+    CheckALError();
+    
     sound->isActive = true;
-    alGenSources(1, &sound->source); // Problems could come from this line
+    alGenSources((ALuint)1, &sound->source); // Problems could come from this line
+    CheckALError();
     alSourcef(sound->source, AL_PITCH, sound->pitch);
+    CheckALError();
     alSourcef(sound->source, AL_GAIN, sound->gain);
-    alSource3f(sound->source, AL_POSITION, sound->position[0], sound->position[1], sound->position[2]);
+    CheckALError();
+    printf("playsound at %f, %f, %f\n", sound->position[0], sound->position[1], sound->position[2]);
+    //alSource3f(sound->source, AL_POSITION, sound->position[0], sound->position[1], sound->position[2]);
+    alSourcefv(sound->source, AL_POSITION, sound->position);
+    CheckALError();
     alSource3f(sound->source, AL_VELOCITY, sound->velocity[0], sound->velocity[1], sound->velocity[2]);
+    CheckALError();
     alSourcei(sound->source, AL_LOOPING, sound->loopSound);
+    CheckALError();
     alSourcei(sound->source, AL_BUFFER, sound->index);
+    CheckALError();
     alSourcePlay(sound->source);
-}
+    CheckALError();
+    }
 
 void stopSound(Sound* sound) {
     if (sound->isActive == true) {
         sound->isActive = false;
     }
     alSourceStop(sound->source);
+    CheckALError();
     alDeleteSources(1, &sound->source);
+    CheckALError();
 }
