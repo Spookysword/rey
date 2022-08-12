@@ -4,7 +4,9 @@
 #include "grey/grey/batch.h"
 #include "grey/grey/texture.h"
 #include "grey/grey/font.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A shader struct.
 struct Shader {
     GLuint vertexID, fragmentID, shaderID;
@@ -41,3 +43,6 @@ void CustomShaderVecPushBack(CustomShaderVec* vec, CustomShader num);
 void CustomShaderVecClear(CustomShaderVec* vec);
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. Frees up all the memory the custom shader vector is using.
 void CustomShaderVecDelete(CustomShaderVec* vec);
+#ifdef __cplusplus
+}
+#endif

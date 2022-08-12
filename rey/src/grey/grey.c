@@ -4,6 +4,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#ifdef __cplusplus
+namespace rey {
+#endif
 
 // Init/deinit funcs
 void initGrey(unsigned int sampleRate) {
@@ -183,3 +186,6 @@ void setMousePos(Window* win, float x, float y) {
 const char* getClipboardText(Window* win) {
 	return glfwGetClipboardString(win->windowHandle);
 }
+#ifdef __cplusplus
+}
+#endif

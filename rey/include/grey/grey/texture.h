@@ -2,6 +2,9 @@
 #include "grey/grey/texture_batch.h"
 #include "grey/grey/batch_3d.h"
 
+#ifdef __cplusplus
+namespace grey {
+#endif
 // The index of a texture.
 typedef unsigned int Texture;
 
@@ -38,3 +41,7 @@ typedef unsigned int Texture;
 	void texture3DVecClear(texture3DVec* vec);
 	// SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. Deletes the 3D texture vector specified from memory entirely.
 	void texture3DVecDelete(texture3DVec* vec);
+
+	#ifdef __cplusplus
+}
+#endif

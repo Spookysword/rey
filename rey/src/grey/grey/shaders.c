@@ -1,5 +1,8 @@
 #include "grey/grey/shaders.h"
 
+#ifdef __cplusplus
+namespace grey {
+#endif
 const char* colorVertexShader = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
 "layout (location = 1) in vec4 aColor;\n"
@@ -106,3 +109,6 @@ const char* texture3DFragmentShader = "#version 330 core\n"
 "	\n"
 "	gl_FragColor = vec4((specular+ambient+diffuse)*(color*texture(currentTexture, TexCoord)).xyz, 1.0f);\n"
 "}\0";
+#ifdef __cplusplus
+}
+#endif

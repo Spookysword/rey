@@ -1,5 +1,8 @@
 #include "grey/grey/shader.h"
 
+#ifdef __cplusplus
+namespace grey {
+#endif
 CustomShaderVec CustomShaderVecCreate() {
 	CustomShaderVec vec;
 	vec.data = (CustomShader*)calloc(0, sizeof(CustomShader));
@@ -78,3 +81,6 @@ Shader createShader(const char* vertexShader, const char* fragmentShader) {
 	glDeleteShader(returnShader.fragmentID);
 	return returnShader;
 }
+#ifdef __cplusplus
+}
+#endif

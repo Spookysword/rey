@@ -1,5 +1,7 @@
 #include "grey/grey/texture_batch.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 void addTextureVertice(TextureBatch* batch, float verts[9]) {
 	floatVecPushBack9(&batch->triangles, verts);
 	batch->verticeCount++;
@@ -87,3 +89,6 @@ void deleteTextureBatch(TextureBatch* batch) {
 	floatVecDelete(&batch->triangles);
 	intVecDelete(&batch->shapeVertices);
 }
+#ifdef __cplusplus
+}
+#endif

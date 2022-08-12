@@ -1,6 +1,8 @@
 #include "grey/grey/window.h"
 
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 GLFWmonitor* getWindowMonitor(GLFWwindow* win) {
 	int count;
 	GLFWmonitor** monitors = glfwGetMonitors(&count);
@@ -723,3 +725,6 @@ void draw3DShape(Window* win, Texture texture, Vertices vert) {
 	end3DShape(&win->shaders.data[win->currentShader].textures3D.data[texture]);
 	win->zmod -= 0.000001f;
 }
+#ifdef __cplusplus
+}
+#endif

@@ -17,7 +17,9 @@
 #ifndef CIRCLE_ACCURACY
 #define CIRCLE_ACCURACY 360
 #endif
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A mouse struct.
 struct Mouse {
     double x, y;
@@ -136,3 +138,7 @@ void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float
 
 // Draws a 3D shape with the vertices and texture passed in.
 void draw3DShape(Window* win, Texture texture, Vertices vertices);
+
+#ifdef __cplusplus
+}
+#endif

@@ -3,7 +3,9 @@
 #include <GLFW/glfw3.h>
 #include "mrey/mrey.h"
 #include <stb_image.h>
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A struct that handles the batch rendering of a particular texture.
 struct TextureBatch {
     GLuint VAO, VBO, textureID;
@@ -29,3 +31,6 @@ void bindTextureBatch(TextureBatch batch);
 void flushTextureBatch(TextureBatch* batch);
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. Deletes all memory this texture batch is taking up.
 void deleteTextureBatch(TextureBatch* batch);
+#ifdef __cplusplus
+}
+#endif

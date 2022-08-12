@@ -1,5 +1,7 @@
 #include "grey/grey/font.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 FT_Library FT;
 
 fontVec fontVecCreate() {
@@ -34,3 +36,6 @@ void fontVecDelete(fontVec* vec) {
 
 	}
 }
+#ifdef __cplusplus
+}
+#endif

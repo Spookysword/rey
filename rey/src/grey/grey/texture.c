@@ -1,5 +1,7 @@
 #include "grey/grey/texture.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 textureVec textureVecCreate() {
 	textureVec vec;
 	vec.data = (TextureBatch*)calloc(0, sizeof(TextureBatch));
@@ -71,3 +73,6 @@ void texture3DVecDelete(texture3DVec* vec) {
 	vec->size = 0;
 	vec->limit = 0;
 }
+#ifdef __cplusplus
+}
+#endif

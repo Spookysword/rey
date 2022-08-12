@@ -4,6 +4,9 @@
 
 #include "grey/grey/texture_batch.h"
 
+#ifdef __cplusplus
+namespace grey {
+#endif
 // The index of a font.
 typedef unsigned int FontID;
 
@@ -46,3 +49,6 @@ typedef unsigned int FontID;
 	void fontVecClear(fontVec* vec);
 	// SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. Deletes all of the fonts and memory the font vector is using.
 	void fontVecDelete(fontVec* vec);
+#ifdef __cplusplus
+}
+#endif

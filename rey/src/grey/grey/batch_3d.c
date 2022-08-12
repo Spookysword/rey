@@ -1,5 +1,7 @@
 #include "grey/grey/batch_3d.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 void add3DVertice(Batch3D* batch, float verts[12]) {
 	floatVecPushBack12(&batch->triangles, verts);
 	batch->verticeCount++;
@@ -149,3 +151,6 @@ void delete3DBatch(Batch3D* batch) {
 	floatVecDelete(&batch->triangles);
 	intVecDelete(&batch->shapeVertices);
 }
+#ifdef __cplusplus
+}
+#endif

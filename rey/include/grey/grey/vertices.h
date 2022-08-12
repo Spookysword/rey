@@ -9,6 +9,10 @@
 #define FALSE 0
 #endif
 
+#ifdef __cplusplus
+namespace grey {
+#endif
+
 // A vertice struct.
 typedef struct Vertice {
     float x, y, z;
@@ -31,3 +35,7 @@ Vertice Vertice_create(Vec3 pos, Color color, Vec2 uv, Vec3 normal);
 Vertices calcNormals(Vertices v);
 
 boolean vertEqToVec(Vertice a, Vec3 b);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,5 +1,7 @@
 #include "grey/grey/batch.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 Batch createBatch() {
 	Batch batch;
 	glGenVertexArrays(1, &batch.VAO);
@@ -65,3 +67,6 @@ void deleteBatch(Batch* batch) {
 	floatVecDelete(&batch->triangles);
 	intVecDelete(&batch->shapeVertices);
 }
+#ifdef __cplusplus
+}
+#endif

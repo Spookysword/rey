@@ -5,7 +5,9 @@
 #include "grey/grey/window_flags.h"
 #include <stdio.h>
 #include <stb_image.h>
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A 3D batch of vertice data used to draw 3D shapes.
 struct Batch3D {
 		GLuint VAO, VBO, textureID;
@@ -33,3 +35,7 @@ struct Batch3D {
 	void flush3DBatch(Batch3D* batch);
 	// SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. Deletes the whole 3D batch and all of the memory it's taking up.
 	void delete3DBatch(Batch3D* batch);
+
+#ifdef __cplusplus
+}
+#endif

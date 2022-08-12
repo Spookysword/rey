@@ -1,6 +1,10 @@
 #include "grey/grey/obj.hpp"
 #include "OBJ_Loader.h"
 
+#ifdef __cplusplus
+namespace grey {
+#endif
+
 Vertices loadObj(const char* objFile, bool autoCalcNormals, Color color) {
     objl::Loader loader;
     if (!loader.LoadFile(objFile)) return Vertices();
@@ -19,3 +23,6 @@ Vertices loadObj(const char* objFile, bool autoCalcNormals, Color color) {
     if (autoCalcNormals) vs = calcNormals(vs);
     return vs;
 }
+#ifdef __cplusplus
+}
+#endif

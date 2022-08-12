@@ -1,5 +1,7 @@
 #include "grey/grey/vertices.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 Vertice Vertice_new(float x, float y, float z, Color color, float u, float v) {
 	Vertice o;
 	o.x = x;
@@ -74,3 +76,6 @@ Vertices calcNormals(Vertices v) {
 
 	return o;
 }
+#ifdef __cplusplus
+}
+#endif

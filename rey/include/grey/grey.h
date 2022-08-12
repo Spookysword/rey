@@ -27,6 +27,10 @@ extern "C" {
 #include "grey/grey/window.h"
 #include "grey/grey/font.h"
 
+#ifdef __cplusplus
+namespace grey {
+#endif
+
 	// Loads a font and returns the ID of it. The size indicates the resolution the font is intended to be rendered at in pixels.
 	FontID loadFont(Window* win, const char* filePath, float size);
 	// Deletes the specified font from memory.
@@ -72,6 +76,10 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+}
+#ifndef GREY_ENABLE_NAMESPACE
+using namespace grey;
+#endif
 #endif
 
 #endif

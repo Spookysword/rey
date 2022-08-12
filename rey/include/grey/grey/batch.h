@@ -3,6 +3,10 @@
 #include <GLFW/glfw3.h>
 #include "mrey/mrey.h"
 
+#ifdef __cplusplus
+namespace grey {
+#endif
+
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. A batch of vertice data used to draw shapes.
 struct Batch {
 		GLuint VAO, VBO;
@@ -28,3 +32,7 @@ void bindBatch(Batch batch);
 void flushBatch(Batch* batch);
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. Deletes the whole batch and all of the memory it's taking up.
 void deleteBatch(Batch* batch);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,5 +1,7 @@
 #pragma once
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. The shader used to render all normal shapes' verticies.
 extern const char* colorVertexShader;
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. The shader used to render all normal shapes' color.
@@ -16,3 +18,6 @@ extern const char* fontFragmentShader;
 extern const char* texture3DVertexShader;
 // SHOULDN'T BE USED UNLESS YOU'RE MODIFYING GREY CODE DIRECTLY. The shader used to render all 3D textures' color.
 extern const char* texture3DFragmentShader;
+#ifdef __cplusplus
+}
+#endif

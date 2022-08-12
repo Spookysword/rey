@@ -1,5 +1,7 @@
 #include "grey/grey/color.h"
-
+#ifdef __cplusplus
+namespace grey {
+#endif
 	void setColor(Color* oldColor, Color newColor) {
     #ifdef __cplusplus
 	    *oldColor = newColor;
@@ -10,3 +12,6 @@
         oldColor[0][3] = newColor[3];
     #endif
 }
+#ifdef __cplusplus
+}
+#endif

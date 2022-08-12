@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef __cplusplus
+namespace grey {
     // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
     class Color {
     public:
@@ -43,12 +44,19 @@
         }
     }
     };
+}
 #else
     // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
 	typedef unsigned int Color[4];
 #endif
     // Takes the memory address of a color and replaces it with another color. Essentially, oldColor = newColor for nerds using C.
+    #ifdef __cplusplus
+namespace grey {
+#endif
 	void setColor(Color* oldColor, Color newColor);
+    #ifdef __cplusplus
+}
+#endif
 
 #ifdef __cplusplus
 	// Chromakey
@@ -56,7 +64,7 @@
 #define COLOR_WHITE new Color{ 255, 255, 255, 255 }
 #define COLOR_LIGHT_GREY new Color{ 128, 128, 128, 255 }
 #define COLOR_DARK_GREY new Color{ 63, 63, 63, 255 }
-#define grey new Color{ 15, 15, 15, 255 }
+#define COLOR_GREY new Color{ 15, 15, 15, 255 }
 // Primary
 #define COLOR_RED  new Color{ 255, 0, 0, 255 }
 #define COLOR_GREEN new Color{ 0, 255, 0, 255 }
@@ -102,7 +110,7 @@
 #define COLOR_WHITE (unsigned int [4]){ 255, 255, 255, 255 }
 #define COLOR_LIGHT_GREY (unsigned int [4]){ 128, 128, 128, 255 }
 #define COLOR_DARK_GREY (unsigned int [4]){ 63, 63, 63, 255 }
-#define grey (unsigned int [4]){ 15, 15, 15, 255 }
+#define COLOR_GREY (unsigned int [4]){ 15, 15, 15, 255 }
 // Primary
 #define COLOR_RED (unsigned int [4]){ 255, 0, 0, 255 }
 #define COLOR_GREEN (unsigned int [4]){ 0, 255, 0, 255 }
