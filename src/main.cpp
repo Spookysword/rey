@@ -1,6 +1,6 @@
+#include <arey/arey.hpp>
 #include <grey/grey.h>
 #include <grey/grey/obj.hpp>
-#include <arey/arey.hpp>
 
 int main() {
 	initGrey(0);
