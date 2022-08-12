@@ -128,6 +128,92 @@ ALuint SoundDevice::addSoundEffect(const char* filename) {
     return buffer;
 }
 
+ALuint SoundDevice::addCursedSoundEffect(const char* filename) {
+    int channels;
+    int sampleRate;
+    unsigned long long totalPCMFrameCount;
+    ALenum format;
+    ALsizei size;
+    float* sampleData;
+
+    std::string s(filename);
+    std::string last3 = s.substr(s.size() - 3);
+    std::string last3lower;
+    for (int i = 0; i < 3; i++) {
+        last3lower.push_back(std::tolower(last3[i]));
+    }
+    std::string last4 = s.substr(s.size() - 4);
+    std::string last4lower;
+    for (int i = 0; i < 4; i++) {
+        last4lower.push_back(std::tolower(last4[i]));
+    }
+    if (last3lower == "wav") {
+        unsigned int u_channels;
+        unsigned int u_sampleRate;
+        sampleData = drwav_open_file_and_read_pcm_frames_f32(filename, &u_channels, &u_sampleRate, &totalPCMFrameCount, NULL);
+        channels = u_channels;
+        sampleRate = u_sampleRate;
+    }
+    else if (last3lower == "mp3") {
+        drmp3_config u_config;
+        sampleData = drmp3_open_file_and_read_pcm_frames_f32(filename, &u_config, &totalPCMFrameCount, NULL);
+        channels = u_config.channels;
+        sampleRate = u_config.sampleRate;
+    }
+    else if (last3lower == "ogg") {
+        // Thank you Wyrframe & jfirjebshw <3 https://www.gamedev.net/forums/topic/667704-playing-ogg-file-with-openal-and-stb_vorbis/5224322/
+        short* shortSampleData;
+        int sampleDecode = stb_vorbis_decode_filename(filename, &channels, &sampleRate, &shortSampleData);
+        sampleData = (float*)shortSampleData;
+        size = sampleDecode * channels * sampleRate * sizeof(float);
+    }
+    else if (last4lower == "flac") {
+        unsigned int u_channels;
+        unsigned int u_sampleRate;
+        sampleData = drflac_open_file_and_read_pcm_frames_f32(filename, &u_channels, &u_sampleRate, &totalPCMFrameCount, NULL);
+        channels = u_channels;
+        sampleRate = u_sampleRate;
+    }
+    else {
+        printf("arey: unrecognized file format thrown in %s\n", filename);
+        return 0;
+    }
+
+    if (sampleData == NULL) {
+        printf("arey: failed to read file %s\n", filename);
+        return 0;
+    }
+    switch(channels) {
+    case 1:
+        format = AL_FORMAT_MONO16;
+        break;
+    case 2:
+        format = AL_FORMAT_STEREO16;
+        break;
+    case 3:
+        format = AL_FORMAT_BFORMAT2D_16;
+        break;
+    case 4:
+        format = AL_FORMAT_BFORMAT3D_16;
+        break;
+    default:
+        printf("arey: audio file %s has unsupported channel count %d\n", channels);
+        drwav_free(sampleData, NULL);
+        break;
+        return 0; // Not sure if this works, we'll find out the hard way.
+    }
+    size = (ALsizei)(totalPCMFrameCount * channels) * (ALsizei)sizeof(short);
+
+    ALuint buffer = 0;
+    alGenBuffers(1, &buffer);
+    // Maybe sampleData doesn't work here
+    alBufferData(buffer, format, sampleData, size, sampleRate); // This line is so satisfying lol
+    drwav_free(sampleData, NULL);
+
+    soundEffectBuffers.push_back(buffer);
+    return buffer;
+}
+
 void SoundDevice::removeSoundEffect(ALuint buffer) {
     auto it = soundEffectBuffers.begin();
     while (it != soundEffectBuffers.end()) {
@@ -154,6 +240,12 @@ void closeArey() {
 Sound loadSound(const char* filename) {
     Sound sound;
     sound.index = mainSoundDevice->addSoundEffect(filename);
+    return sound;
+}
+
+Sound loadCursedSound(const char* filename) {
+    Sound sound;
+    sound.index = mainSoundDevice->addCursedSoundEffect(filename);
     return sound;
 }
 

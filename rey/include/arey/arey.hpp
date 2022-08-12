@@ -39,6 +39,7 @@ public:
     ALCcontext* context;
 
     ALuint addSoundEffect(const char* filename);
+    ALuint addCursedSoundEffect(const char* filename);
     void removeSoundEffect(ALuint buffer);
     std::vector<ALuint> soundEffectBuffers;
 };
@@ -50,6 +51,8 @@ void initArey();
 void closeArey();
 
 Sound loadSound(const char* filename);
+
+Sound loadCursedSound(const char* filename);
 
 void deleteSound(Sound* sound);
 
