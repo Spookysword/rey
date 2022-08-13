@@ -25,6 +25,7 @@ typedef struct Vertice {
 typedef struct Vertices {
     Vertice* vertices;
     int size;
+    Vec3 position;
 } Vertices;
 
 // Returns a valid vertice struct with the data passed in.

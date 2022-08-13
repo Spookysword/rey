@@ -1,6 +1,6 @@
 
-#ifndef SIMPLEPARTICLES_RAND_H
-#define SIMPLEPARTICLES_RAND_H
+#ifndef _RAND_H
+#define _RAND_H
 #include <random>
 
 std::random_device rd;
@@ -22,4 +22,4 @@ bool randBool() {
     return dist(gen);
 }
 
-#endif //SIMPLEPARTICLES_RAND_H
+#endif

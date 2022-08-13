@@ -22,6 +22,7 @@ Vertices loadObj(const char* objFile, bool autoCalcNormals, Color color) {
     }
     if (autoCalcNormals) vs = calcNormals(vs);
     return vs;
+    vs.position = Vec3_new(0, 0, 0);
 }
 #ifdef __cplusplus
 }

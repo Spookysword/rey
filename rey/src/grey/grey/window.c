@@ -714,10 +714,11 @@ void draw3DShape(Window* win, Texture texture, Vertices vert) {
 	else {
 		vertices = vert;
 	}
+	Vec3 pos = vertices.position;
 	for (int i = 0; i < vertices.size; i++) {
 
 		Vertice v = vertices.vertices[i];
-		float passIn1[12] = { v.x,v.y,v.z, v.r,v.g,v.b,v.a, v.u,v.v, v.nx,v.ny,v.nz };
+		float passIn1[12] = { v.x+pos.x,v.y+pos.y,v.z+pos.z, v.r,v.g,v.b,v.a, v.u,v.v, v.nx,v.ny,v.nz };
 		//printf("%f, %f, %f\n", v.nx, v.ny, v.nz);
 		add3DVertice(&win->shaders.data[win->currentShader].textures3D.data[texture], passIn1);
 	}
