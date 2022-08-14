@@ -53,6 +53,9 @@ public:
     void drawRectangle(float x, float y, float width, float height, float rotation=0, Color color=COLOR_WHITE) {
         grey::drawRectangle(&this->win, x, y, width, height, rotation, color);
     }
+    void drawRectangle(Vec2 pos, Vec2 size, float rotation=0, Color color=COLOR_WHITE) {
+        grey::drawRectangle(&this->win, pos.x, pos.y, size.x, size.y, rotation, color);
+    }
     void drawTexture(Texture texture, float x, float y, float width, float height, float rotation=0, Color color=COLOR_WHITE) {
         grey::drawTexture(&this->win, texture, x, y, width, height, rotation, color);
     }

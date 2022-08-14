@@ -60,6 +60,7 @@ extern "C" {
     Vec3 Vec3_cross(Vec3 a, Vec3 b);
     Vec3 Vec3_sub(Vec3 a, Vec3 b);
     Vec3 Vec3_normalize(Vec3 a);
+    Vec3 Vec3_addV(Vec3 a, Vec3 b);
 
     typedef struct Camera {
         Vec3 pos, forward, up, yAxis;
@@ -102,6 +103,12 @@ extern "C" {
     Vec2 Vec2_normalize(Vec2 v);
 
     Vec2 Vec2_subv(Vec2 a, Vec2 b);
+
+    Vec2 Vec2_addv(Vec2 a, Vec2 b);
+
+    Vec2 Vec2_addf(Vec2 a, double f);
+
+    Vec2 Vec2_mulv(Vec2 a, Vec2 b);
 
     typedef struct Vec4 {
         double x, y, z, w;
