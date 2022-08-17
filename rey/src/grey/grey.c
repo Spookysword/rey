@@ -29,7 +29,7 @@ void initGrey(unsigned int sampleRate) {
 #else
 	glfwSwapInterval(1);
 #endif
-	stbi_set_flip_vertically_on_load(TRUE);
+	stbi_set_flip_vertically_on_load(FALSE);
 }
 void closeGrey() {
 	FT_Done_FreeType(FT);

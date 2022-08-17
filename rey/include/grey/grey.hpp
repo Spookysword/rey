@@ -2,6 +2,7 @@
 #define GREY_ENABLE_NAMESPACE
 #include <grey/grey.h>
 #include <string>
+#include <vector>
 
 using grey::initGrey;
 using grey::closeGrey;
@@ -74,6 +75,9 @@ public:
     void drawBorderedText(const char* text, FontID font, float x, float y, float scale, float borderSize, Color color=COLOR_WHITE, Color borderColor=COLOR_BLACK) {
         grey::drawBorderedText(&this->win, text, font, x, y, scale, borderSize, color, borderColor);
     }
+    void drawBorderedText(std::string text, FontID font, float x, float y, float scale, float borderSize, Color color=COLOR_WHITE, Color borderColor=COLOR_BLACK) {
+        grey::drawBorderedText(&this->win, text.c_str(), font, x, y, scale, borderSize, color, borderColor);
+    }
     float getWidthOfText(const char* text, FontID font, float scale) {
         return grey::getWidthOfText(&this->win, text, font, scale);
     }
@@ -104,4 +108,35 @@ public:
     void draw3DShape(Texture texture, Vertices vertices) {
         grey::draw3DShape(&this->win, texture, vertices);
     }
+    Texture loadTexture(const char* path, int filter=FILTER_LINEAR) {
+        return grey::newTexture(&this->win, path, filter);
+    }
+    FontID loadFont(const char* filePath, float size) {
+        return grey::loadFont(&this->win, filePath, size);
+    }
+    std::vector<std::vector<Color>> loadTexturePixels(Texture texture) {
+    glBindTexture(GL_TEXTURE_2D, win.shaders.data[win.currentShader].textures.data[texture].textureID);
+    int w, h;
+    int miplevel = 0;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
+    GLubyte* pixels = new GLubyte[w*h*4];
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    std::vector<std::vector<Color>> colors;
+    for (int i = 0; i < w; i++) {
+        std::vector<Color> row;
+        for (int j = 0; j < h; j++) {
+            int r = j*w*4;
+            int c = i*4;
+            row.push_back(Color(pixels[r+c], pixels[r+c+1], pixels[r+c+2], pixels[r+c+3]));
+        }
+        colors.push_back(row);
+    }
+    delete[] pixels;
+    return colors;
+}
 };
+
+operator!=(const Vec2& a, const Vec2& b) {
+    return a.x != b.x || a.y != b.y;
+}

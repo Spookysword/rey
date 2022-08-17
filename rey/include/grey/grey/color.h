@@ -24,7 +24,13 @@ namespace grey {
         b = pColor->b;
         a = pColor->a;
     }
-        unsigned int operator[](int i) const {
+    Color operator*(float f) {
+        return Color(r * f, g * f, b * f, a * f);
+    }
+    Color operator-(float f) {
+        return Color(r - f, g - f, b - f, a - f);
+    }
+    unsigned int operator[](int i) const {
         switch (i) {
             case 0:
                 return r;
@@ -43,7 +49,21 @@ namespace grey {
                 break;
         }
     }
-    };
+    Color rgb_(unsigned int a) {
+        return Color(r, g, b, a);
+    }
+    Color _gba(unsigned int r) {
+        return Color(r, g, b, a);
+    }
+
+};
+
+bool operator==(const Color& lhs, const Color& rhs) {
+    return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b && lhs.a == rhs.a;
+}
+
+
+
 }
 #else
     // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
@@ -59,92 +79,92 @@ namespace grey {
 #endif
 
 #ifdef __cplusplus
-	// Chromakey
-#define COLOR_BLACK new Color{ 0, 0, 0, 255 }
-#define COLOR_WHITE new Color{ 255, 255, 255, 255 }
-#define COLOR_LIGHT_GREY new Color{ 128, 128, 128, 255 }
-#define COLOR_DARK_GREY new Color{ 63, 63, 63, 255 }
-#define COLOR_GREY new Color{ 15, 15, 15, 255 }
+// Chromakey
+extern const grey::Color COLOR_BLACK;
+extern const grey::Color COLOR_WHITE;
+extern const grey::Color COLOR_LIGHT_GREY;
+extern const grey::Color COLOR_DARK_GREY;
+extern const grey::Color COLOR_GREY;
 // Primary
-#define COLOR_RED  new Color{ 255, 0, 0, 255 }
-#define COLOR_GREEN new Color{ 0, 255, 0, 255 }
-#define COLOR_BLUE new Color{ 0, 0, 255, 255 }
+extern const grey::Color COLOR_RED;
+extern const grey::Color COLOR_GREEN;
+extern const grey::Color COLOR_BLUE;
 // Secondary
-#define COLOR_YELLOW new Color{ 255, 255, 0, 255 }
-#define COLOR_CYAN new Color{ 0, 255, 255, 255 }
-#define COLOR_MAGENTA new Color{ 255, 0, 255, 255 }
+extern const grey::Color COLOR_YELLOW;
+extern const grey::Color COLOR_CYAN;
+extern const grey::Color COLOR_MAGENTA;
 // Tertiary
-#define COLOR_ORANGE new Color{ 255, 128, 0, 255 }
-#define COLOR_CHARTREUSE new Color{ 128, 255, 0, 255 }
-#define COLOR_SPRING_GREEN new Color{ 0, 255, 128, 255 }
-#define COLOR_AZURE new Color{ 0, 128, 255, 255 }
-#define COLOR_VIOLET new Color{ 128, 0, 255, 255 }
-#define COLOR_ROSE new Color{ 255, 0, 128, 255 }
+extern const grey::Color COLOR_ORANGE;
+extern const grey::Color COLOR_CHARTREUSE;
+extern const grey::Color COLOR_SPRING_GREEN;
+extern const grey::Color COLOR_AZURE;
+extern const grey::Color COLOR_VIOLET;
+extern const grey::Color COLOR_ROSE;
 
 // Soft Primary
-#define COLOR_SOFT_RED new Color{ 255, 50, 50, 255 }
-#define COLOR_SOFT_GREEN new Color{ 50, 255, 50, 255 }
-#define COLOR_SOFT_BLUE new Color{ 50, 50, 255, 255 }
+extern const grey::Color COLOR_SOFT_RED;
+extern const grey::Color COLOR_SOFT_GREEN;
+extern const grey::Color COLOR_SOFT_BLUE;
 // Soft Secondary
-#define COLOR_SOFT_YELLOW new Color{ 255, 255, 50, 255 }
-#define COLOR_SOFT_CYAN new Color{ 50, 255, 255, 255 }
-#define COLOR_SOFT_MAGENTA new Color{ 255, 50, 255, 255 }
+extern const grey::Color COLOR_SOFT_YELLOW;
+extern const grey::Color COLOR_SOFT_CYAN;
+extern const grey::Color COLOR_SOFT_MAGENTA;
 // Soft Tertiary
-#define COLOR_SOFT_ORANGE new Color{ 255, 128, 50, 255 }
-#define COLOR_SOFT_CHARTREUSE new Color{ 128, 255, 50, 255 }
-#define COLOR_SOFT_SPRING_GREEN new Color{ 50, 255, 128, 255 }
-#define COLOR_SOFT_AZURE new Color{ 50, 128, 255, 255 }
-#define COLOR_SOFT_VIOLET new Color{ 128, 50, 255, 255 }
-#define COLOR_SOFT_ROSE new Color{ 255, 50, 128, 255 }
+extern const grey::Color COLOR_SOFT_ORANGE;
+extern const grey::Color COLOR_SOFT_CHARTREUSE;
+extern const grey::Color COLOR_SOFT_SPRING_GREEN;
+extern const grey::Color COLOR_SOFT_AZURE;
+extern const grey::Color COLOR_SOFT_VIOLET;
+extern const grey::Color COLOR_SOFT_ROSE;
 
 // Miscellaneous
-#define COLOR_DISCORD new Color{ 54, 57, 63, 255 }
-#define COLOR_SIMPLE new Color{ 0, 159, 141, 255 }
-#define COLOR_BROWN new Color{ 165, 42, 42, 255 }
+extern const grey::Color COLOR_DISCORD;
+extern const grey::Color COLOR_SIMPLE;
+extern const grey::Color COLOR_BROWN;
 
 
 #else
 
 	// Chromakey
-#define COLOR_BLACK (unsigned int [4]){ 0, 0, 0, 255 }
-#define COLOR_WHITE (unsigned int [4]){ 255, 255, 255, 255 }
-#define COLOR_LIGHT_GREY (unsigned int [4]){ 128, 128, 128, 255 }
-#define COLOR_DARK_GREY (unsigned int [4]){ 63, 63, 63, 255 }
-#define COLOR_GREY (unsigned int [4]){ 15, 15, 15, 255 }
+extern const Color COLOR_BLACK;
+extern const Color COLOR_WHITE;
+extern const Color COLOR_LIGHT_GREY;
+extern const Color COLOR_DARK_GREY;
+extern const Color COLOR_GREY;
 // Primary
-#define COLOR_RED (unsigned int [4]){ 255, 0, 0, 255 }
-#define COLOR_GREEN (unsigned int [4]){ 0, 255, 0, 255 }
-#define COLOR_BLUE (unsigned int [4]){ 0, 0, 255, 255 }
+extern const Color COLOR_RED;
+extern const Color COLOR_GREEN;
+extern const Color COLOR_BLUE;
 // Secondary
-#define COLOR_YELLOW (unsigned int [4]){ 255, 255, 0, 255 }
-#define COLOR_CYAN (unsigned int [4]){ 0, 255, 255, 255 }
-#define COLOR_MAGENTA (unsigned int [4]){ 255, 0, 255, 255 }
+extern const Color COLOR_YELLOW;
+extern const Color COLOR_CYAN;
+extern const Color COLOR_MAGENTA;
 // Tertiary
-#define COLOR_ORANGE (unsigned int [4]){ 255, 128, 0, 255 }
-#define COLOR_CHARTREUSE (unsigned int [4]){ 128, 255, 0, 255 }
-#define COLOR_SPRING_GREEN (unsigned int [4]){ 0, 255, 128, 255 }
-#define COLOR_AZURE (unsigned int [4]){ 0, 128, 255, 255 }
-#define COLOR_VIOLET (unsigned int [4]){ 128, 0, 255, 255 }
-#define COLOR_ROSE (unsigned int [4]){ 255, 0, 128, 255 }
+extern const Color COLOR_ORANGE;
+extern const Color COLOR_CHARTREUSE;
+extern const Color COLOR_SPRING_GREEN;
+extern const Color COLOR_AZURE;
+extern const Color COLOR_VIOLET;
+extern const Color COLOR_ROSE;
 
 // Soft Primary
-#define COLOR_SOFT_RED (unsigned int [4]){ 255, 50, 50, 255 }
-#define COLOR_SOFT_GREEN (unsigned int [4]){ 50, 255, 50, 255 }
-#define COLOR_SOFT_BLUE (unsigned int [4]){ 50, 50, 255, 255 }
+extern const Color COLOR_SOFT_RED;
+extern const Color COLOR_SOFT_GREEN;
+extern const Color COLOR_SOFT_BLUE;
 // Soft Secondary
-#define COLOR_SOFT_YELLOW (unsigned int [4]){ 255, 255, 50, 255 }
-#define COLOR_SOFT_CYAN (unsigned int [4]){ 50, 255, 255, 255 }
-#define COLOR_SOFT_MAGENTA (unsigned int [4]){ 255, 50, 255, 255 }
+extern const Color COLOR_SOFT_YELLOW;
+extern const Color COLOR_SOFT_CYAN;
+extern const Color COLOR_SOFT_MAGENTA;
 // Soft Tertiary
-#define COLOR_SOFT_ORANGE (unsigned int [4]){ 255, 128, 50, 255 }
-#define COLOR_SOFT_CHARTREUSE (unsigned int [4]){ 128, 255, 50, 255 }
-#define COLOR_SOFT_SPRING_GREEN (unsigned int [4]){ 50, 255, 128, 255 }
-#define COLOR_SOFT_AZURE (unsigned int [4]){ 50, 128, 255, 255 }
-#define COLOR_SOFT_VIOLET (unsigned int [4]){ 128, 50, 255, 255 }
-#define COLOR_SOFT_ROSE (unsigned int [4]){ 255, 50, 128, 255 }
+extern const Color COLOR_SOFT_ORANGE;
+extern const Color COLOR_SOFT_CHARTREUSE;
+extern const Color COLOR_SOFT_SPRING_GREEN;
+extern const Color COLOR_SOFT_AZURE;
+extern const Color COLOR_SOFT_VIOLET;
+extern const Color COLOR_SOFT_ROSE;
 
 // Miscellaneous
-#define COLOR_DISCORD (unsigned int [4]){ 54, 57, 63, 255 }
-#define COLOR_SIMPLE (unsigned int [4]){ 0, 159, 141, 255 }
+extern const Color COLOR_DISCORD;
+extern const Color COLOR_SIMPLE;
 
 #endif
