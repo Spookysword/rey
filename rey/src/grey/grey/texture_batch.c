@@ -18,6 +18,7 @@ void endTextureShape(TextureBatch* batch) {
 }
 
 void drawTextureBatch(TextureBatch batch, GLenum type) {
+	stbi_set_flip_vertically_on_load(TRUE);
 	glBindVertexArray(batch.VAO);
 	intVec first = intVecCreate();
 	int tempInt = 0;

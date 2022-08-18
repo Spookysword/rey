@@ -7,6 +7,7 @@ using std::vector;
 using std::pair;
 
 #define PID2   1.57079633
+#define PIT2   6.28318531
 #define PID4   0.78539816
 #define PITP25 PID4
 #define PITP75 2.35619449
@@ -72,13 +73,18 @@ int main() {
 	Texture tex0 = win.loadTexture("resources/block.png");
 	vector<vector<Color>> tex0colors = win.loadTexturePixels(tex0);
 
-	Texture tex1 = win.loadTexture("resources/monster.png");
-	vector<vector<Color>> tex1colors = win.loadTexturePixels(tex1);
+	// Texture tex1 = win.loadTexture("resources/monster.png");
+	// vector<vector<Color>> tex1colors = win.loadTexturePixels(tex1);
 
-	Texture tex2 = win.loadTexture("resources/enemy.png");
-	vector<vector<Color>> tex2colors = win.loadTexturePixels(tex2);
+	// Texture tex2 = win.loadTexture("resources/enemy.png");
+	// vector<vector<Color>> tex2colors = win.loadTexturePixels(tex2);
+
+	Texture enemyTex = win.loadTexture("resources/enemy.png");
+	vector<vector<Color>> enemyColors = win.loadTexturePixels(enemyTex);
 
 	FontID arial = win.loadFont("resources/arial.ttf", 50);
+
+	float* fDepthBuffer = nullptr;
 
 
 	vector<Color> screen;
@@ -124,31 +130,26 @@ int main() {
 	vector<Vec2> enemies;
 	enemies.push_back(Vec2_new(15, 15));
 
-	bool mouseLocked = false;
+	fDepthBuffer = new float[nScreenWidth];
 
-	float currentTime = 0.0f;
+	bool mouseLocked = false;
 	int lastSecond = 0;
 
 	while (win) {
 		win.update();
-		currentTime += win.win.deltaTime;
-		if (currentTime > 1.0f && garfiledMove) {
-			currentTime = 0.0f;
-			int diffx = (int)fPlayerX - (int)enemies[0].x;
-			int diffy = (int)fPlayerY - (int)enemies[0].y;
+		float diffx = fPlayerX - enemies[0].x;
+		float diffy = fPlayerY - enemies[0].y;
 
-			if (diffx == 0 && diffy == 0) {
-				nHitPoints--;
-			}
-			bool px = diffx > 0;
-			bool py = diffy > 0;
-			bool nx = diffx < 0;
-			bool ny = diffy < 0;
-			if (px) enemies[0].x += 1;
-			if (py) enemies[0].y += 1;
-			if (nx) enemies[0].x -= 1;
-			if (ny) enemies[0].y -= 1;
+		if (diffx == 0 && diffy == 0) {
+			nHitPoints--;
 		}
+		while (abs(diffx) + abs(diffy) > 5.0f) {
+			diffx /= 1.5f;
+			diffy /= 1.5f;
+		}
+
+		enemies[0].x += diffx*win.win.deltaTime;
+		enemies[0].y += diffy*win.win.deltaTime;
 
 		if (nHitPoints <= 0) {
 			fPlayerX = 8.0f;
@@ -257,7 +258,6 @@ int main() {
 			}
 		}
 		
-		bool bFoundScary = false;
 		for (int x = 0; x < nScreenWidth; x++) {
 			float fRayAngle = (fPlayerA - fFOV / 2.0f) + ((float)x / (float)nScreenWidth) * fFOV;
 			float fDistanceToWall = 0.0f;
@@ -279,12 +279,12 @@ int main() {
 					bHitWall = true;
 					fDistanceToWall = fDepth;
 				} else {
-					if (map[nTestY * nMapWidth + nTestX] == L'#' || map[nTestY * nMapWidth + nTestX] == L'X' || isEnemy(enemies, nTestX, nTestY)) {
+					if (map[nTestY * nMapWidth + nTestX] == L'#') {
 						bHitWall = true;
-						if (isEnemy(enemies, nTestX, nTestY))
-							walltype = 1;
-						if (map[nTestY * nMapWidth + nTestX] == L'#' && isEnemy(enemies, nTestX, nTestY))
-							walltype = 2;
+						// if (isEnemy(enemies, nTestX, nTestY))
+						// 	walltype = 1;
+						// if (map[nTestY * nMapWidth + nTestX] == L'#' && isEnemy(enemies, nTestX, nTestY))
+						// 	walltype = 2;
 
 
 						float fBlockMidX = (float)nTestX + 0.5f;
@@ -302,10 +302,6 @@ int main() {
 							fSampleX = fTestPointX - (float)nTestX;
 						if (fTestAngle >= PITP75 || fTestAngle < -PITP75)
 							fSampleX = fTestPointY - (float)nTestY;
-						
-						if ((walltype == 1 || walltype == 2) && scary) {
-							bFoundScary = true;
-						}
 
 					}
 				}
@@ -313,6 +309,7 @@ int main() {
 			int nCeiling = (float)(nScreenHeight / 2.0) - nScreenHeight / ((float)fDistanceToWall);
 			int nFloor = nScreenHeight - nCeiling;
 
+			fDepthBuffer[x] = fDistanceToWall;
 
 			for (int y = 0; y < nScreenHeight; y++) {
 				if (y < nCeiling) {
@@ -335,11 +332,11 @@ int main() {
 						} else {
 							if (walltype == 0) {
 								screen[getPosition(x, y)] = (tex0colors[fSampleX*tex0colors.size()][fSampleY*tex0colors[0].size()] * multiplier ).rgb_(255); // wall
-							} else if (walltype == 1) {
-								screen[getPosition(x, y)] = (tex2colors[fSampleX*tex2colors.size()][fSampleY*tex2colors[0].size()] * multiplier ).rgb_(255); // garfiled
-							} else if (walltype == 2) {
-								screen[getPosition(x, y)] = (tex1colors[fSampleX*tex2colors.size()][fSampleY*tex2colors[0].size()] * multiplier ).rgb_(255); // garfiled wall
-							}
+							 } // else if (walltype == 1) {
+							// 	screen[getPosition(x, y)] = (tex2colors[fSampleX*tex2colors.size()][fSampleY*tex2colors[0].size()] * multiplier ).rgb_(255); // garfiled
+							// } else if (walltype == 2) {
+							// 	screen[getPosition(x, y)] = (tex1colors[fSampleX*tex2colors.size()][fSampleY*tex2colors[0].size()] * multiplier ).rgb_(255); // garfiled wall
+							// }
 						}
 					}
 
@@ -356,12 +353,60 @@ int main() {
 		for (int i = 0; i < enemies.size(); i++) {
 			win.drawLine(((nMapWidth)-fPlayerX)*mapDisplaySize, fPlayerY*mapDisplaySize, ((nMapWidth)-enemies[i].x)*mapDisplaySize, enemies[i].y*mapDisplaySize, 1, COLOR_RED);
 		}
-		if (bFoundScary)
-		for (int i = 0; i < nScreenWidth * nScreenHeight; i++) {
-			if ((Color)screen[i] == (Color)COLOR_BLACK) {
-				continue;
+		bool bFoundScary = false;
+		for (int i = 0; i < enemies.size(); i++) {
+			float fVecX = enemies[i].x - fPlayerX;
+			float fVecY = enemies[i].y - fPlayerY;
+			float fDistanceFromPlayer = sqrtf(fVecX * fVecX + fVecY * fVecY);
+
+			float fEyeX = sinf(fPlayerA);
+			float fEyeY = cosf(fPlayerA);
+			float fObjectAngle = atan2f(fEyeY, fEyeX) - atan2f(fVecY, fVecX);
+			if (fObjectAngle < -PI)
+				fObjectAngle += PIT2;
+			if (fObjectAngle > PI)
+				fObjectAngle -= PIT2;
+
+			bool bInPlayerFOV = fabs(fObjectAngle) < fFOV / 2.0f;
+
+			if (bInPlayerFOV && fDistanceFromPlayer >= 0.5f && fDistanceFromPlayer < fDepth) {
+				float fObjectCeiling = (float)(nScreenHeight / 2.0) - nScreenHeight / ((float)fDistanceFromPlayer);
+				float fObjectFloor = nScreenHeight - fObjectCeiling;
+				float fObjectHeight = fObjectFloor - fObjectCeiling;
+				float fObjectAspectRatio =  enemyColors[0].size() / enemyColors.size(); // ############## MIGHT BE BACKWARDS :/
+				float fObjectWidth = fObjectHeight / fObjectAspectRatio;
+
+				float fMiddleOfObject = (0.5f * (fObjectAngle / (fFOV / 2.0f)) + 0.5f) * nScreenWidth;
+
+				// #################### https://www.youtube.com/watch?v=HEb2akswCcw      30:38
+				
+				//win.drawTexture(enemyTex, (fMiddleOfObject - fObjectWidth / 2.0f)*nSpotSize, (fObjectCeiling)*nSpotSize, fObjectWidth*nSpotSize, fObjectHeight*nSpotSize, 0, COLOR_WHITE);
+				float multiplier = (1/(fDistanceFromPlayer*brightnessMod)-(1/(fDepth*brightnessMod)));
+					if (multiplier > maxBrightness) {
+						multiplier = maxBrightness;
+					}
+				for (float lx = 0; lx < fObjectWidth; lx++) {
+					for (float ly = 0; ly < fObjectHeight; ly++) {
+						float fSampleX = lx / fObjectWidth;
+						float fSampleY = ly / fObjectHeight;
+
+						Color c = enemyColors[(int)(fSampleX*enemyColors.size())][(int)(fSampleY*enemyColors[0].size())];
+						int nPixelX = (int)(fMiddleOfObject - fObjectWidth / 2.0f + lx);
+						if (nPixelX >= 0 && nPixelX < nScreenWidth && (int)(fObjectCeiling + ly) >= 0 && (int)(fObjectCeiling + ly) < nScreenWidth && c.a > 0.5f && fDepthBuffer[nPixelX] >= fDistanceFromPlayer) {
+							bFoundScary = true;
+							screen[getPosition(nPixelX, (int)(fObjectCeiling + ly))] = (Color)(c * multiplier).rgb_(255);
+						}
+					}
+				}
+
 			}
-			screen[i].r = screen[i].r + scaryModifier;
+
+		}
+
+		if (bFoundScary) {
+			for (int i = 0; i < nScreenWidth * nScreenHeight; i++) {
+				screen[i].r += 15;
+			}
 		}
 		
 		if (bShowMap)

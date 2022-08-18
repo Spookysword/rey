@@ -3,6 +3,13 @@
 #include <GLFW/glfw3.h>
 #include "mrey/mrey.h"
 #include <stb_image.h>
+#ifdef _WIN32
+#include <Windows.h>
+#else
+#define boolean unsigned int
+#define TRUE 1
+#define FALSE 0
+#endif
 #ifdef __cplusplus
 namespace grey {
 #endif
