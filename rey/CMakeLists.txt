@@ -15,7 +15,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 include(GNUInstallDirs)
 
 find_package(Threads REQUIRED)
-find_package(OpenGL REQUIRED)
+if(WIN32)
+  find_package(OpenGL REQUIRED)
+else()
+  find_package(GL REQUIRED)
+endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 add_subdirectory(extern/chipmunk)
