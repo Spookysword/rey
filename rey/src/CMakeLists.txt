@@ -13,7 +13,11 @@ target_include_directories(rey
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
-target_link_libraries(rey PUBLIC opengl32 chipmunk_static glfw glad freetype OpenAL)
+if (WIN32)
+  target_link_libraries(rey PUBLIC opengl32 chipmunk_static glfw glad freetype OpenAL)
+else()
+target_link_libraries(rey PUBLIC GL chipmunk_static glfw glad freetype OpenAL)
+endif()
 
 set_target_properties(rey PROPERTIES
 	CXX_STANDARD 11
