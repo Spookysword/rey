@@ -64,7 +64,7 @@ public:
 		setColor(&this->color, color);
 		if (type == STATIC) {
 			//body = cpSpaceGetStaticBody(space);
-			body = cpBodyNew(INFINITE, cpMomentForCircle(INFINITE, 0, r, cpvzero));
+			body = cpBodyNew(INFINITY, cpMomentForCircle(INFINITY, 0, r, cpvzero));
 			cpBodySetPosition(body, cpv(x, y));
 		}
 		else if (type == DYNAMIC) {
@@ -91,7 +91,7 @@ public:
 		this->thickness = thickness;
 		if (type == STATIC) {
 			//body = cpSpaceGetStaticBody(space);
-			body = cpBodyNew(INFINITE, cpMomentForSegment(INFINITE, cpv(x1, y1), cpv(x2, y2), thickness / 2));
+			body = cpBodyNew(INFINITY, cpMomentForSegment(INFINITY, cpv(x1, y1), cpv(x2, y2), thickness / 2));
 		}
 		else if (type == DYNAMIC) {
 			body = cpSpaceAddBody(space, cpBodyNew(mass, cpMomentForSegment(mass, cpv(x1, y1), cpv(x2, y2), thickness/2)));
@@ -115,7 +115,7 @@ public:
 		this->type = type;
 		if (type == STATIC) {
 			//body = cpSpaceGetStaticBody(space);
-			body = cpBodyNew(INFINITE, cpMomentForBox(INFINITE, w, h));
+			body = cpBodyNew(INFINITY, cpMomentForBox(INFINITY, w, h));
 			cpBodySetPosition(body, cpv(x, y));
 		}
 		else if (type == DYNAMIC) {

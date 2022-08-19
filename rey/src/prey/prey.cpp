@@ -1,4 +1,4 @@
-#include "prey/prey.h"
+#include "prey/prey.hpp"
 
 Vec2 cp2v2(cpVect a) {
 	return Vec2_new(a.x, a.y);
