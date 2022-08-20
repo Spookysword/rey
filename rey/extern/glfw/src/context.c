@@ -24,6 +24,8 @@
 //    distribution.
 //
 //========================================================================
+// Please use C89 style variable declarations in this file because VS 2010
+//========================================================================
 
 #include "internal.h"
 
@@ -194,12 +196,6 @@ const _GLFWfbconfig* _glfwChooseFBConfig(const _GLFWfbconfig* desired,
             continue;
         }
 
-        if (desired->doublebuffer != current->doublebuffer)
-        {
-            // Double buffering is a hard constraint
-            continue;
-        }
-
         // Count number of missing buffers
         {
             missing = 0;
@@ -358,7 +354,7 @@ GLFWbool _glfwRefreshContextAttribs(_GLFWwindow* window,
     window->context.source = ctxconfig->source;
     window->context.client = GLFW_OPENGL_API;
 
-    previous = _glfwPlatformGetTls(&_glfw.contextSlot);;
+    previous = _glfwPlatformGetTls(&_glfw.contextSlot);
     glfwMakeContextCurrent((GLFWwindow*) window);
 
     window->context.GetIntegerv = (PFNGLGETINTEGERVPROC)
@@ -568,7 +564,9 @@ GLFWbool _glfwRefreshContextAttribs(_GLFWwindow* window,
         PFNGLCLEARPROC glClear = (PFNGLCLEARPROC)
             window->context.getProcAddress("glClear");
         glClear(GL_COLOR_BUFFER_BIT);
-        window->context.swapBuffers(window);
+
+        if (window->doublebuffer)
+            window->context.swapBuffers(window);
     }
 
     glfwMakeContextCurrent((GLFWwindow*) previous);
@@ -611,9 +609,11 @@ GLFWbool _glfwStringInExtensionString(const char* string, const char* extensions
 GLFWAPI void glfwMakeContextCurrent(GLFWwindow* handle)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFWwindow* previous = _glfwPlatformGetTls(&_glfw.contextSlot);
+    _GLFWwindow* previous;
 
     _GLFW_REQUIRE_INIT();
+
+    previous = _glfwPlatformGetTls(&_glfw.contextSlot);
 
     if (window && window->context.client == GLFW_NO_API)
     {

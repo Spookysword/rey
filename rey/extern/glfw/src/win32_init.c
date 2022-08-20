@@ -2,7 +2,7 @@
 // GLFW 3.3 Win32 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
-// Copyright (c) 2006-2016 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2006-2019 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -24,6 +24,8 @@
 //    distribution.
 //
 //========================================================================
+// Please use C89 style variable declarations in this file because VS 2010
+//========================================================================
 
 #include "internal.h"
 
@@ -36,6 +38,10 @@ static const GUID _glfw_GUID_DEVINTERFACE_HID =
 #define GUID_DEVINTERFACE_HID _glfw_GUID_DEVINTERFACE_HID
 
 #if defined(_GLFW_USE_HYBRID_HPG) || defined(_GLFW_USE_OPTIMUS_HPG)
+
+#if defined(_GLFW_BUILD_DLL)
+ #pragma message("These symbols must be exported by the executable and have no effect in a DLL")
+#endif
 
 // Executables (but not DLLs) exporting this symbol with this value will be
 // automatically directed to the high-performance GPU on Nvidia Optimus systems
@@ -66,16 +72,15 @@ BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
 //
 static GLFWbool loadLibraries(void)
 {
-    _glfw.win32.winmm.instance = LoadLibraryA("winmm.dll");
-    if (!_glfw.win32.winmm.instance)
+    if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+                                GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                            (const WCHAR*) &_glfw,
+                            (HMODULE*) &_glfw.win32.instance))
     {
         _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to load winmm.dll");
+                             "Win32: Failed to retrieve own module handle");
         return GLFW_FALSE;
     }
-
-    _glfw.win32.winmm.GetTime = (PFN_timeGetTime)
-        GetProcAddress(_glfw.win32.winmm.instance, "timeGetTime");
 
     _glfw.win32.user32.instance = LoadLibraryA("user32.dll");
     if (!_glfw.win32.user32.instance)
@@ -97,6 +102,8 @@ static GLFWbool loadLibraries(void)
         GetProcAddress(_glfw.win32.user32.instance, "GetDpiForWindow");
     _glfw.win32.user32.AdjustWindowRectExForDpi_ = (PFN_AdjustWindowRectExForDpi)
         GetProcAddress(_glfw.win32.user32.instance, "AdjustWindowRectExForDpi");
+    _glfw.win32.user32.GetSystemMetricsForDpi_ = (PFN_GetSystemMetricsForDpi)
+        GetProcAddress(_glfw.win32.user32.instance, "GetSystemMetricsForDpi");
 
     _glfw.win32.dinput8.instance = LoadLibraryA("dinput8.dll");
     if (_glfw.win32.dinput8.instance)
@@ -141,6 +148,8 @@ static GLFWbool loadLibraries(void)
             GetProcAddress(_glfw.win32.dwmapi.instance, "DwmFlush");
         _glfw.win32.dwmapi.EnableBlurBehindWindow = (PFN_DwmEnableBlurBehindWindow)
             GetProcAddress(_glfw.win32.dwmapi.instance, "DwmEnableBlurBehindWindow");
+        _glfw.win32.dwmapi.GetColorizationColor = (PFN_DwmGetColorizationColor)
+            GetProcAddress(_glfw.win32.dwmapi.instance, "DwmGetColorizationColor");
     }
 
     _glfw.win32.shcore.instance = LoadLibraryA("shcore.dll");
@@ -171,9 +180,6 @@ static void freeLibraries(void)
 
     if (_glfw.win32.dinput8.instance)
         FreeLibrary(_glfw.win32.dinput8.instance);
-
-    if (_glfw.win32.winmm.instance)
-        FreeLibrary(_glfw.win32.winmm.instance);
 
     if (_glfw.win32.user32.instance)
         FreeLibrary(_glfw.win32.user32.instance);
@@ -258,7 +264,6 @@ static void createKeyTables(void)
     _glfw.win32.keycodes[0x151] = GLFW_KEY_PAGE_DOWN;
     _glfw.win32.keycodes[0x149] = GLFW_KEY_PAGE_UP;
     _glfw.win32.keycodes[0x045] = GLFW_KEY_PAUSE;
-    _glfw.win32.keycodes[0x146] = GLFW_KEY_PAUSE;
     _glfw.win32.keycodes[0x039] = GLFW_KEY_SPACE;
     _glfw.win32.keycodes[0x00F] = GLFW_KEY_TAB;
     _glfw.win32.keycodes[0x03A] = GLFW_KEY_CAPS_LOCK;
@@ -329,27 +334,30 @@ static void createKeyTables(void)
 
 // Creates a dummy window for behind-the-scenes work
 //
-static HWND createHelperWindow(void)
+static GLFWbool createHelperWindow(void)
 {
     MSG msg;
-    HWND window = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,
-                                  _GLFW_WNDCLASSNAME,
-                                  L"GLFW message window",
-                                  WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
-                                  0, 0, 1, 1,
-                                  NULL, NULL,
-                                  GetModuleHandleW(NULL),
-                                  NULL);
-    if (!window)
+
+    _glfw.win32.helperWindowHandle =
+        CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,
+                        _GLFW_WNDCLASSNAME,
+                        L"GLFW message window",
+                        WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
+                        0, 0, 1, 1,
+                        NULL, NULL,
+                        _glfw.win32.instance,
+                        NULL);
+
+    if (!_glfw.win32.helperWindowHandle)
     {
         _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
                              "Win32: Failed to create helper window");
-        return NULL;
+        return GLFW_FALSE;
     }
 
     // HACK: The command to the first ShowWindow call is ignored if the parent
     //       process passed along a STARTUPINFO, so clear that with a no-op call
-    ShowWindow(window, SW_HIDE);
+    ShowWindow(_glfw.win32.helperWindowHandle, SW_HIDE);
 
     // Register for HID device notifications
     {
@@ -360,7 +368,7 @@ static HWND createHelperWindow(void)
         dbi.dbcc_classguid = GUID_DEVINTERFACE_HID;
 
         _glfw.win32.deviceNotificationHandle =
-            RegisterDeviceNotificationW(window,
+            RegisterDeviceNotificationW(_glfw.win32.helperWindowHandle,
                                         (DEV_BROADCAST_HDR*) &dbi,
                                         DEVICE_NOTIFY_WINDOW_HANDLE);
     }
@@ -371,7 +379,7 @@ static HWND createHelperWindow(void)
         DispatchMessageW(&msg);
     }
 
-   return window;
+   return GLFW_TRUE;
 }
 
 
@@ -449,7 +457,7 @@ void _glfwInputErrorWin32(int error, const char* description)
                    GetLastError() & 0xffff,
                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
                    buffer,
-                   sizeof(buffer),
+                   sizeof(buffer) / sizeof(WCHAR),
                    NULL);
     WideCharToMultiByte(CP_UTF8, 0, buffer, -1, message, sizeof(message), NULL, NULL);
 
@@ -487,7 +495,7 @@ void _glfwUpdateKeyNamesWin32(void)
             vk = vks[key - GLFW_KEY_KP_0];
         }
         else
-            vk = MapVirtualKey(scancode, MAPVK_VSC_TO_VK);
+            vk = MapVirtualKeyW(scancode, MAPVK_VSC_TO_VK);
 
         length = ToUnicode(vk, scancode, state,
                            chars, sizeof(chars) / sizeof(WCHAR),
@@ -495,6 +503,8 @@ void _glfwUpdateKeyNamesWin32(void)
 
         if (length == -1)
         {
+            // This is a dead key, so we need a second simulated key press
+            // to make it output its own character (usually a diacritic)
             length = ToUnicode(vk, scancode, state,
                                chars, sizeof(chars) / sizeof(WCHAR),
                                0);
@@ -510,7 +520,8 @@ void _glfwUpdateKeyNamesWin32(void)
     }
 }
 
-// Replacement for IsWindowsVersionOrGreater as MinGW lacks versionhelpers.h
+// Replacement for IsWindowsVersionOrGreater, as we cannot rely on the
+// application having a correct embedded manifest
 //
 BOOL _glfwIsWindowsVersionOrGreaterWin32(WORD major, WORD minor, WORD sp)
 {
@@ -520,7 +531,7 @@ BOOL _glfwIsWindowsVersionOrGreaterWin32(WORD major, WORD minor, WORD sp)
     cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
     cond = VerSetConditionMask(cond, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
     // HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
-    //       latter lies unless the user knew to embedd a non-default manifest
+    //       latter lies unless the user knew to embed a non-default manifest
     //       announcing support for Windows 10 via supportedOS GUID
     return RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
 }
@@ -535,7 +546,7 @@ BOOL _glfwIsWindows10BuildOrGreaterWin32(WORD build)
     cond = VerSetConditionMask(cond, VER_MINORVERSION, VER_GREATER_EQUAL);
     cond = VerSetConditionMask(cond, VER_BUILDNUMBER, VER_GREATER_EQUAL);
     // HACK: Use RtlVerifyVersionInfo instead of VerifyVersionInfoW as the
-    //       latter lies unless the user knew to embedd a non-default manifest
+    //       latter lies unless the user knew to embed a non-default manifest
     //       announcing support for Windows 10 via supportedOS GUID
     return RtlVerifyVersionInfo(&osvi, mask, cond) == 0;
 }
@@ -571,8 +582,7 @@ int _glfwPlatformInit(void)
     if (!_glfwRegisterWindowClassWin32())
         return GLFW_FALSE;
 
-    _glfw.win32.helperWindowHandle = createHelperWindow();
-    if (!_glfw.win32.helperWindowHandle)
+    if (!createHelperWindow())
         return GLFW_FALSE;
 
     _glfwInitTimerWin32();
@@ -602,6 +612,7 @@ void _glfwPlatformTerminate(void)
 
     _glfwTerminateWGL();
     _glfwTerminateEGL();
+    _glfwTerminateOSMesa();
 
     _glfwTerminateJoysticksWin32();
 
@@ -610,7 +621,7 @@ void _glfwPlatformTerminate(void)
 
 const char* _glfwPlatformGetVersionString(void)
 {
-    return _GLFW_VERSION_NUMBER " Win32 WGL EGL"
+    return _GLFW_VERSION_NUMBER " Win32 WGL EGL OSMesa"
 #if defined(__MINGW32__)
         " MinGW"
 #elif defined(_MSC_VER)

@@ -2,7 +2,7 @@
 // GLFW 3.3 - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2002-2006 Marcus Geelnard
-// Copyright (c) 2006-2016 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2006-2019 Camilla Löwy <elmindreda@glfw.org>
 // Copyright (c) 2012 Torsten Walluhn <tw@mad-cad.net>
 //
 // This software is provided 'as-is', without any express or implied
@@ -24,6 +24,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
+//========================================================================
+// Please use C89 style variable declarations in this file because VS 2010
 //========================================================================
 
 #include "internal.h"
@@ -67,7 +69,7 @@ void _glfwInputWindowFocus(_GLFWwindow* window, GLFWbool focused)
 }
 
 // Notifies shared code that a window has moved
-// The position is specified in client-area relative screen coordinates
+// The position is specified in content area relative screen coordinates
 //
 void _glfwInputWindowPos(_GLFWwindow* window, int x, int y)
 {
@@ -143,7 +145,6 @@ void _glfwInputWindowMonitor(_GLFWwindow* window, _GLFWmonitor* monitor)
     window->monitor = monitor;
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 //////                        GLFW public API                       //////
 //////////////////////////////////////////////////////////////////////////
@@ -204,6 +205,8 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
     window->focusOnShow = wndconfig.focusOnShow;
     window->cursorMode  = GLFW_CURSOR_NORMAL;
 
+    window->doublebuffer = fbconfig.doublebuffer;
+
     window->minwidth    = GLFW_DONT_CARE;
     window->minheight   = GLFW_DONT_CARE;
     window->maxwidth    = GLFW_DONT_CARE;
@@ -216,34 +219,6 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height,
     {
         glfwDestroyWindow((GLFWwindow*) window);
         return NULL;
-    }
-
-    if (ctxconfig.client != GLFW_NO_API)
-    {
-        if (!_glfwRefreshContextAttribs(window, &ctxconfig))
-        {
-            glfwDestroyWindow((GLFWwindow*) window);
-            return NULL;
-        }
-    }
-
-    if (window->monitor)
-    {
-        if (wndconfig.centerCursor)
-        {
-            int width, height;
-            _glfwPlatformGetWindowSize(window, &width, &height);
-            _glfwPlatformSetCursorPos(window, width / 2.0, height / 2.0);
-        }
-    }
-    else
-    {
-        if (wndconfig.visible)
-        {
-            _glfwPlatformShowWindow(window);
-            if (wndconfig.focused)
-                _glfwPlatformFocusWindow(window);
-        }
     }
 
     return (GLFWwindow*) window;
@@ -505,12 +480,33 @@ GLFWAPI void glfwSetWindowTitle(GLFWwindow* handle, const char* title)
 GLFWAPI void glfwSetWindowIcon(GLFWwindow* handle,
                                int count, const GLFWimage* images)
 {
+    int i;
     _GLFWwindow* window = (_GLFWwindow*) handle;
+
     assert(window != NULL);
     assert(count >= 0);
     assert(count == 0 || images != NULL);
 
     _GLFW_REQUIRE_INIT();
+
+    if (count < 0)
+    {
+        _glfwInputError(GLFW_INVALID_VALUE, "Invalid image count for window icon");
+        return;
+    }
+
+    for (i = 0; i < count; i++)
+    {
+        assert(images[i].pixels != NULL);
+
+        if (images[i].width <= 0 || images[i].height <= 0)
+        {
+            _glfwInputError(GLFW_INVALID_VALUE,
+                            "Invalid image dimensions for window icon");
+            return;
+        }
+    }
+
     _glfwPlatformSetWindowIcon(window, count, images);
 }
 
@@ -1078,10 +1074,6 @@ GLFWAPI void glfwPollEvents(void)
 GLFWAPI void glfwWaitEvents(void)
 {
     _GLFW_REQUIRE_INIT();
-
-    if (!_glfw.windowListHead)
-        return;
-
     _glfwPlatformWaitEvents();
 }
 
@@ -1104,10 +1096,6 @@ GLFWAPI void glfwWaitEventsTimeout(double timeout)
 GLFWAPI void glfwPostEmptyEvent(void)
 {
     _GLFW_REQUIRE_INIT();
-
-    if (!_glfw.windowListHead)
-        return;
-
     _glfwPlatformPostEmptyEvent();
 }
 

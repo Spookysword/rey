@@ -2,7 +2,7 @@
 // GLFW 3.3 OSMesa - www.glfw.org
 //------------------------------------------------------------------------
 // Copyright (c) 2016 Google Inc.
-// Copyright (c) 2006-2016 Camilla Löwy <elmindreda@glfw.org>
+// Copyright (c) 2016-2017 Camilla Löwy <elmindreda@glfw.org>
 //
 // This software is provided 'as-is', without any express or implied
 // warranty. In no event will the authors be held liable for any damages
@@ -23,6 +23,8 @@
 // 3. This notice may not be removed or altered from any source
 //    distribution.
 //
+//========================================================================
+// Please use C89 style variable declarations in this file because VS 2010
 //========================================================================
 
 #include <stdlib.h>
@@ -47,7 +49,7 @@ static void makeContextCurrentOSMesa(_GLFWwindow* window)
             free(window->context.osmesa.buffer);
 
             // Allocate the new buffer (width * height * 8-bit RGBA)
-            window->context.osmesa.buffer = calloc(4, width * height);
+            window->context.osmesa.buffer = calloc(4, (size_t) width * height);
             window->context.osmesa.width  = width;
             window->context.osmesa.height = height;
         }
@@ -122,6 +124,8 @@ GLFWbool _glfwInitOSMesa(void)
         "libOSMesa.8.dylib",
 #elif defined(__CYGWIN__)
         "libOSMesa-8.so",
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+        "libOSMesa.so",
 #else
         "libOSMesa.so.8",
         "libOSMesa.so.6",
@@ -188,7 +192,7 @@ void _glfwTerminateOSMesa(void)
 
 #define setAttrib(a, v) \
 { \
-    assert((size_t) (index + 1) < sizeof(attribs) / sizeof(attribs[0])); \
+    assert(((size_t) index + 1) < sizeof(attribs) / sizeof(attribs[0])); \
     attribs[index++] = a; \
     attribs[index++] = v; \
 }
@@ -300,6 +304,12 @@ GLFWAPI int glfwGetOSMesaColorBuffer(GLFWwindow* handle, int* width,
 
     _GLFW_REQUIRE_INIT_OR_RETURN(GLFW_FALSE);
 
+    if (window->context.source != GLFW_OSMESA_CONTEXT_API)
+    {
+        _glfwInputError(GLFW_NO_WINDOW_CONTEXT, NULL);
+        return GLFW_FALSE;
+    }
+
     if (!OSMesaGetColorBuffer(window->context.osmesa.handle,
                               &mesaWidth, &mesaHeight,
                               &mesaFormat, &mesaBuffer))
@@ -333,6 +343,12 @@ GLFWAPI int glfwGetOSMesaDepthBuffer(GLFWwindow* handle,
 
     _GLFW_REQUIRE_INIT_OR_RETURN(GLFW_FALSE);
 
+    if (window->context.source != GLFW_OSMESA_CONTEXT_API)
+    {
+        _glfwInputError(GLFW_NO_WINDOW_CONTEXT, NULL);
+        return GLFW_FALSE;
+    }
+
     if (!OSMesaGetDepthBuffer(window->context.osmesa.handle,
                               &mesaWidth, &mesaHeight,
                               &mesaBytes, &mesaBuffer))
@@ -359,7 +375,7 @@ GLFWAPI OSMesaContext glfwGetOSMesaContext(GLFWwindow* handle)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
-    if (window->context.client == GLFW_NO_API)
+    if (window->context.source != GLFW_OSMESA_CONTEXT_API)
     {
         _glfwInputError(GLFW_NO_WINDOW_CONTEXT, NULL);
         return NULL;
