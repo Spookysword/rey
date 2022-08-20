@@ -97,10 +97,10 @@ namespace grey {
     #ifdef __cplusplus
 	    *oldColor = newColor;
     #else
-        oldColor[0][0] = newColor[0];
-        oldColor[0][1] = newColor[1];
-        oldColor[0][2] = newColor[2];
-        oldColor[0][3] = newColor[3];
+        oldColor->r = newColor.r;
+        oldColor->g = newColor.g;
+        oldColor->b = newColor.b;
+        oldColor->a = newColor.a;
     #endif
 }
 #ifdef __cplusplus

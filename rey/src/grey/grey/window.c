@@ -59,7 +59,7 @@ Window createWindow(int width, int height, const char* title) {
 	s.fonts = fontVecCreate();
 	win.startTime = glfwGetTime();
 	win.time = 0.0f;
-	win.backgroundColor[0] = 0; win.backgroundColor[1] = 0; win.backgroundColor[2] = 0; win.backgroundColor[3] = 255;
+	win.backgroundColor.r = 0; win.backgroundColor.g = 0; win.backgroundColor.b = 0; win.backgroundColor.a = 255;
 	win.offset = Vec3_create();
 	win.camera = Camera_create();
 	win.transform = Transform_create(0.1f, 1000.0f, win.width, win.height, 70.0f);
@@ -215,7 +215,7 @@ void renderWindow(Window win) {
 	win.transform.camera = win.camera;
 	glfwMakeContextCurrent(win.windowHandle);
 	glfwSetWindowSize(win.windowHandle, win.width, win.height);
-	glClearColor((float)win.backgroundColor[0] / 255, (float)win.backgroundColor[1] / 255, (float)win.backgroundColor[2] / 255, (float)win.backgroundColor[3] / 255);
+	glClearColor((float)win.backgroundColor.r / 255, (float)win.backgroundColor.g / 255, (float)win.backgroundColor.b / 255, (float)win.backgroundColor.a / 255);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < win.shaders.size; i++) {
@@ -282,10 +282,10 @@ void setWindowFlag(Window win, uint32_t flag, boolean state) {
 // Draw funcs
 void clearWindowBackground(Window* win, Color color) {
 	// I really wish there was a better way of doing this
-	win->backgroundColor[0] = color[0];
-	win->backgroundColor[1] = color[1];
-	win->backgroundColor[2] = color[2];
-	win->backgroundColor[3] = color[3];
+	win->backgroundColor.r = color.r;
+	win->backgroundColor.g = color.g;
+	win->backgroundColor.b = color.b;
+	win->backgroundColor.a = color.a;
 }
 void setWireframeMode(Window win, boolean state) {
 	glfwMakeContextCurrent(win.windowHandle);
@@ -297,17 +297,17 @@ void setWireframeMode(Window win, boolean state) {
 	}
 }
 void drawTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
-	float passIn1[21] = {
-		x1, -y1, win->zmod, (float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255,
-		x2, -y2, win->zmod, (float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255,
-		x3, -y3, win->zmod, (float)color[0] / 255, (float)color[1] / 255, (float)color[2] / 255, (float)color[3] / 255
+	float passIn1[21] = { 
+		x1, -y1, win->zmod, (float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (float)color.a / 255,
+		x2, -y2, win->zmod, (float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (float)color.a / 255,
+		x3, -y3, win->zmod, (float)color.r / 255, (float)color.g / 255, (float)color.b / 255, (float)color.a / 255
 	};
 	addTriangle(&win->shaders.data[win->currentShader].shapeBatch, passIn1);
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
 	win->zmod -= 0.000001f;
 }
 void drawRectangle(Window* win, float x, float y, float width, float height, float rotation, Color color) {
-	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	float r = (float)color.r / 255, g = (float)color.g / 255, b = (float)color.b / 255, a = (float)color.a / 255;
 	y = -y;
 	rotation = -rotation * (PI / 180);
 	float a1 = sqrt(pow((width / 2), 2) + pow((height / 2), 2));
@@ -327,7 +327,7 @@ void drawRectangle(Window* win, float x, float y, float width, float height, flo
 	win->zmod -= 0.000001f;
 }
 void drawTexture(Window* win, Texture texture, float x, float y, float width, float height, float rotation, Color color) {
-	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	float r = (float)color.r / 255, g = (float)color.g / 255, b = (float)color.b / 255, a = (float)color.a / 255;
 	y = -y;
 	float pi = 3.1415926535897932384626433;
 	rotation = -rotation * (pi / 180);
@@ -349,7 +349,7 @@ void drawTexture(Window* win, Texture texture, float x, float y, float width, fl
 }
 
 void drawCircle(Window* win, float x, float y, float radius, Color color) {
-	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
+	float cR, cG, cB, cA; cR = (float)(color.r) / 255; cG = (float)(color.g) / 255; cB = (float)(color.b) / 255; cA = (float)(color.a) / 255;
 	y = -y;
 	float pi2 = 2 * PI;
 	int amount = CIRCLE_ACCURACY;
@@ -365,7 +365,7 @@ void drawCircle(Window* win, float x, float y, float radius, Color color) {
 }
 
 void drawRoundedRect(Window* win, float x, float y, float width, float height, float radius, float rotation, Color color) {
-	float cR, cG, cB, cA; cR = (float)(color[0]) / 255; cG = (float)(color[1]) / 255; cB = (float)(color[2]) / 255; cA = (float)(color[3]) / 255;
+	float cR, cG, cB, cA; cR = (float)(color.r) / 255; cG = (float)(color.g) / 255; cB = (float)(color.b) / 255; cA = (float)(color.a) / 255;
 	float x1 = x;
 	float y1 = y;
 	y1 += height;
@@ -451,7 +451,7 @@ void drawText(Window* win, const char* text, FontID font, float x, float y, floa
 	if (font == -1) { return; }
 	y += scale;
 	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
-	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	float r = (float)color.r / 255, g = (float)color.g / 255, b = (float)color.b / 255, a = (float)color.a / 255;
 	for (int i = 0; text[i] != '\0'; i++) {
 		Character c = win->shaders.data[win->currentShader].fonts.data[font].characters[text[i]];
 		float xpos = x + c.bearingX * scale;
@@ -476,8 +476,8 @@ void drawBorderedText(Window* win, const char* text, FontID font, float x, float
 	if (font == -1) { return; }
 	y += scale;
 	scale = scale / win->shaders.data[win->currentShader].fonts.data[font].scale;
-	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
-	float br = (float)borderColor[0] / 255, bg = (float)borderColor[1] / 255, bb = (float)borderColor[2] / 255, ba = (float)borderColor[3] / 255;
+	float r = (float)color.r / 255, g = (float)color.g / 255, b = (float)color.b / 255, a = (float)color.a / 255;
+	float br = (float)borderColor.r / 255, bg = (float)borderColor.g / 255, bb = (float)borderColor.b / 255, ba = (float)borderColor.a / 255;
 	float borderSize2 = borderSize * 2;
 	// This process is not only kinda slow, but it can be probably done with a different shader...
 	for (int i = 0; text[i] != '\0'; i++) {
@@ -633,7 +633,7 @@ float getHeightOfText(Window* win, const char* text, FontID font, float scale) {
 	return finalh;
 }
 void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
-	float r = (float)color[0] / 255, g = (float)color[1] / 255, b = (float)color[2] / 255, a = (float)color[3] / 255;
+	float r = (float)color.r / 255, g = (float)color.g / 255, b = (float)color.b / 255, a = (float)color.a / 255;
 	for (int i = 0; i < points; i++) {
 		float passIn[7] = { xs[i], -ys[i], win->zmod, r, g, b, a };
 		addVertice(&win->shaders.data[win->currentShader].shapeBatch, passIn);
@@ -642,10 +642,10 @@ void drawPolygon(Window* win, float* xs, float* ys, int points, Color color) {
 	win->zmod -= 0.000001f;
 }
 void drawAdvancedRect(Window* win, float x, float y, float width, float height, float rotation, Color topLeft, Color topRight, Color bottomLeft, Color bottomRight) {
-	float cr1 = (float)topRight[0] / 255, cg1 = (float)topRight[1] / 255, cb1 = (float)topRight[2] / 255, ca1 = (float)topRight[3] / 255;
-	float cr2 = (float)bottomRight[0] / 255, cg2 = (float)bottomRight[1] / 255, cb2 = (float)bottomRight[2] / 255, ca2 = (float)bottomRight[3] / 255;
-	float cr3 = (float)bottomLeft[0] / 255, cg3 = (float)bottomLeft[1] / 255, cb3 = (float)bottomLeft[2] / 255, ca3 = (float)bottomLeft[3] / 255;
-	float cr4 = (float)topLeft[0] / 255, cg4 = (float)topLeft[1] / 255, cb4 = (float)topLeft[2] / 255, ca4 = (float)topLeft[3] / 255;
+	float cr1 = (float)topRight.r / 255, cg1 = (float)topRight.g / 255, cb1 = (float)topRight.b / 255, ca1 = (float)topRight.a / 255;
+	float cr2 = (float)bottomRight.r / 255, cg2 = (float)bottomRight.g / 255, cb2 = (float)bottomRight.b / 255, ca2 = (float)bottomRight.a / 255;
+	float cr3 = (float)bottomLeft.r / 255, cg3 = (float)bottomLeft.g / 255, cb3 = (float)bottomLeft.b / 255, ca3 = (float)bottomLeft.a / 255;
+	float cr4 = (float)topLeft.r / 255, cg4 = (float)topLeft.g / 255, cb4 = (float)topLeft.b / 255, ca4 = (float)topLeft.a / 255;
 	y = -y;
 
 	rotation = -rotation * (PI / 180);
@@ -668,9 +668,9 @@ void drawAdvancedRect(Window* win, float x, float y, float width, float height, 
 }
 void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, float x3, float y3, Color bottomLeft, Color topMiddle, Color bottomRight) {
 	float passIn1[21] = {
-		x1, -y1, win->zmod, (float)bottomLeft[0] / 255, (float)bottomLeft[1] / 255, (float)bottomLeft[2] / 255, (float)bottomLeft[3] / 255,
-		x2, -y2, win->zmod, (float)topMiddle[0] / 255, (float)topMiddle[1] / 255, (float)topMiddle[2] / 255, (float)topMiddle[3] / 255,
-		x3, -y3, win->zmod, (float)bottomRight[0] / 255, (float)bottomRight[1] / 255, (float)bottomRight[2] / 255, (float)bottomRight[3] / 255
+		x1, -y1, win->zmod, (float)bottomLeft.r / 255, (float)bottomLeft.g / 255, (float)bottomLeft.b / 255, (float)bottomLeft.a / 255,
+		x2, -y2, win->zmod, (float)topMiddle.r / 255, (float)topMiddle.g / 255, (float)topMiddle.b / 255, (float)topMiddle.a / 255,
+		x3, -y3, win->zmod, (float)bottomRight.r / 255, (float)bottomRight.g / 255, (float)bottomRight.b / 255, (float)bottomRight.a / 255
 	};
 	addTriangle(&win->shaders.data[win->currentShader].shapeBatch, passIn1);
 	endShape(&win->shaders.data[win->currentShader].shapeBatch);
@@ -679,8 +679,8 @@ void drawAdvancedTriangle(Window* win, float x1, float y1, float x2, float y2, f
 void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1) {
 	y1 = -y1;
 	y2 = -y2;
-	float passIn1[7] = { x1, y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255 };
-	float passIn2[7] = { x2, y2, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255 };
+	float passIn1[7] = { x1, y1, win->zmod, (float)color1.r / 255, (float)color1.g / 255, (float)color1.b / 255, (float)color1.a / 255 };
+	float passIn2[7] = { x2, y2, win->zmod, (float)color1.r / 255, (float)color1.g / 255, (float)color1.b / 255, (float)color1.a / 255 };
 	glLineWidth(thickness);
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn1);
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);
@@ -691,8 +691,8 @@ void drawLine(Window* win, float x1, float y1, float x2, float y2, float thickne
 void drawAdvancedLine(Window* win, float x1, float y1, float x2, float y2, float thickness, Color color1, Color color2) {
 	y1 = -y1;
 	y2 = -y2;
-	float passIn1[7] = { x1, y1, win->zmod, (float)color1[0] / 255, (float)color1[1] / 255, (float)color1[2] / 255, (float)color1[3] / 255 };
-	float passIn2[7] = { x2, y2, win->zmod, (float)color2[0] / 255, (float)color2[1] / 255, (float)color2[2] / 255, (float)color2[3] / 255 };
+	float passIn1[7] = { x1, y1, win->zmod, (float)color1.r / 255, (float)color1.g / 255, (float)color1.b / 255, (float)color1.a / 255 };
+	float passIn2[7] = { x2, y2, win->zmod, (float)color2.r / 255, (float)color2.g / 255, (float)color2.b / 255, (float)color2.a / 255 };
 	glLineWidth(thickness);
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn1);
 	addVertice(&win->shaders.data[win->currentShader].lineBatch, passIn2);

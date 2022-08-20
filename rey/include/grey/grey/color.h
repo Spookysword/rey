@@ -70,7 +70,12 @@ bool operator!=(const Color& lhs, const Color& rhs) {
 }
 #else
     // A color, AKA an array of 4 unsigned ints (R, G, B, A), all 0 -> 255.
-	typedef unsigned int Color[4];
+	typedef struct {
+    unsigned int r;
+    unsigned int g;
+    unsigned int b;
+    unsigned int a;
+  } Color;
 #endif
     // Takes the memory address of a color and replaces it with another color. Essentially, oldColor = newColor for nerds using C.
     #ifdef __cplusplus

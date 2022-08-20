@@ -58,7 +58,7 @@ TextButton createTextButton(double x, double y, double width, double height, con
 
 void renderTextButton(Window win, TextButton* textButton) {
 	textButton->onUpdate(textButton);
-	unsigned int drawColor[4];
+	Color drawColor;
 
 	if (win.mouse.x < textButton->buttonStyle.x + textButton->buttonStyle.width && win.mouse.x + 1 > textButton->buttonStyle.x && win.mouse.y < textButton->buttonStyle.y + textButton->buttonStyle.height && win.mouse.y + 1 > textButton->buttonStyle.y) {
 		if (textButton->hoverState == BUTTON_HOVER_STATE_OFF) {
@@ -119,7 +119,7 @@ void renderTextButton(Window win, TextButton* textButton) {
 
 void renderTextureButton(Window win, TextureButton* textureButton) {
 	textureButton->onUpdate(textureButton);
-	unsigned int drawColor[4];
+	Color drawColor;
 
 	if (win.mouse.x < textureButton->buttonStyle.x + textureButton->buttonStyle.width && win.mouse.x + 1 > textureButton->buttonStyle.x && win.mouse.y < textureButton->buttonStyle.y + textureButton->buttonStyle.height && win.mouse.y + 1 > textureButton->buttonStyle.y) {
 		if (textureButton->hoverState == BUTTON_HOVER_STATE_OFF) {
@@ -179,7 +179,7 @@ void renderTextureButton(Window win, TextureButton* textureButton) {
 
 void renderIconButton(Window win, IconButton* iconButton) {
 	iconButton->onUpdate(iconButton);
-	unsigned int drawColor[4];
+	Color drawColor;
 
 	if (win.mouse.x < iconButton->buttonStyle.x + iconButton->buttonStyle.width && win.mouse.x + 1 > iconButton->buttonStyle.x && win.mouse.y < iconButton->buttonStyle.y + iconButton->buttonStyle.height && win.mouse.y + 1 > iconButton->buttonStyle.y) {
 		if (iconButton->hoverState == BUTTON_HOVER_STATE_OFF) {
@@ -242,7 +242,7 @@ void renderIconButton(Window win, IconButton* iconButton) {
 
 void renderButton(Window win, Button* button) {
 	button->onUpdate(button);
-	unsigned int drawColor[4];
+	Color drawColor;
 
 	if (win.mouse.x < button->style.x + button->style.width && win.mouse.x + 1 > button->style.x && win.mouse.y < button->style.y + button->style.height && win.mouse.y + 1 > button->style.y) {
 		if (button->hoverState == BUTTON_HOVER_STATE_OFF) {
@@ -300,7 +300,7 @@ void renderButton(Window win, Button* button) {
 
 void renderSlider(Window win, Slider* slider) {
 	slider->onUpdate(slider);
-	unsigned int drawColor[4];
+	Color drawColor;
 
 	if (win.mouse.x < slider->sliderStyle.x + slider->sliderStyle.width && win.mouse.x + 1 > slider->sliderStyle.x && win.mouse.y < slider->sliderStyle.y + slider->sliderStyle.height && win.mouse.y + 1 > slider->sliderStyle.y) {
 		if (slider->hoverState == BUTTON_HOVER_STATE_OFF) {
