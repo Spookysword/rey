@@ -30,22 +30,22 @@ namespace grey {
     Color operator-(float f) {
         return Color(r - f, g - f, b - f, a - f);
     }
-    unsigned int operator[](int i) const {
+    float operator[](int i) {
         switch (i) {
             case 0:
-                return r;
+                return (float)r;
                 break;
             case 1:
-                return g;
+                return (float)g;
                 break;
             case 2:
-                return b;
+                return (float)b;
                 break;
             case 3:
-                return a;
+                return (float)a;
                 break;
             default:
-                return 0.0f;
+                return (float)0.0f;
                 break;
         }
     }
