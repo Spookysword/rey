@@ -18,6 +18,8 @@ if (WIN32)
 else()
 target_link_libraries(rey PUBLIC chipmunk_static glfw glad freetype OpenAL)
 target_link_options(rey PRIVATE -Wl,-Bdynamic -lGL -static)
+target_link_options(rey PRIVATE -Wl,-Bdynamic -lX11 -static)
+
 endif()
 
 set_target_properties(rey PROPERTIES
