@@ -16,9 +16,8 @@ target_include_directories(rey
 if (WIN32)
   target_link_libraries(rey PUBLIC opengl32 chipmunk_static glfw glad freetype OpenAL)
 else()
-target_link_options(rey PRIVATE -Wl,-Bdynamic -lX11 -static)
-target_link_options(rey PRIVATE -Wl,-Bdynamic -lGL -static)
-target_link_libraries(rey PUBLIC chipmunk_static glfw glad freetype OpenAL)
+target_link_options(rey PUBLIC -Wl,-Bdynamic)
+target_link_libraries(rey PUBLIC GL chipmunk_static glfw glad freetype OpenAL)
 
 endif()
 
