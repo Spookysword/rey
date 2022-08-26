@@ -18,7 +18,7 @@ jobs:
     
     - name: Install dependencies
     
-      run: sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev
+      run: sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
     
     
     
