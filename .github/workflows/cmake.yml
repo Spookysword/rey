@@ -31,4 +31,10 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build
       run: ctest -C ${{env.BUILD_TYPE}}
+    
+    - name: Artifact
+        uses: actions/upload-artifact@v3
+        with: 
+          name: sample program
+          path: sample
       
