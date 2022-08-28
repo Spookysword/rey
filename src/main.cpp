@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include "rand.h"
 using std::vector;
 using std::pair;
 
@@ -46,6 +47,43 @@ float fDepth = 18;
 
 float mapDisplaySize = 5.0f;
 
+void create_maze_f(vector<vector<bool>> &maze, int x, int y) {
+	maze[x][y] = false;
+	vector<vector<int>> dirs = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+	std::shuffle(dirs.begin(), dirs.end(), gen);
+	for (int i = 0; i < 4; i++) {
+		int nx = x + dirs[i][0]*2;
+		int ny = y + dirs[i][1]*2;
+		if (0 <= nx && nx < maze.size() && 0 <= ny && ny < maze[0].size() && maze[nx][ny]) {
+			int lx = x + dirs[i][0];
+			int ly = y + dirs[i][1];
+			maze[lx][ly] = false;
+		
+			create_maze_f(maze, nx, ny);
+		}
+	}
+}
+
+std::wstring create_maze(int w, int h) {
+
+	vector<vector<bool>> mazeb(w-1, vector<bool>(h-1, true));
+
+	create_maze_f(mazeb, 0, 0);
+	std::wstring mazew = L"";
+	for (int i = 0; i < mazeb.size(); i++) {
+		for (int j = 0; j < mazeb[0].size(); j++) {
+			if ((i) == 0 || (i) >= mazeb.size() - 1 || (j) == 0 || (j) >= mazeb[0].size() - 1)
+				mazew += L"#";
+			else
+				mazew += mazeb[(i+1)][(j+1)] ? L"#" : L".";
+		}
+		mazew += L"\n";
+	}
+	return mazew;
+}
+
+
+
 int getPosition(int x, int y) {
 	return x + y * nScreenWidth;
 }
@@ -66,6 +104,7 @@ bool isEnemy(vector<Vec2> enemies, int x, int y) {
 
 int main() {
 	initGrey(4);
+	initRandom();
 
 	Window win(1280, 720, "garfiled simulator 2009");
 	win.setFlag(WINDOW_RESIZABLE, false);
@@ -126,6 +165,7 @@ int main() {
 	map += L"#                              #";
 	map += L"#                              #";
 	map += L"################################";
+	map = create_maze(nMapWidth, nMapHeight);
 
 	vector<Vec2> enemies;
 	enemies.push_back(Vec2_new(15, 15));
@@ -161,12 +201,12 @@ int main() {
 		win.clearColor(COLOR_BLACK);
 		
 
-		// if (win.isKeyDown(KEY_A)) {
-		// 	fPlayerRealA -= 1.5f * win.win.deltaTime;
-		// }
-		// if (win.isKeyDown(KEY_D)) {
-		// 	fPlayerRealA += 1.5f * win.win.deltaTime;
-		// }
+		if (win.isKeyDown(KEY_Q)) {
+			fPlayerRealA -= 1.5f * win.win.deltaTime;
+		}
+		if (win.isKeyDown(KEY_E)) {
+			fPlayerRealA += 1.5f * win.win.deltaTime;
+		}
 		
 		if (win.isKeyPressed(KEY_ESCAPE)) {
 			setMouseLocked(&win.win, false);
@@ -281,10 +321,6 @@ int main() {
 				} else {
 					if (map[nTestY * nMapWidth + nTestX] == L'#') {
 						bHitWall = true;
-						// if (isEnemy(enemies, nTestX, nTestY))
-						// 	walltype = 1;
-						// if (map[nTestY * nMapWidth + nTestX] == L'#' && isEnemy(enemies, nTestX, nTestY))
-						// 	walltype = 2;
 
 
 						float fBlockMidX = (float)nTestX + 0.5f;
@@ -327,16 +363,13 @@ int main() {
 						screen[getPosition(x, y)] = COLOR_BLACK;
 					} else {
 						float threshold =fDistanceToWall*0.005f + 0.02f;
+						threshold = 0;
 						if (fSampleX > 1.0f-threshold || fSampleX < 0.0f+threshold || fSampleY > 1.0f-threshold || fSampleY < 0.0f+threshold) {
 							screen[getPosition(x, y)] = (((Color)COLOR_WHITE) * multiplier).rgb_(255);
 						} else {
 							if (walltype == 0) {
 								screen[getPosition(x, y)] = (tex0colors[fSampleX*tex0colors.size()][fSampleY*tex0colors[0].size()] * multiplier ).rgb_(255); // wall
-							 } // else if (walltype == 1) {
-							// 	screen[getPosition(x, y)] = (tex2colors[fSampleX*tex2colors.size()][fSampleY*tex2colors[0].size()] * multiplier ).rgb_(255); // garfiled
-							// } else if (walltype == 2) {
-							// 	screen[getPosition(x, y)] = (tex1colors[fSampleX*tex2colors.size()][fSampleY*tex2colors[0].size()] * multiplier ).rgb_(255); // garfiled wall
-							// }
+							 }
 						}
 					}
 
@@ -377,8 +410,6 @@ int main() {
 				float fObjectWidth = fObjectHeight / fObjectAspectRatio;
 
 				float fMiddleOfObject = (0.5f * (fObjectAngle / (fFOV / 2.0f)) + 0.5f) * nScreenWidth;
-
-				// #################### https://www.youtube.com/watch?v=HEb2akswCcw      30:38
 				
 				//win.drawTexture(enemyTex, (fMiddleOfObject - fObjectWidth / 2.0f)*nSpotSize, (fObjectCeiling)*nSpotSize, fObjectWidth*nSpotSize, fObjectHeight*nSpotSize, 0, COLOR_WHITE);
 				float multiplier = (1/(fDistanceFromPlayer*brightnessMod)-(1/(fDepth*brightnessMod)));
