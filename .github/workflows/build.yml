@@ -47,7 +47,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with: 
         name: Ubuntu Build
-        path: build/
+        path: ./
   build-windows:
     runs-on: windows-latest
     steps:
@@ -88,5 +88,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with: 
         name: Windows Build
-        path: build/
+        path: ./
       
