@@ -81,10 +81,6 @@ jobs:
         mklink libglapi.dll "x64\libglapi.dll"
       working-directory: ${{github.workspace}}/build
     
-    - name: TEMP
-      shell: cmd
-      run: sample.exe
-    
     - name: Run tests
       shell: cmd
       run: echo ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
