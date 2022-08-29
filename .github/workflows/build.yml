@@ -1,0 +1,86 @@
+name: Ubuntu-Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    
+    - name: Install dependencies
+      run: |
+        sudo apt install -y xorg-dev mesa-utils xvfb libgl1 freeglut3-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev
+    
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+  
+    - name: Upload Ubuntu Sample Program
+      uses: actions/upload-artifact@v3
+      with: 
+        name: Ubuntu Sample Program
+        path: sample
+  
+    - name: Test glxinfo
+      run: |
+        sudo apt install -y mesa-utils xvfb
+        xvfb-run glxinfo
+  
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: xvfb-run ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+    
+    - name: Upload Ubuntu Build
+      uses: actions/upload-artifact@v3
+      with: 
+        name: Ubuntu Build
+        path: .
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -T host=x64 -A x64
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j4
+
+    - name: Install 7zip
+      run: choco install 7zip.install
+      
+    - name: Install Mesa
+      shell: cmd
+      run: |
+        curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
+        "C:\Program Files\7-Zip\7z.exe" x mesa.7z
+        mklink opengl32.dll "x64\opengl32.dll"
+        mklink libglapi.dll "x64\libglapi.dll"
+      working-directory: ${{github.workspace}}/build
+
+    - name: Run tests
+      shell: cmd
+      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+      working-directory: ${{github.workspace}}/build
+    
+    - name: Upload Windows Build
+      uses: actions/upload-artifact@v3
+      with: 
+        name: Windows Build
+        path: .
+      
