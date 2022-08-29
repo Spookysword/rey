@@ -43,11 +43,11 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: xvfb-run ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
     
-    - name: Upload Ubuntu Build
-      uses: actions/upload-artifact@v3
-      with: 
-        name: Ubuntu Build
-        path: ./
+    #- name: Upload Ubuntu Build
+    #  uses: actions/upload-artifact@v3
+    #  with: 
+    #    name: Ubuntu Build
+    #    path: ./
   build-windows:
     runs-on: windows-latest
     steps:
@@ -69,30 +69,27 @@ jobs:
         name: Windows Sample Program
         path: sample.exe
     
-    - name: Install 7zip
-      run: choco install 7zip.install
+    #- name: Install 7zip
+    #  run: choco install 7zip.install
       
-    - name: Install Mesa
-      shell: cmd
-      run: |
-        curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
-        "C:\Program Files\7-Zip\7z.exe" x mesa.7z
-        mklink opengl32.dll "x64\opengl32.dll"
-        mklink libglapi.dll "x64\libglapi.dll"
-      working-directory: ${{github.workspace}}/build
+    #- name: Install Mesa
+    #  shell: cmd
+    #  run: |
+    #    curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
+    #    "C:\Program Files\7-Zip\7z.exe" x mesa.7z
+    #    mklink opengl32.dll "x64\opengl32.dll"
+    #    mklink libglapi.dll "x64\libglapi.dll"
+    #  working-directory: ${{github.workspace}}/build
     
-    - name: TEMP TEST
-      shell: cmd
-      run: sample.exe
     
-    - name: Run tests
-      shell: cmd
-      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
-      working-directory: ${{github.workspace}}/build
+    #- name: Run tests
+    #  shell: cmd
+    #  run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+    #  working-directory: ${{github.workspace}}/build
     
-    - name: Upload Windows Build
-      uses: actions/upload-artifact@v3
-      with: 
-        name: Windows Build
-        path: ./
+    #- name: Upload Windows Build
+    #  uses: actions/upload-artifact@v3
+    #  with: 
+    #    name: Windows Build
+    #    path: ./
       
