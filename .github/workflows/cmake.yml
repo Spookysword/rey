@@ -16,13 +16,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Install dependencies
+    - name: Install opengl
+      uses: openrndr/setup-opengl@v1.1
     
+    - name: Install dependencies
       run: |
         sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev
-        sudo add-apt-repository ppa:kisak/kisak-mesa
-        sudo apt update
-        sudo apt upgrade
+        xvfb-run glxinfo
     
     
     
