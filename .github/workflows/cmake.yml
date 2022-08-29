@@ -30,7 +30,7 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build
-      run: ctest -C ${{env.BUILD_TYPE}}
+      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
     
     - name: Artifact
       uses: actions/upload-artifact@v3
