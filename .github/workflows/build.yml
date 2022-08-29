@@ -83,7 +83,7 @@ jobs:
     
     - name: Run tests
       shell: cmd
-      run: echo ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
       working-directory: ${{github.workspace}}/build
     
     - name: Upload Windows Build
