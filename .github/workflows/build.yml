@@ -15,6 +15,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: true
     
     - name: Install dependencies
       run: |
@@ -26,10 +28,10 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
   
-    - name: Upload Sample Program
+    - name: Upload Ubuntu Sample Program
       uses: actions/upload-artifact@v3
       with: 
-        name: Sample Program
+        name: Ubuntu Sample Program
         path: sample
   
     - name: Test glxinfo
@@ -41,9 +43,44 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: xvfb-run ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
     
-    - name: Upload Build
+    - name: Upload Ubuntu Build
       uses: actions/upload-artifact@v3
       with: 
-        name: Build
+        name: Ubuntu Build
+        path: .
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Configure
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -T host=x64 -A x64
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j4
+
+    - name: Install 7zip
+      run: choco install 7zip.install
+      
+    - name: Install Mesa
+      shell: cmd
+      run: |
+        curl.exe -L --output mesa.7z --url https://github.com/pal1000/mesa-dist-win/releases/download/20.3.2/mesa3d-20.3.2-release-msvc.7z
+        "C:\Program Files\7-Zip\7z.exe" x mesa.7z
+        mklink opengl32.dll "x64\opengl32.dll"
+        mklink libglapi.dll "x64\libglapi.dll"
+      working-directory: ${{github.workspace}}/build
+
+    - name: Run tests
+      shell: cmd
+      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+      working-directory: ${{github.workspace}}/build
+    
+    - name: Upload Windows Build
+      uses: actions/upload-artifact@v3
+      with: 
+        name: Windows Build
         path: .
       
