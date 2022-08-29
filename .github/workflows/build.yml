@@ -55,7 +55,7 @@ jobs:
       with:
         submodules: true
     - name: Install Ninja
-      run: choco install ninja -y
+      run: choco install -y mingw
 
     - name: Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
