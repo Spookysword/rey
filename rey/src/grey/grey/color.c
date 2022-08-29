@@ -47,46 +47,46 @@ const grey::Color COLOR_BROWN = new Color{ 165, 42, 42, 255 };
 #else
 
 	// Chromakey
-const Color COLOR_BLACK = (const Color){ 0, 0, 0, 255 };
-const Color COLOR_WHITE = (const Color){ 255, 255, 255, 255 };
-const Color COLOR_LIGHT_GREY = (const Color){ 128, 128, 128, 255 };
-const Color COLOR_DARK_GREY = (const Color){ 63, 63, 63, 255 };
-const Color COLOR_GREY = (const Color){ 15, 15, 15, 255 };
+const Color COLOR_BLACK = { 0, 0, 0, 255 };
+const Color COLOR_WHITE = { 255, 255, 255, 255 };
+const Color COLOR_LIGHT_GREY = { 128, 128, 128, 255 };
+const Color COLOR_DARK_GREY = { 63, 63, 63, 255 };
+const Color COLOR_GREY = { 15, 15, 15, 255 };
 // Primary
-const Color COLOR_RED = (const Color){ 255, 0, 0, 255 };
-const Color COLOR_GREEN = (const Color){ 0, 255, 0, 255 };
-const Color COLOR_BLUE = (const Color){ 0, 0, 255, 255 };
+const Color COLOR_RED = { 255, 0, 0, 255 };
+const Color COLOR_GREEN = { 0, 255, 0, 255 };
+const Color COLOR_BLUE = { 0, 0, 255, 255 };
 // Secondary
-const Color COLOR_YELLOW = (const Color){ 255, 255, 0, 255 };
-const Color COLOR_CYAN = (const Color){ 0, 255, 255, 255 };
-const Color COLOR_MAGENTA = (const Color){ 255, 0, 255, 255 };
+const Color COLOR_YELLOW = { 255, 255, 0, 255 };
+const Color COLOR_CYAN = { 0, 255, 255, 255 };
+const Color COLOR_MAGENTA = { 255, 0, 255, 255 };
 // Tertiary
-const Color COLOR_ORANGE = (const Color){ 255, 128, 0, 255 };
-const Color COLOR_CHARTREUSE = (const Color){ 128, 255, 0, 255 };
-const Color COLOR_SPRING_GREEN = (const Color){ 0, 255, 128, 255 };
-const Color COLOR_AZURE = (const Color){ 0, 128, 255, 255 };
-const Color COLOR_VIOLET = (const Color){ 128, 0, 255, 255 };
-const Color COLOR_ROSE = (const Color){ 255, 0, 128, 255 };
+const Color COLOR_ORANGE = { 255, 128, 0, 255 };
+const Color COLOR_CHARTREUSE = { 128, 255, 0, 255 };
+const Color COLOR_SPRING_GREEN = { 0, 255, 128, 255 };
+const Color COLOR_AZURE = { 0, 128, 255, 255 };
+const Color COLOR_VIOLET = { 128, 0, 255, 255 };
+const Color COLOR_ROSE = { 255, 0, 128, 255 };
 
 // Soft Primary
-const Color COLOR_SOFT_RED = (const Color){ 255, 50, 50, 255 };
-const Color COLOR_SOFT_GREEN = (const Color){ 50, 255, 50, 255 };
-const Color COLOR_SOFT_BLUE = (const Color){ 50, 50, 255, 255 };
+const Color COLOR_SOFT_RED = { 255, 50, 50, 255 };
+const Color COLOR_SOFT_GREEN = { 50, 255, 50, 255 };
+const Color COLOR_SOFT_BLUE = { 50, 50, 255, 255 };
 // Soft Secondary
-const Color COLOR_SOFT_YELLOW = (const Color){ 255, 255, 50, 255 };
-const Color COLOR_SOFT_CYAN = (const Color){ 50, 255, 255, 255 };
-const Color COLOR_SOFT_MAGENTA = (const Color){ 255, 50, 255, 255 };
+const Color COLOR_SOFT_YELLOW = { 255, 255, 50, 255 };
+const Color COLOR_SOFT_CYAN = { 50, 255, 255, 255 };
+const Color COLOR_SOFT_MAGENTA = { 255, 50, 255, 255 };
 // Soft Tertiary
-const Color COLOR_SOFT_ORANGE = (const Color){ 255, 128, 50, 255 };
-const Color COLOR_SOFT_CHARTREUSE = (const Color){ 128, 255, 50, 255 };
-const Color COLOR_SOFT_SPRING_GREEN = (const Color){ 50, 255, 128, 255 };
-const Color COLOR_SOFT_AZURE = (const Color){ 50, 128, 255, 255 };
-const Color COLOR_SOFT_VIOLET = (const Color){ 128, 50, 255, 255 };
-const Color COLOR_SOFT_ROSE = (const Color){ 255, 50, 128, 255 };
+const Color COLOR_SOFT_ORANGE = { 255, 128, 50, 255 };
+const Color COLOR_SOFT_CHARTREUSE = { 128, 255, 50, 255 };
+const Color COLOR_SOFT_SPRING_GREEN = { 50, 255, 128, 255 };
+const Color COLOR_SOFT_AZURE = { 50, 128, 255, 255 };
+const Color COLOR_SOFT_VIOLET = { 128, 50, 255, 255 };
+const Color COLOR_SOFT_ROSE = { 255, 50, 128, 255 };
 
 // Miscellaneous
-const Color COLOR_DISCORD = (const Color){ 54, 57, 63, 255 };
-const Color COLOR_SIMPLE = (const Color){ 0, 159, 141, 255 };
+const Color COLOR_DISCORD = { 54, 57, 63, 255 };
+const Color COLOR_SIMPLE = { 0, 159, 141, 255 };
 
 #endif
 
