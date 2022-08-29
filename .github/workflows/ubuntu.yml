@@ -1,10 +1,14 @@
-name: CMake
+name: Ubuntu-Build
 
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   BUILD_TYPE: Release
@@ -31,6 +35,11 @@ jobs:
       with: 
         name: Sample Program Artifact
         path: sample
+  
+    - name: Test glxinfo
+      run: |
+        sudo apt install -y mesa-utils xvfb
+        xvfb-run glxinfo
   
     - name: Test
       working-directory: ${{github.workspace}}/build
