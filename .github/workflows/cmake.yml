@@ -20,28 +20,19 @@ jobs:
       run: |
         sudo apt install -y xorg-dev mesa-utils xvfb libgl1 freeglut3-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev
     
-    - name: Install opengl
-      uses: openrndr/setup-opengl@v1.1
-    
-    - name: Test opengl
-      run: |
-        xvfb-run glxinfo
-    
-    
-    
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
       
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
-    
+  
     - name: Artifact
       uses: actions/upload-artifact@v3
       with: 
         name: Sample Program Artifact
         path: sample
+  
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
       
