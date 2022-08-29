@@ -47,20 +47,28 @@ jobs:
       uses: actions/upload-artifact@v3
       with: 
         name: Ubuntu Build
-        path: .
+        path: ./
   build-windows:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: true
+    - name: Install Ninja
+      run: choco install ninja -y
 
     - name: Configure
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -T host=x64 -A x64
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j4
-
+    
+    - name: Upload Windows Sample Program
+      uses: actions/upload-artifact@v3
+      with: 
+        name: Windows Sample Program
+        path: sample.exe
+    
     - name: Install 7zip
       run: choco install 7zip.install
       
@@ -72,15 +80,19 @@ jobs:
         mklink opengl32.dll "x64\opengl32.dll"
         mklink libglapi.dll "x64\libglapi.dll"
       working-directory: ${{github.workspace}}/build
-
+    
+    - name: TEMP
+      shell: cmd
+      run: sample.exe
+    
     - name: Run tests
       shell: cmd
-      run: ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
+      run: echo ctest -C ${{env.BUILD_TYPE}} -T test --output-on-failure
       working-directory: ${{github.workspace}}/build
     
     - name: Upload Windows Build
       uses: actions/upload-artifact@v3
       with: 
         name: Windows Build
-        path: .
+        path: ./
       
