@@ -19,6 +19,9 @@ jobs:
     - name: Install dependencies
     
       run: sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev
+        sudo add-apt-repository ppa:kisak/kisak-mesa
+        sudo apt update
+        sudo apt upgrade
     
     
     
