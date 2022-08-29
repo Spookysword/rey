@@ -22,15 +22,25 @@ if(WIN32)
   find_package(OpenGL REQUIRED)
 endif(WIN32)
 
-message("rey ----- Setting up dependencies -----")
+message("rey ------- Setting up dependencies -------")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+message("rey ----- chipmunk -----")
 add_subdirectory(extern/chipmunk)
+
+message("rey ----- glad -----")
 add_subdirectory(extern/glad)
+
+message("rey ----- glfw -----")
 add_subdirectory(extern/glfw)
+
+message("rey ----- freetype -----")
 add_subdirectory(extern/freetype)
+
+message("rey ----- oal-soft -----")
 add_subdirectory(extern/openal-soft)
+
+message("rey ------- Done setting up dependencies -------")
 add_subdirectory(src)
-message("rey ----- Done setting up dependencies -----")
 
 install(
   DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"
