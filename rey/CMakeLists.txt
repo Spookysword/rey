@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.8)
-
-# https://cmake.org/cmake/help/latest/command/project.html
 project(rey VERSION 1.0.0)
 
-# set(CMAKE_CONFIGURATION_TYPES "Debug;RelWithDebInfo" CACHE STRING "" FORCE)
+if(BUILD_TESTING)
+    message("rey ----- Testing Enabled -----")
+    add_subdirectory(tests)
+else()
+    message("rey ----- Testing Disabled -----")
+endif(BUILD_TESTING)
 
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
@@ -19,6 +22,7 @@ if(WIN32)
   find_package(OpenGL REQUIRED)
 endif(WIN32)
 
+message("rey ----- Setting up dependencies -----")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 add_subdirectory(extern/chipmunk)
 add_subdirectory(extern/glad)
@@ -26,6 +30,7 @@ add_subdirectory(extern/glfw)
 add_subdirectory(extern/freetype)
 add_subdirectory(extern/openal-soft)
 add_subdirectory(src)
+message("rey ----- Done setting up dependencies -----")
 
 install(
   DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/"

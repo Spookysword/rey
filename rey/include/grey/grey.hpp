@@ -18,8 +18,13 @@ public:
     Window(int width, int height, const char* title) {
         win = grey::createWindow(width, height, title);
     }
+    Window() {
+    }
+    bool isopen() {
+        return !grey::shouldWindowClose(this->win);
+    }
     explicit operator bool() { 
-        return !grey::shouldWindowClose(this->win); 
+        return isopen(); 
     }
     void update() {
         grey::updateWindow(&this->win);
