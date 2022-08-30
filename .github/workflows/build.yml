@@ -22,7 +22,7 @@ jobs:
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-    - name: Upload Ubuntu Sample Program
+    - name: Upload Linux x64
       uses: actions/upload-artifact@v3
       with: 
         name: linux-x64
@@ -39,15 +39,20 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: true
-    - name: Install Ninja
-      run: choco install -y mingw
     - name: Configure
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -G Ninja
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -T host=x64 -A x64
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j4
-    - name: Upload Windows Sample Program
+    
+    - name:
+      run: |
+        # prepare for upload
+        mkdir upload
+        copy build/rey/bin/Release/ upload/lib/
+        copy rey/include/ upload/include/
+    - name: Upload Windows x64
       uses: actions/upload-artifact@v3
       with: 
         name: windows-x64
-        path: build/rey/bin/
+        path: upload
       
