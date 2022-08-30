@@ -27,6 +27,7 @@ jobs:
         mkdir upload
         cp -r build/rey/bin/ upload/lib/
         cp -r rey/include/ upload/include/
+        cp -r rey/extern/**/include/ upload/
     - name: Upload Linux x64
       uses: actions/upload-artifact@v3
       with: 
