@@ -56,7 +56,7 @@ jobs:
         mkdir ${{github.workspace}}\upload
         xcopy ${{github.workspace}}\build\rey\bin\Release\ ${{github.workspace}}\upload\lib\ /E /H
         xcopy ${{github.workspace}}\rey\include\ ${{github.workspace}}\upload\include\ /E /H
-        xcopy ${{github.workspace}}\rey\extern\**\include\ ${{github.workspace}}\upload\ /E /H
+        for /f "tokens=*" %G in ('dir /b /s /a:d "${{github.workspace}}\rey\extern\*"') do xcopy %G  ${{github.workspace}}\upload\ /E /H
     - name: Upload Windows x64
       uses: actions/upload-artifact@v3
       with: 
