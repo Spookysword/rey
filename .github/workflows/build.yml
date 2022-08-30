@@ -26,13 +26,13 @@ jobs:
       run: |
         # prepare for upload
         mkdir upload
-        copy build/rey/bin/Release/ upload/lib/
-        copy rey/include/ upload/include/
+        cp build/rey/bin/Release/ upload/lib/
+        cp rey/include/ upload/include/
     - name: Upload Linux x64
       uses: actions/upload-artifact@v3
       with: 
         name: linux-x64
-        path: build/rey/bin/
+        path: prepare
     - name: Test glxinfo
       run: xvfb-run glxinfo
     - name: Test
