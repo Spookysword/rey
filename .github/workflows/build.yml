@@ -53,8 +53,8 @@ jobs:
       shell: cmd
       run: |
         mkdir ${{github.workspace}}\upload
-        copy build\rey\bin\Release\ ${{github.workspace}}\upload\lib\
-        copy rey\include\ ${{github.workspace}}\upload\include\
+        copy ${{github.workspace}}\build\rey\bin\Release\ ${{github.workspace}}\upload\lib\
+        copy ${{github.workspace}}\rey\include\ ${{github.workspace}}\upload\include\
     - name: Upload Windows x64
       uses: actions/upload-artifact@v3
       with: 
