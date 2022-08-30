@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with: 
         name: linux-x64
-        path: prepare
+        path: upload
     - name: Test glxinfo
       run: xvfb-run glxinfo
     - name: Test
