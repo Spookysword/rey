@@ -51,7 +51,6 @@ jobs:
     
     - name: Prepare
       run: |
-        # prepare for upload
         mkdir upload
         copy build/rey/bin/Release/ upload/lib/
         copy rey/include/ upload/include/
