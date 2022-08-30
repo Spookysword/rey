@@ -24,9 +24,8 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     - name: Prepare
       run: |
-        # prepare for upload
         mkdir upload
-        cp build/rey/bin/Release/ upload/lib/
+        cp build/rey/bin/ upload/lib/
         cp rey/include/ upload/include/
     - name: Upload Linux x64
       uses: actions/upload-artifact@v3
