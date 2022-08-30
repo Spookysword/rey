@@ -25,8 +25,8 @@ jobs:
     - name: Prepare
       run: |
         mkdir upload
-        cp build/rey/bin/ upload/lib/
-        cp rey/include/ upload/include/
+        cp -r build/rey/bin/ upload/lib/
+        cp -r rey/include/ upload/include/
     - name: Upload Linux x64
       uses: actions/upload-artifact@v3
       with: 
