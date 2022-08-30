@@ -50,13 +50,14 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j4
     
     - name: Prepare
+      shell: cmd
       run: |
-        mkdir upload
-        copy build/rey/bin/Release/ upload/lib/
-        copy rey/include/ upload/include/
+        mkdir ${{github.workspace}}/upload
+        copy build/rey/bin/Release/ ${{github.workspace}}/upload/lib/
+        copy rey/include/ ${{github.workspace}}/upload/include/
     - name: Upload Windows x64
       uses: actions/upload-artifact@v3
       with: 
         name: windows-x64
-        path: upload/
+        path: ${{github.workspace}}/upload/
       
