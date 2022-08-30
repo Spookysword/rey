@@ -52,12 +52,12 @@ jobs:
     - name: Prepare
       shell: cmd
       run: |
-        mkdir ${{github.workspace}}/upload
-        copy build/rey/bin/Release/ ${{github.workspace}}/upload/lib/
-        copy rey/include/ ${{github.workspace}}/upload/include/
+        mkdir ${{github.workspace}}\upload
+        copy build\rey\bin\Release\ ${{github.workspace}}\upload\lib\
+        copy rey\include\ ${{github.workspace}}\upload\include\
     - name: Upload Windows x64
       uses: actions/upload-artifact@v3
       with: 
         name: windows-x64
-        path: ${{github.workspace}}/upload/
+        path: ${{github.workspace}}\upload\
       
